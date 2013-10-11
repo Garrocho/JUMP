@@ -4,6 +4,9 @@ import pygame
 from pygame.locals import *
 
 
+def novoJogo(screen):
+    # Falta o game.. rs
+    pass
 
 
 class Menu(object):    
