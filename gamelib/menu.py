@@ -6,6 +6,30 @@ from pygame.locals import *
 
 
 
+class Menu(object):    
+
+    def __init__(self, screen):
+        media.executar_musica("menu_loop.wav", 0.75)
+        self.screen = screen
+        self.menu = NFMenu(["Novo Jogo", lambda: novoJogo(screen)], ["Sair", sys.exit])
+        self.clock = pygame.time.Clock()
+        events = pygame.event.get()
+        self.menu.update(events)
+        self.menu.draw(self.screen)
+        self.bg = media.carrega_imagem_menu('menu_background.jpg')
+        self.fonteGrande = pygame.font.Font(media.carrega_fonte("BLADRMF_.TTF"), 120)
+
+    def loop(self):
+        while True:
+            self.clock.tick(40)
+            events = pygame.event.get()
+            self.menu.update(events)
+            self.screen.blit(self.bg, (0, 0))
+            ren = self.fonteGrande.render("Jump", 1, (255, 255, 255))
+            self.screen.blit(ren, (350-ren.get_width()/2, 180))
+            self.menu.draw(self.screen)
+            pygame.display.flip()
+
 
 class NFMenu:
 
