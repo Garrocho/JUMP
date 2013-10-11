@@ -1,5 +1,5 @@
-JUMP
-====
+JUMP!
+=====
 Jogo para a Semana Nacional de Ciência e Tecnologia
 
 # Instalação
