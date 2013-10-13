@@ -28,7 +28,7 @@ class Menu(object):
             events = pygame.event.get()
             self.menu.update(events)
             self.screen.blit(self.bg, (0, 0))
-            ren = self.fonteGrande.render("Jump", 1, (255, 255, 255))
+            ren = self.fonteGrande.render("JUMP!", 1, (255, 255, 255))
             self.screen.blit(ren, (350-ren.get_width()/2, 180))
             self.menu.draw(self.screen)
             pygame.display.flip()
