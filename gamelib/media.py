@@ -69,12 +69,8 @@ def obter_som(nome_arquivo, volume=1.0):
 
 def carregar_sprites_fatias(w, h, nome_arquivo):
     imagens = []
-    nome_arquivo = carrega('imagens', nome_arquivo)
-    mestre_w, mestre_h = master_image.get_size()
-    colunas = mestre_w / w
-    linhas = mestre_h / h
-    for i in xrange (linhas):
-        for j in xrange (colunas):
-            pequeno_sprite = master_image.subsurface((j*w,i*h,w,h))
-            imagens.append(pequeno_sprite)
+    imagem_mestre = pygame.image.load(carrega('imagens', nome_arquivo)).convert_alpha()
+    width_mestre, height_mestre = imagem_mestre.get_size()
+    for i in xrange(int(width_mestre/w)):
+        imagens.append(imagem_mestre.subsurface((i*w,0,w,h)))
     return imagens
