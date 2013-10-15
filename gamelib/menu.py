@@ -1,12 +1,8 @@
 import sys
 import media
+import engine
 import pygame
 from pygame.locals import *
-
-
-def novoJogo(screen):
-    # Falta o game.. rs
-    pass
 
 
 class Menu(object):    
@@ -14,16 +10,17 @@ class Menu(object):
     def __init__(self, screen):
         media.executar_musica("menu_loop.wav", 0.75)
         self.screen = screen
-        self.menu = NFMenu(["Novo Jogo", lambda: novoJogo(screen)], ["Sair", sys.exit])
+        self.menu = NFMenu(["Novo Jogo", lambda: self.novoJogo(screen)], ["Sair", sys.exit])
         self.clock = pygame.time.Clock()
         events = pygame.event.get()
         self.menu.update(events)
         self.menu.draw(self.screen)
         self.bg = media.carrega_imagem_menu('menu_background.jpg')
         self.fonteGrande = pygame.font.Font(media.carrega_fonte("BLADRMF_.TTF"), 120)
+        self.run = True
 
     def loop(self):
-        while True:
+        while self.run:
             self.clock.tick(40)
             events = pygame.event.get()
             self.menu.update(events)
@@ -32,6 +29,12 @@ class Menu(object):
             self.screen.blit(ren, (350-ren.get_width()/2, 180))
             self.menu.draw(self.screen)
             pygame.display.flip()
+        print 'sair do loop'
+
+    def novoJogo(self, screen):
+        self.run = False
+        #engine.init()
+        print 'novo jogo'
 
 
 class NFMenu:
