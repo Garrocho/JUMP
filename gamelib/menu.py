@@ -29,12 +29,12 @@ class Menu(object):
             self.screen.blit(ren, (350-ren.get_width()/2, 180))
             self.menu.draw(self.screen)
             pygame.display.flip()
-        print 'sair do loop'
+        print 'saindo do loop do menu.'
 
     def novoJogo(self, screen):
         self.run = False
-        #engine.init()
-        print 'novo jogo'
+        game = engine.Game(screen)
+        game.loop()
 
 
 class NFMenu:
