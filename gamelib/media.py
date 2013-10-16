@@ -67,10 +67,11 @@ def obter_som(nome_arquivo, volume=1.0):
     return som
 
 
-def carregar_sprites_fatias(w, h, nome_arquivo):
-    imagens = []
+def carrega_imagem_fatias(w, h, nome_arquivo):
+    fatias = []
     imagem_mestre = pygame.image.load(carrega('imagens', nome_arquivo)).convert_alpha()
     width_mestre, height_mestre = imagem_mestre.get_size()
     for i in xrange(int(width_mestre/w)):
-        imagens.append(imagem_mestre.subsurface((i*w,0,w,h)))
-    return imagens
+        # Recorda varias partes da imagem
+        fatias.append(imagem_mestre.subsurface((i*w,0,w,h)))
+    return fatias
