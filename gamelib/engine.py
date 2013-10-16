@@ -18,10 +18,10 @@ class Jogo:
         # carregando dados
         #media.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
         self.img_fundo   = media.carrega_imagem_menu('jogo_background_1.jpg')
-        self.img_jogador = media.carrega_imagem_menu('louco.png')
+        self.img_jogador = media.carrega_imagem_fatias(160, 100, 'cachorro.png')
 
         # Carregando Atores
-        posicao      = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 200]
+        posicao      = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 100]
         self.jogador = atores.Jogador(imagem=self.img_jogador, posicao=posicao)
 
         # Lista de Atores
