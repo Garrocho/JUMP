@@ -1,31 +1,33 @@
 import media
 import pygame
+import atores
 from pygame.locals import *
 
 
-class Game:
+class Jogo:
     screen      = None
     screen_size = None
     run         = True
     
     def __init__( self, screen ):
-        #media.executar_musica("musica.ogg", 0.75)
         self.screen      = screen
         self.screen_size = self.screen.get_size()
         self.carrega_dados()
 
     def carrega_dados( self ):
-        self.bg_carr_jogo = media.carrega_imagem_menu('menu_background.jpg')
-        self.fonte = pygame.font.Font(media.carrega_fonte("GOODTIME.ttf"), 30)
-        ren = self.fonte.render("Carregando Jogo...", 1, (255, 255, 255))
-
-        # Desenhando na Tela Temporariamente...
-        self.screen.blit(self.bg_carr_jogo, (0, 0))
-        self.screen.blit(ren, (40, self.screen_size[1]-50))
-
         # carregando dados
+        #media.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
         self.bg_game = media.carrega_imagem_menu('jogo_background_1.jpg')
-        #self.img_louco = media.carrega_imagem_menu('louco.png')
+        self.img_louco = media.carrega_imagem_menu('louco.png')
+
+        # Carregando Atores
+        posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
+        self.jogador = atores.Jogador(imagem=self.img_louco, posicao=posicao)
+
+        # Lista de Atores
+        self.lista_atores = {
+            "jogador" : pygame.sprite.RenderPlain(self.jogador)
+        }
 
     def tratador_eventos( self ):
         for event in pygame.event.get():
@@ -39,19 +41,18 @@ class Game:
             elif t == KEYDOWN:
                 if   k == K_ESCAPE:
                     self.run = False
-                elif k == K_LCTRL or k == K_RCTRL:
-                    print 'controle'
                 elif k == K_UP:
-                    print 'pro alto'
-                elif k == K_DOWN:
-                    print 'pra baixo'
+                    self.jogador.pular()
 
     def atualizar_atores(self):
-        #self.ator.update()
-        pass
+        for ator in self.lista_atores.values():
+            ator.update()
 
     def desenhar_atores(self):
         self.screen.blit(self.bg_game, (0, 0))
+
+        for ator in self.lista_atores.values():
+            ator.draw(self.screen)
 
     def acao_atores( self ):
         # Verifica se personagem foi atingido por um tiro, se trombou em algum inimigo
