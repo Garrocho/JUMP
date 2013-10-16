@@ -1,3 +1,4 @@
+import media
 import pygame
 from pygame.locals import *
 
@@ -14,11 +15,19 @@ class Game:
         self.carrega_dados()
 
     def carrega_dados( self ):
-        #self.imagem_jogador = pygame.image.load(media.carrega_imagem('jogador.png'))
-        pass
+        self.bg_carr_jogo = media.carrega_imagem_menu('menu_background.jpg')
+        self.fonte = pygame.font.Font(media.carrega_fonte("GOODTIME.ttf"), 30)
+        ren = self.fonte.render("Carregando Jogo...", 1, (255, 255, 255))
+
+        # Desenhando na Tela Temporariamente...
+        self.screen.blit(self.bg_carr_jogo, (0, 0))
+        self.screen.blit(ren, (40, self.screen_size[1]-50))
+
+        # carregando dados
+        self.bg_game = media.carrega_imagem_menu('jogo_background_1.jpg')
+        #self.img_louco = media.carrega_imagem_menu('louco.png')
 
     def tratador_eventos( self ):
-
         for event in pygame.event.get():
             t = event.type
             if t in ( KEYDOWN, KEYUP ):
@@ -36,20 +45,13 @@ class Game:
                     print 'pro alto'
                 elif k == K_DOWN:
                     print 'pra baixo'
-        
-            elif t == KEYUP:
-                if k == K_UP:
-                    print 'pro alto'
-                elif k == K_DOWN:
-                    print 'pra baixo' 
 
     def atualizar_atores(self):
         #self.ator.update()
         pass
 
     def desenhar_atores(self):
-        #self.ator.draw(self.screen)
-        pass
+        self.screen.blit(self.bg_game, (0, 0))
 
     def acao_atores( self ):
         # Verifica se personagem foi atingido por um tiro, se trombou em algum inimigo
