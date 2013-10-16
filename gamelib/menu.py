@@ -6,8 +6,8 @@ from pygame.locals import *
 
 
 def novoJogo(screen):
-    game = engine.Game(screen)
-    game.loop()
+    jogo = engine.Jogo(screen)
+    jogo.loop()
 
 
 class Menu(object):    
