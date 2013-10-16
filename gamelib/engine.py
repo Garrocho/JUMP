@@ -21,7 +21,7 @@ class Jogo:
         self.img_louco = media.carrega_imagem_menu('louco.png')
 
         # Carregando Atores
-        posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] ]
+        posicao      = [ self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 200 ]
         self.jogador = atores.Jogador(imagem=self.img_louco, posicao=posicao)
 
         # Lista de Atores
