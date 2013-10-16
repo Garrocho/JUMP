@@ -17,12 +17,12 @@ class Jogo:
     def carrega_dados(self):
         # carregando dados
         #media.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
-        self.bg_game = media.carrega_imagem_menu('jogo_background_1.jpg')
-        self.img_louco = media.carrega_imagem_menu('louco.png')
+        self.img_fundo   = media.carrega_imagem_menu('jogo_background_1.jpg')
+        self.img_jogador = media.carrega_imagem_menu('louco.png')
 
         # Carregando Atores
         posicao      = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 200]
-        self.jogador = atores.Jogador(imagem=self.img_louco, posicao=posicao)
+        self.jogador = atores.Jogador(imagem=self.img_jogador, posicao=posicao)
 
         # Lista de Atores
         self.lista_atores = {
@@ -32,7 +32,7 @@ class Jogo:
     def tratador_eventos(self):
         for event in pygame.event.get():
             t = event.type
-            if t in ( KEYDOWN, KEYUP ):
+            if t in (KEYDOWN, KEYUP):
                 k = event.key
         
             if t == QUIT:
@@ -41,7 +41,7 @@ class Jogo:
             elif t == KEYDOWN:
                 if   k == K_ESCAPE:
                     self.run = False
-                elif k == K_UP:
+                elif k == K_SPACE and not self.jogador.pulando:
                     self.jogador.pular()
 
     def atualizar_atores(self):
@@ -49,7 +49,7 @@ class Jogo:
             ator.update()
 
     def desenhar_atores(self):
-        self.screen.blit(self.bg_game, (0, 0))
+        self.screen.blit(self.img_fundo, (0, 0))
 
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
