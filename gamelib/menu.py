@@ -31,7 +31,7 @@ class Menu(object):
             self.menu.update(events)
             self.screen.blit(self.bg, (0, 0))
             ren = self.fonteGrande.render("JUMP!", 1, (255, 255, 255))
-            self.screen.blit(ren, (350-ren.get_width()/2, 180))
+            self.screen.blit(ren, (250-ren.get_width()/2, 180))
             self.menu.draw(self.screen)
             pygame.display.flip()
 
@@ -47,14 +47,14 @@ class NFMenu:
         self.posicao_atual = 0
         self.width = 1
         self.color = [255, 255, 255]
-        self.hcolor = [150, 50, 100]
+        self.hcolor = [80, 50, 150]
         self.height = len(self.vetor_funcoes_menu)*self.fonte.get_height()
         for funcao in self.vetor_funcoes_menu:
             texto = funcao[0]
             ren = self.fonte.render(texto, 1, (0, 0, 0))
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
-        self.x = 350-(self.width/2)
+        self.x = 250-(self.width/2)
         self.y = 450-(self.height/2)
 
     def draw(self, surface):
