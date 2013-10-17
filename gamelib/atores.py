@@ -19,6 +19,9 @@ class Jogador(pygame.sprite.Sprite):
     	self.pulando 	 = True
         self.image       = self.fatias[1]
 
+    def atingido(self):
+        print 'atingido'
+
     def update(self):
         # Trata os pulos do jogador
         if self.pulando:
