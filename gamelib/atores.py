@@ -49,6 +49,8 @@ class Fogo(pygame.sprite.Sprite):
         self.fatias      = imagem
         self.rect        = self.image.get_rect()
         self.rect.center = (posicao)
+        screen           = pygame.display.get_surface()
+        self.area        = screen.get_rect()
         self.fatia_atual = 0
         self.soma        = True
         self.fatia_tam   = len(self.fatias)-1
@@ -73,3 +75,10 @@ class Fogo(pygame.sprite.Sprite):
             self.tempo_fatia = self.tempo_fatia-1
 
         self.rect.center = (self.rect.center[0]-3, self.rect.center[1])
+
+        if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
+            print 'to morto'
+            self.kill()
+        if self.rect.bottom < -40:
+            print 'to morto'
+            self.kill()
