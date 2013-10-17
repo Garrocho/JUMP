@@ -19,14 +19,18 @@ class Jogo:
         #media.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
         self.img_fundo   = media.carrega_imagem_menu('jogo_background_1.jpg')
         self.img_jogador = media.carrega_imagem_fatias(160, 100, 'cachorro.png')
+        self.img_fogo    = media.carrega_imagem_fatias(105, 93, 'fogo.png')
 
         # Carregando Atores
-        posicao      = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 100]
-        self.jogador = atores.Jogador(imagem=self.img_jogador, posicao=posicao)
+        pos_jogador  = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 100]
+        pos_fogo     = [self.screen_size[ 0 ]-100 / 2, self.screen_size[ 1 ] - 100]
+        self.jogador = atores.Jogador(imagem=self.img_jogador, posicao=pos_jogador)
+        self.fogo    = atores.Fogo(imagem=self.img_fogo, posicao=pos_fogo)
 
         # Lista de Atores
         self.lista_atores = {
-            "jogador" : pygame.sprite.RenderPlain(self.jogador)
+            "jogador" : pygame.sprite.RenderPlain(self.jogador),
+            "fogo"    : pygame.sprite.RenderPlain(self.fogo)
         }
 
     def tratador_eventos(self):
