@@ -12,25 +12,30 @@ class Jogador(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         self.pulando  	 = False
         self.fases_pulo	 = 0
+        self.tempo_fatia = 1
 
     def pular(self):
-    	self.fases_pulo	 = 30
+    	self.fases_pulo	 = 50
     	self.pulando 	 = True
         self.image       = self.fatias[1]
 
     def update(self):
         # Trata os pulos do jogador
-        if self.pulando: 
-            if self.fases_pulo >= 15:
-                self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
-                self.fases_pulo = self.fases_pulo-1
-            elif self.fases_pulo >= -1:
-                self.fases_pulo = self.fases_pulo-1
-                self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
+        if self.pulando:
+            if self.tempo_fatia == 0:
+                self.tempo_fatia = 1
+                if self.fases_pulo >= 25:
+                    self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
+                    self.fases_pulo = self.fases_pulo-1
+                elif self.fases_pulo >= -1:
+                    self.fases_pulo = self.fases_pulo-1
+                    self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
+                else:
+                    self.pulando = False
+                    self.fases_pulo	 = 0
+                    self.image = self.fatias[0]
             else:
-                self.pulando = False
-                self.fases_pulo	 = 0
-                self.image = self.fatias[0]
+                self.tempo_fatia = self.tempo_fatia-1
 
 
 class Fogo(pygame.sprite.Sprite):
@@ -63,3 +68,5 @@ class Fogo(pygame.sprite.Sprite):
             self.image = self.fatias[self.fatia_atual]
         else:
             self.tempo_fatia = self.tempo_fatia-1
+
+        self.rect.center = (self.rect.center[0]-3, self.rect.center[1])
