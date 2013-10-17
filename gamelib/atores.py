@@ -44,7 +44,7 @@ class Fogo(pygame.sprite.Sprite):
         self.fatia_atual = 0
         self.soma        = True
         self.fatia_tam   = len(self.fatias)-1
-        self.tempo_fatia = 10
+        self.tempo_fatia = 100
 
     def update(self):
         if self.tempo_fatia == 0:
