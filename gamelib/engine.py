@@ -58,10 +58,12 @@ class Jogo:
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
 
-    def acao_atores(self):
-        # Verifica se personagem foi atingido por um tiro, se trombou em algum inimigo
-        # se atingiu algum alvo. Aumenta a experiencia baseado no numero de acertos, etc
-        pass
+    def checar_colisao_de_um_ator(self, ator, lista):
+        if pygame.sprite.spritecollide(ator, lista, 0):
+            self.jogador.atingido()
+
+    def checar_colisoes(self):
+        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"])
 
     def administrar(self):
         # Fazer inimigos executar alguma acao, modificar level do jogo, etc.
@@ -74,11 +76,11 @@ class Jogo:
             # Trata os eventos de entrada.
             self.tratador_eventos()
 
-            # Atualiza Elementos
+            # Atualiza Elementos.
             self.atualizar_atores()
 
-            # Faca os atores atuarem
-            self.acao_atores()
+            # Checa se os Atores se Chocaram.
+            self.checar_colisoes()
 
             # Faca a manutencao do jogo, como criar inimigos, etc.
             self.administrar()
