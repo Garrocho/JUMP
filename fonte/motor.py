@@ -1,5 +1,5 @@
 import json
-import media
+import dados
 import pygame
 import atores
 from pygame.locals import *
@@ -20,10 +20,10 @@ class Jogo:
 
     def carrega_dados(self):
         # carregando dados
-        #media.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
-        self.img_fundo   = media.carrega_imagem_menu('jogo_background_1.jpg')
-        self.img_jogador = media.carrega_imagem_fatias(160, 100, 'cachorro.png')
-        self.img_fogo    = media.carrega_imagem_fatias(105, 93, 'fogo.png')
+        #dados.executar_musica("musica_inicio_do_jogo.ogg", 0.75)
+        self.img_fundo   = dados.carrega_imagem_menu('jogo_background_1.jpg')
+        self.img_jogador = dados.carrega_imagem_fatias(160, 100, 'cachorro.png')
+        self.img_fogo    = dados.carrega_imagem_fatias(105, 93, 'fogo.png')
 
         # Carregando Atores
         pos_jogador  = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 100]
@@ -78,7 +78,7 @@ class Jogo:
             fase = carrega_fase(self.pos_fase)
             self.pos_fase = self.pos_fase+1
             if fase == None:
-                print 'Game Terminou'
+                pass
             elif fase[0] == 'AGUARDE':
                 self.aguardar = True
                 self.aguardar_tmp = int(fase[1])
@@ -111,7 +111,7 @@ class Jogo:
 
 def carrega_fase(posicao):
     try:
-        fase = media.carrega_arquivo('fase.json').read()
+        fase = dados.carrega_fase('fase.json').read()
         fase = json.loads(fase)
         return fase[posicao].split(':')
     except:
