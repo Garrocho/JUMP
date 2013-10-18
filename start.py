@@ -1,5 +1,5 @@
 import pygame
-from gamelib import menu
+from fonte import menu
 
 
 if __name__ == '__main__':
