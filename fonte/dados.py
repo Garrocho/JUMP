@@ -4,14 +4,14 @@ from os.path import join as join_path
 
 
 dados_py  = os.path.abspath(os.path.dirname(__file__))
-dados_dir = os.path.normpath(join_path(dados_py, '..', 'data'))
+dados_dir = os.path.normpath(join_path(dados_py, '..', 'dados'))
 
 
 endereco_arquivos = dict(
-    fontes  = join_path(dados_dir, 'font'),
-    imagens = join_path(dados_dir, 'image'),
-    sons = join_path(dados_dir, 'sound'),
-    arquivos = join_path(dados_dir, 'file'),
+    fontes  = join_path(dados_dir, 'fontes'),
+    imagens = join_path(dados_dir, 'imagens'),
+    sons = join_path(dados_dir, 'sons'),
+    fases = join_path(dados_dir, 'fases'),
 )
 
 
@@ -31,8 +31,8 @@ def carrega_imagem(nome_arquivo):
 	return endereco_arquivo('imagens', nome_arquivo)
 
 
-def carrega_arquivo(nome_arquivo):
-    return open(endereco_arquivo('arquivos', nome_arquivo))
+def carrega_fase(nome_arquivo):
+    return open(endereco_arquivo('fases', nome_arquivo))
 
 
 def carrega_imagem_menu(nome_arquivo):
