@@ -11,6 +11,7 @@ endereco_arquivos = dict(
     fontes  = join_path(dados_dir, 'font'),
     imagens = join_path(dados_dir, 'image'),
     sons = join_path(dados_dir, 'sound'),
+    arquivos = join_path(dados_dir, 'file'),
 )
 
 
@@ -28,6 +29,10 @@ def carrega_fonte(nome_arquivo):
 
 def carrega_imagem(nome_arquivo):
 	return endereco_arquivo('imagens', nome_arquivo)
+
+
+def carrega_arquivo(nome_arquivo):
+    return open(endereco_arquivo('arquivos', nome_arquivo))
 
 
 def carrega_imagem_menu(nome_arquivo):
