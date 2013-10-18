@@ -3,15 +3,15 @@ import pygame
 from os.path import join as join_path
 
 
-dados_py  = os.path.abspath(os.path.dirname(__file__))
+dados_py = os.path.abspath(os.path.dirname(__file__))
 dados_dir = os.path.normpath(join_path(dados_py, '..', 'dados'))
 
 
 endereco_arquivos = dict(
-    fontes  = join_path(dados_dir, 'fontes'),
-    imagens = join_path(dados_dir, 'imagens'),
-    sons = join_path(dados_dir, 'sons'),
-    fases = join_path(dados_dir, 'fases'),
+    fontes=join_path(dados_dir, 'fontes'),
+    imagens=join_path(dados_dir, 'imagens'),
+    sons=join_path(dados_dir, 'sons'),
+    fases=join_path(dados_dir, 'fases'),
 )
 
 
@@ -20,7 +20,7 @@ def endereco_arquivo(tipo, nome_arquivo):
 
 
 def carrega(tipo, nome_arquivo, modo='rb'):
-	return open(endereco_arquivo(tipo, nome_arquivo), modo)
+    return open(endereco_arquivo(tipo, nome_arquivo), modo)
 
 
 def carrega_fonte(nome_arquivo):
@@ -28,7 +28,7 @@ def carrega_fonte(nome_arquivo):
 
 
 def carrega_imagem(nome_arquivo):
-	return endereco_arquivo('imagens', nome_arquivo)
+    return endereco_arquivo('imagens', nome_arquivo)
 
 
 def carrega_fase(nome_arquivo):
@@ -74,9 +74,10 @@ def obter_som(nome_arquivo, volume=1.0):
 
 def carrega_imagem_fatias(w, h, nome_arquivo):
     fatias = []
-    imagem_mestre = pygame.image.load(carrega('imagens', nome_arquivo)).convert_alpha()
+    imagem_mestre = pygame.image.load(
+        carrega('imagens', nome_arquivo)).convert_alpha()
     width_mestre, height_mestre = imagem_mestre.get_size()
-    for i in xrange(int(width_mestre/w)):
+    for i in xrange(int(width_mestre / w)):
         # Recorda varias partes da imagem
-        fatias.append(imagem_mestre.subsurface((i*w,0,w,h)))
+        fatias.append(imagem_mestre.subsurface((i * w, 0, w, h)))
     return fatias
