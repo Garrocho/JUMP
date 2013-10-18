@@ -69,6 +69,22 @@ class Jogo:
     def checar_colisoes(self):
         self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"])
 
+    def administrar(self):
+        if self.aguardar:
+            self.aguardar_tmp = self.aguardar_tmp-1
+            if self.aguardar_tmp == 0:
+                self.aguardar = False
+        else:
+            fase = carrega_fase(self.pos_fase)
+            self.pos_fase = self.pos_fase+1
+            if fase == None:
+                print 'Game Terminou'
+            elif fase[0] == 'AGUARDE':
+                self.aguardar = True
+                self.aguardar_tmp = int(fase[1])
+            else:
+                novo_fogo = atores.Fogo(imagem=self.img_fogo, posicao=self.pos_fogo)
+                self.lista_atores["fogo"].add(novo_fogo)
 
 
     def loop(self):
