@@ -86,7 +86,6 @@ class Jogo:
                 novo_fogo = atores.Fogo(imagem=self.img_fogo, posicao=self.pos_fogo)
                 self.lista_atores["fogo"].add(novo_fogo)
 
-
     def loop(self):
 
         while self.run:
