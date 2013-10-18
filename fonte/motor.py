@@ -38,18 +38,18 @@ class Jogo:
         }
 
     def tratador_eventos(self):
-        for event in pygame.event.get():
-            t = event.type
-            if t in (KEYDOWN, KEYUP):
-                k = event.key
+        for evento in pygame.event.get():
+            tipo = evento.type
+            if tipo in (KEYDOWN, KEYUP):
+                chave = evento.key
         
-            if t == QUIT:
+            if tipo == QUIT:
                 self.run = False
 
-            elif t == KEYDOWN:
-                if   k == K_ESCAPE:
+            elif tipo == KEYDOWN:
+                if chave == K_ESCAPE:
                     self.run = False
-                elif k == K_SPACE and not self.jogador.pulando:
+                elif chave == K_SPACE and not self.jogador.pulando:
                     self.jogador.pular()
 
     def atualizar_atores(self):
