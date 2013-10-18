@@ -45,7 +45,7 @@ class Jogador(pygame.sprite.Sprite):
 
 class Fogo(pygame.sprite.Sprite):
 
-    def __init__(self, imagem, posicao):
+    def __init__(self, imagem, posicao, velocidade):
         pygame.sprite.Sprite.__init__(self)
         self.image = imagem[0]
         self.fatias = imagem
@@ -56,22 +56,23 @@ class Fogo(pygame.sprite.Sprite):
         self.fatia_atual = 0
         self.soma = True
         self.fatia_tam = len(self.fatias) - 1
-        self.tempo_fatia = 100
+        self.tempo_fatia = velocidade
+        self.velo = velocidade
 
     def update(self):
         if self.tempo_fatia == 0:
             if self.fatia_atual < self.fatia_tam and self.soma is True:
-                self.tempo_fatia = 15
+                self.tempo_fatia = self.velo
                 self.fatia_atual = self.fatia_atual + 1
                 if self.fatia_atual == self.fatia_tam:
                     self.soma = False
-                    self.tempo_fatia = 40
+                    self.tempo_fatia = self.velo
             else:
-                self.tempo_fatia = 20
+                self.tempo_fatia = self.velo
                 self.fatia_atual = self.fatia_atual - 1
                 if self.fatia_atual == 0:
                     self.soma = True
-                    self.tempo_fatia = 100
+                    self.tempo_fatia = self.velo
             self.image = self.fatias[self.fatia_atual]
         else:
             self.tempo_fatia = self.tempo_fatia - 1
