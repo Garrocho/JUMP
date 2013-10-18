@@ -1,3 +1,4 @@
+import json
 import media
 import pygame
 import atores
@@ -8,6 +9,9 @@ class Jogo:
     screen      = None
     screen_size = None
     run         = True
+    aguardar    = False
+    aguardar_tmp = 0
+    pos_fase    = 0
     
     def __init__(self, screen):
         self.screen      = screen
@@ -23,14 +27,14 @@ class Jogo:
 
         # Carregando Atores
         pos_jogador  = [self.screen_size[ 0 ] / 2, self.screen_size[ 1 ] - 100]
-        pos_fogo     = [self.screen_size[ 0 ]-100 / 2, self.screen_size[ 1 ] - 100]
+        self.pos_fogo = [self.screen_size[ 0 ]-100 / 2, self.screen_size[ 1 ] - 100]
         self.jogador = atores.Jogador(imagem=self.img_jogador, posicao=pos_jogador)
-        self.fogo    = atores.Fogo(imagem=self.img_fogo, posicao=pos_fogo)
+        fogo = atores.Fogo(imagem=self.img_fogo, posicao=self.pos_fogo)
 
         # Lista de Atores
         self.lista_atores = {
             "jogador" : pygame.sprite.RenderPlain(self.jogador),
-            "fogo"    : pygame.sprite.RenderPlain(self.fogo)
+            "fogo"    : pygame.sprite.RenderPlain(fogo)
         }
 
     def tratador_eventos(self):
@@ -65,9 +69,7 @@ class Jogo:
     def checar_colisoes(self):
         self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"])
 
-    def administrar(self):
-        # Fazer inimigos executar alguma acao, modificar level do jogo, etc.
-        pass
+
 
     def loop(self):
 
@@ -90,3 +92,12 @@ class Jogo:
             
             # Por fim atualize o screen do jogo.
             pygame.display.flip()
+
+
+def carrega_fase(posicao):
+    try:
+        fase = media.carrega_arquivo('fase.json').read()
+        fase = json.loads(fase)
+        return fase[posicao].split(':')
+    except:
+        return None
