@@ -33,7 +33,7 @@ class Jogo:
         pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
         self.pos_fogo = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
-        self.status_moedas = atores.StatusMoedas(self.jogador, [self.screen_size[0]-500, 5], cor="0xff0000")
+        self.status_moedas = atores.StatusMoedas(self.jogador)
 
         # Lista de Atores
         self.lista_atores = {
