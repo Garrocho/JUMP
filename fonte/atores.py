@@ -97,7 +97,7 @@ class StatusMoedas:
     def __init__(self, jogador, posicao=None, fonte=None, tam_texto=30, cor="0xffff00"):
         self.jogador = jogador
         self.cor = pygame.color.Color(cor)
-        self.posicao = posicao or [0, 0]
+        self.posicao = posicao or [5, 5]
         self.fonte = pygame.font.Font(fonte, tam_texto)
 
     def update(self):
