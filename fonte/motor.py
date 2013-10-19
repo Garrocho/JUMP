@@ -66,12 +66,13 @@ class Jogo:
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
 
-    def checar_colisao_de_um_ator(self, ator, lista):
-        if pygame.sprite.spritecollide(ator, lista, 0):
+    def checar_colisao_de_um_ator(self, ator, lista, matar):
+        if pygame.sprite.spritecollide(ator, lista, matar):
             self.jogador.atingido()
 
     def checar_colisoes(self):
-        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"])
+        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"], 0)
+        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
 
     def administrar(self):
         if self.aguardar:
