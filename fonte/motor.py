@@ -33,6 +33,7 @@ class Jogo:
         pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
         self.pos_fogo = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
+        self.status_moedas = atores.StatusMoedas(self.jogador, [self.screen_size[0]-500, 5], cor="0xff0000")
 
         # Lista de Atores
         self.lista_atores = {
@@ -59,20 +60,25 @@ class Jogo:
     def atualizar_atores(self):
         for ator in self.lista_atores.values():
             ator.update()
+        self.status_moedas.update()
 
     def desenhar_atores(self):
         self.screen.blit(self.lista_imagens['fundo'], (0, 0))
 
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
+        self.status_moedas.draw(self.screen)
 
     def checar_colisao_de_um_ator(self, ator, lista, matar):
-        if pygame.sprite.spritecollide(ator, lista, matar):
+        acertos = pygame.sprite.spritecollide(ator, lista, matar)
+        if acertos:
             self.jogador.atingido()
+        return acertos
 
     def checar_colisoes(self):
         self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"], 0)
-        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
+        qtde_moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
+        self.jogador.moedas += len(qtde_moedas)
 
     def administrar(self):
         if self.aguardar:
