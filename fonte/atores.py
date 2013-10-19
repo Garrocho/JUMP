@@ -13,6 +13,7 @@ class Jogador(pygame.sprite.Sprite):
         self.pulando = False
         self.fases_pulo = 0
         self.tempo_fatia = 1
+        self.moedas = 0
 
     def pular(self):
         self.fases_pulo = 50
@@ -85,3 +86,27 @@ class Fogo(pygame.sprite.Sprite):
         if self.rect.bottom < -40:
             print 'to morto'
             self.kill()
+
+
+class StatusMoedas:
+    fonte = None
+    ultima_moeda = -1
+    cor = None
+    imagem = None
+    
+    def __init__(self, jogador, posicao=None, fonte=None, tam_texto=30, cor="0xffff00"):
+        self.jogador = jogador
+        self.cor = pygame.color.Color(cor)
+        self.posicao = posicao or [0, 0]
+        self.fonte = pygame.font.Font(fonte, tam_texto)
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        moedas = self.jogador.moedas
+        if self.ultima_moeda != moedas:
+            self.ultima_moeda = moedas
+            texto = "Moedas: % 4d" % moedas
+            self.imagem = self.fonte.render(texto, True, self.cor)
+        screen.blit(self.imagem, self.posicao)
