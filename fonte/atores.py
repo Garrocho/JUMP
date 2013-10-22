@@ -2,6 +2,28 @@ import pygame
 from pygame.locals import *
 
 
+class Fundo:
+    imagem = None
+    var_largura = 0
+
+    def __init__(self, imagem):
+        self.imagem = imagem
+        self.largura, self.altura = imagem.get_size()
+
+    def update(self):
+        self.var_largura+=8
+        if (self.var_largura == self.largura):
+            self.var_largura=8
+        # Recorta a imagem. Os dois primeiros argumentos representam de qual posicao vai comecar o corte.
+        # os outros dois argumentos representar o tamanho do corte.
+        self.recorte1 = fundo.subsurface((var_largura, 0, largura-var_largura, altura))
+        recorte2 = fundo.subsurface((0, 0, var_largura, altura))
+
+    def draw(self, screen):
+        screen.blit(self.recorte1, (0, 0))
+        screen.blit(self.recorte2, (self.largura-self.var_largura, 0))
+
+
 class Jogador(pygame.sprite.Sprite):
 
     def __init__(self, imagem, posicao):
