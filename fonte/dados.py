@@ -62,13 +62,11 @@ def parar_musica():
     pygame.mixer.music.stop()
 
 
-def obter_som(nome_arquivo, volume=1.0):
+def obter_som(nome_arquivo, volume=3.0):
     nome_arquivo = carrega_son(nome_arquivo)
-    try:
-        som = pygame.mixer.Sound(nome_arquivo)
-        som.set_volume(volume)
-    except:
-        raise SystemExit, "Unable to load: " + nome_arquivo
+    print nome_arquivo
+    som = pygame.mixer.Sound(nome_arquivo)
+    som.set_volume(volume)
     return som
 
 
