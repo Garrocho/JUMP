@@ -23,7 +23,7 @@ class Jogo:
         # Lista de Imagens
         self.lista_imagens = {
             "jogador": dados.carrega_imagem_fatias(160, 100, 'cachorro.png'),
-            "fundo": dados.carrega_imagem_menu('jogo_background_1.jpg'),
+            "fundo": dados.carrega_imagem_menu('jogo_background_1.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
 
