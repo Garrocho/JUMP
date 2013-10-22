@@ -13,7 +13,6 @@ class Jogo:
     aguardar = False
     aguardar_tmp = 0
     pos_fase = 0
-    obstaculos = ['fogo', 'moedas']
 
     def __init__(self, screen):
         self.screen = screen
@@ -25,20 +24,18 @@ class Jogo:
         self.lista_imagens = {
             "jogador": dados.carrega_imagem_fatias(160, 100, 'cachorro.png'),
             "fundo": dados.carrega_imagem_menu('jogo_background_1.jpg'),
-            "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png'),
-            "fogo": dados.carrega_imagem_fatias(105, 93, 'fogo.png')
+            "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
 
         # Carregando Atores
         pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
-        self.pos_fogo = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
+        self.pos_moeda = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
         self.status_moedas = atores.StatusMoedas(self.jogador)
 
         # Lista de Atores
         self.lista_atores = {
             "jogador": pygame.sprite.RenderPlain(self.jogador),
-            "fogo": pygame.sprite.RenderPlain(),
             "moedas": pygame.sprite.RenderPlain(),
         }
 
@@ -76,7 +73,6 @@ class Jogo:
         return acertos
 
     def checar_colisoes(self):
-        self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["fogo"], 0)
         qtde_moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
         self.jogador.moedas += len(qtde_moedas)
 
@@ -87,19 +83,16 @@ class Jogo:
                 self.aguardar = False
         else:
             fase = carrega_fase(self.pos_fase)
-            print fase
             self.pos_fase = self.pos_fase + 1
             if fase == None:
                 pass
-            elif fase[0] == 'AGUARDE':
+            elif fase[0] == 'A':
                 self.aguardar = True
                 self.aguardar_tmp = int(fase[1])
-            elif fase[0] == 'MOEDAS':
-                novo_fogo = atores.Fogo(imagem=self.lista_imagens['moedas'], posicao=self.pos_fogo, velocidade=2)
-                self.lista_atores['moedas'].add(novo_fogo)
-            else:
-                novo_fogo = atores.Fogo(imagem=self.lista_imagens['fogo'], posicao=self.pos_fogo, velocidade=20)
-                self.lista_atores['fogo'].add(novo_fogo)
+            elif fase[0] == 'M':
+                pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 250)]
+                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5)
+                self.lista_atores['moedas'].add(nova_moeda)
 
     def loop(self):
 
