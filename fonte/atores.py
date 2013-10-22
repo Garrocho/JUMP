@@ -44,7 +44,7 @@ class Jogador(pygame.sprite.Sprite):
                 self.tempo_fatia = self.tempo_fatia - 1
 
 
-class Fogo(pygame.sprite.Sprite):
+class Moeda(pygame.sprite.Sprite):
 
     def __init__(self, imagem, posicao, velocidade):
         pygame.sprite.Sprite.__init__(self)
@@ -54,26 +54,18 @@ class Fogo(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.fatia_atual = 0
-        self.soma = True
-        self.fatia_tam = len(self.fatias) - 1
+        self.fatia_atual = -1
+        self.fatia_tam = len(self.fatias)-1
         self.tempo_fatia = velocidade
-        self.velo = velocidade
+        self.velocidade = velocidade
 
     def update(self):
         if self.tempo_fatia == 0:
-            if self.fatia_atual < self.fatia_tam and self.soma is True:
-                self.tempo_fatia = self.velo
+            self.tempo_fatia = self.velocidade
+            if self.fatia_atual < self.fatia_tam:
                 self.fatia_atual = self.fatia_atual + 1
                 if self.fatia_atual == self.fatia_tam:
-                    self.soma = False
-                    self.tempo_fatia = self.velo
-            else:
-                self.tempo_fatia = self.velo
-                self.fatia_atual = self.fatia_atual - 1
-                if self.fatia_atual == 0:
-                    self.soma = True
-                    self.tempo_fatia = self.velo
+                    self.fatia_atual = 0
             self.image = self.fatias[self.fatia_atual]
         else:
             self.tempo_fatia = self.tempo_fatia - 1
@@ -81,10 +73,8 @@ class Fogo(pygame.sprite.Sprite):
         self.rect.center = (self.rect.center[0] - 3, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
-            print 'to morto'
             self.kill()
         if self.rect.bottom < -40:
-            print 'to morto'
             self.kill()
 
 
