@@ -13,7 +13,7 @@ def novo_jogo(screen):
 class Menu(object):
 
     def __init__(self, screen):
-        dados.executar_musica("menu_loop.wav", 0.75)
+        dados.executar_musica("menu_loop.wav", 0.5)
         self.screen = screen
         self.menu = NFMenu(
             ["Novo Jogo", lambda: novo_jogo(screen)], ["Sair", sys.exit])
