@@ -92,7 +92,7 @@ class Jogo:
             fase = carrega_fase(self.pos_fase)
             self.pos_fase = self.pos_fase + 1
             if fase == None:
-                pass
+                self.pos_fase = 0
             elif fase[0] == 'A':
                 self.aguardar = True
                 self.aguardar_tmp = int(fase[1])
