@@ -11,13 +11,13 @@ class Fundo:
         self.largura, self.altura = imagem.get_size()
 
     def update(self):
-        self.var_largura+=8
+        self.var_largura+=2
         if (self.var_largura == self.largura):
-            self.var_largura=8
+            self.var_largura=2
         # Recorta a imagem. Os dois primeiros argumentos representam de qual posicao vai comecar o corte.
         # os outros dois argumentos representar o tamanho do corte.
-        self.recorte1 = fundo.subsurface((var_largura, 0, largura-var_largura, altura))
-        recorte2 = fundo.subsurface((0, 0, var_largura, altura))
+        self.recorte1 = self.imagem.subsurface((self.var_largura, 0, self.largura-self.var_largura, self.altura))
+        self.recorte2 = self.imagem.subsurface((0, 0, self.var_largura, self.altura))
 
     def draw(self, screen):
         screen.blit(self.recorte1, (0, 0))
@@ -68,8 +68,9 @@ class Jogador(pygame.sprite.Sprite):
 
 class Moeda(pygame.sprite.Sprite):
 
-    def __init__(self, imagem, posicao, velocidade):
+    def __init__(self, imagem, posicao, velocidade, som):
         pygame.sprite.Sprite.__init__(self)
+        self.som = som
         self.image = imagem[0]
         self.fatias = imagem
         self.rect = self.image.get_rect()
@@ -98,6 +99,9 @@ class Moeda(pygame.sprite.Sprite):
             self.kill()
         if self.rect.bottom < -40:
             self.kill()
+     
+    def atingido(self):
+        self.som.play()
 
 
 class StatusMoedas:
