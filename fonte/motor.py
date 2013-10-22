@@ -26,12 +26,15 @@ class Jogo:
             "fundo": dados.carrega_imagem_menu('jogo_background_1.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
+        self.som_moeda = dados.obter_som('moeda.wav')
+        self.som_pulo = dados.obter_som('pulo.wav', 0.5)
 
         # Carregando Atores
         pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
         self.pos_moeda = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
         self.status_moedas = atores.StatusMoedas(self.jogador)
+        self.fundo = atores.Fundo(imagem=self.lista_imagens['fundo'])
 
         # Lista de Atores
         self.lista_atores = {
@@ -52,15 +55,17 @@ class Jogo:
                 if chave == K_ESCAPE:
                     self.run = False
                 elif chave == K_SPACE and not self.jogador.pulando:
+                    self.som_pulo.play()
                     self.jogador.pular()
 
     def atualizar_atores(self):
+        self.fundo.update()
         for ator in self.lista_atores.values():
             ator.update()
         self.status_moedas.update()
 
     def desenhar_atores(self):
-        self.screen.blit(self.lista_imagens['fundo'], (0, 0))
+        self.fundo.draw(self.screen)
 
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
@@ -73,8 +78,10 @@ class Jogo:
         return acertos
 
     def checar_colisoes(self):
-        qtde_moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
-        self.jogador.moedas += len(qtde_moedas)
+        moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
+        for i in moedas:
+            i.atingido()
+        self.jogador.moedas += len(moedas)
 
     def administrar(self):
         if self.aguardar:
@@ -91,7 +98,7 @@ class Jogo:
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
                 pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 250)]
-                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5)
+                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.som_moeda)
                 self.lista_atores['moedas'].add(nova_moeda)
 
     def loop(self):
