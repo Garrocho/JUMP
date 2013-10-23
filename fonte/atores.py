@@ -6,14 +6,16 @@ class Fundo:
     imagem = None
     var_largura = 0
 
-    def __init__(self, imagem):
+    def __init__(self, imagem, tam_px):
         self.imagem = imagem
+        self.tam_px = tam_px
+        self.var_largura = tam_px
         self.largura, self.altura = imagem.get_size()
 
     def update(self):
-        self.var_largura+=2
+        self.var_largura+=self.tam_px
         if (self.var_largura == self.largura):
-            self.var_largura=2
+            self.var_largura=self.tam_px
         # Recorta a imagem. Os dois primeiros argumentos representam de qual posicao vai comecar o corte.
         # os outros dois argumentos representar o tamanho do corte.
         self.recorte1 = self.imagem.subsurface((self.var_largura, 0, self.largura-self.var_largura, self.altura))
@@ -34,7 +36,7 @@ class Jogador(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         self.pulando = False
         self.fases_pulo = 0
-        self.tempo_fatia = 1
+        self.tempo_fatia = 2
         self.moedas = 0
 
     def pular(self):
@@ -50,13 +52,13 @@ class Jogador(pygame.sprite.Sprite):
         if self.pulando:
             if self.tempo_fatia == 0:
                 if self.fases_pulo >= 30:
-                    self.tempo_fatia = 0
+                    self.tempo_fatia = 2
                     if self.fases_pulo <= 45:
-                        self.tempo_fatia = 1
+                        self.tempo_fatia = 3
                     self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
                     self.fases_pulo = self.fases_pulo - 1
                 elif self.fases_pulo >= -1:
-                    self.tempo_fatia = 0
+                    self.tempo_fatia = 2
                     self.fases_pulo = self.fases_pulo - 1
                     self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
                 else:
@@ -94,7 +96,7 @@ class Moeda(pygame.sprite.Sprite):
         else:
             self.tempo_fatia = self.tempo_fatia - 1
 
-        self.rect.center = (self.rect.center[0] - 3, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - 2, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
             self.kill()
