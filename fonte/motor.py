@@ -25,6 +25,7 @@ class Jogo:
             "jogador": dados.carrega_imagem_fatias(160, 100, 'cachorro.png'),
             "fundo_nuvem": dados.carrega_imagem_menu('background_nuvem.png'),
             "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
+            "fundo_montanha": dados.carrega_imagem_menu('background_montanha.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
 
@@ -47,10 +48,11 @@ class Jogo:
         }
 
         # Lista de Fundos
-        self.lista_fundos = {
-            "1_fundo_nuvem": atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
-            "2_fundo_caminho": atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=2),
-        }
+        self.lista_fundos = [
+            atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
+            atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=2)
+        ]
 
     def tratador_eventos(self):
         for evento in pygame.event.get():
@@ -69,7 +71,7 @@ class Jogo:
                     self.jogador.pular()
 
     def atualizar_atores(self):
-        for fundo in self.lista_fundos.values():
+        for fundo in self.lista_fundos:
             fundo.update()
 
         for ator in self.lista_atores.values():
@@ -78,7 +80,7 @@ class Jogo:
         self.status_moedas.update()
 
     def desenhar_atores(self):
-        for fundo in self.lista_fundos.values():
+        for fundo in self.lista_fundos:
             fundo.draw(self.screen)
 
         for ator in self.lista_atores.values():
