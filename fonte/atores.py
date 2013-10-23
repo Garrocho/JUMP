@@ -37,7 +37,7 @@ class Jogador(pygame.sprite.Sprite):
         self.pulando = False
         self.fases_pulo = 0
         self.tempo_fatia = 2
-        self.tempo_fatia_1 = 7
+        self.tempo_fatia_1 = 5
         self.moedas = 0
         self.cont = 0
 
@@ -53,7 +53,7 @@ class Jogador(pygame.sprite.Sprite):
     def update(self):
         if not self.pulando and self.cont < 36:
             if self.tempo_fatia_1 == 0:
-                self.tempo_fatia_1 = 7
+                self.tempo_fatia_1 = 5
                 self.cont+=3
                 self.image = self.fatias[self.cont]
             else:
@@ -110,7 +110,7 @@ class Moeda(pygame.sprite.Sprite):
         else:
             self.tempo_fatia = self.tempo_fatia - 1
 
-        self.rect.center = (self.rect.center[0] - 2, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - 4, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
             self.kill()

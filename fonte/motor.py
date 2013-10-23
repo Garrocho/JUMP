@@ -51,7 +51,7 @@ class Jogo:
         self.lista_fundos = [
             atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
             atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
-            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=2)
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=4)
         ]
 
     def tratador_eventos(self):
