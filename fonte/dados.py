@@ -38,7 +38,7 @@ def carrega_fase(nome_arquivo):
 def carrega_imagem_menu(nome_arquivo):
     nome_arquivo = carrega('imagens', nome_arquivo)
     try:
-        image = pygame.image.load(nome_arquivo)
+        image = pygame.image.load(nome_arquivo).convert_alpha()
     except pygame.error:
         raise SystemExit, "Unable to load: " + nome_arquivo
     return image
@@ -64,7 +64,6 @@ def parar_musica():
 
 def obter_som(nome_arquivo, volume=3.0):
     nome_arquivo = carrega_son(nome_arquivo)
-    print nome_arquivo
     som = pygame.mixer.Sound(nome_arquivo)
     som.set_volume(volume)
     return som
@@ -72,8 +71,7 @@ def obter_som(nome_arquivo, volume=3.0):
 
 def carrega_imagem_fatias(w, h, nome_arquivo):
     fatias = []
-    imagem_mestre = pygame.image.load(
-        carrega('imagens', nome_arquivo)).convert_alpha()
+    imagem_mestre = pygame.image.load(carrega('imagens', nome_arquivo)).convert_alpha()
     width_mestre, height_mestre = imagem_mestre.get_size()
     for i in xrange(int(width_mestre / w)):
         # Recorda varias partes da imagem
