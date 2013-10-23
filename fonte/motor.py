@@ -22,7 +22,7 @@ class Jogo:
     def carrega_dados(self):
         # Lista de Imagens
         self.lista_imagens = {
-            "jogador": dados.carrega_imagem_fatias(160, 100, 'cachorro.png'),
+            "jogador": dados.carrega_imagem_fatias(400, 200, 'gato.png'),
             "fundo_nuvem": dados.carrega_imagem_menu('background_nuvem.png'),
             "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
             "fundo_montanha": dados.carrega_imagem_menu('background_montanha.png'),
@@ -36,7 +36,7 @@ class Jogo:
         }
 
         # Carregando Atores
-        pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
+        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 135]
         self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
         self.status_moedas = atores.StatusMoedas(self.jogador)
@@ -114,7 +114,7 @@ class Jogo:
                 self.aguardar = True
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
-                pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 250)]
+                pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 400)]
                 nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores['moedas'].add(nova_moeda)
 
