@@ -23,23 +23,33 @@ class Jogo:
         # Lista de Imagens
         self.lista_imagens = {
             "jogador": dados.carrega_imagem_fatias(160, 100, 'cachorro.png'),
-            "fundo": dados.carrega_imagem_menu('jogo_background_1.png'),
+            "fundo_nuvem": dados.carrega_imagem_menu('background_nuvem.png'),
+            "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
-        self.som_moeda = dados.obter_som('moeda.wav')
-        self.som_pulo = dados.obter_som('pulo.wav', 0.5)
+
+        # Lista de Sons
+        self.lista_sons = {
+            "moeda": dados.obter_som('moeda.wav'),
+            "pulo": dados.obter_som('pulo.wav', 0.5),
+        }
 
         # Carregando Atores
         pos_jogador = [self.screen_size[0] / 2, self.screen_size[1] - 100]
-        self.pos_moeda = [self.screen_size[0] - 100 / 2, self.screen_size[1] - 100]
+        self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
         self.status_moedas = atores.StatusMoedas(self.jogador)
-        self.fundo = atores.Fundo(imagem=self.lista_imagens['fundo'])
 
         # Lista de Atores
         self.lista_atores = {
             "jogador": pygame.sprite.RenderPlain(self.jogador),
             "moedas": pygame.sprite.RenderPlain(),
+        }
+
+        # Lista de Fundos
+        self.lista_fundos = {
+            "1_fundo_nuvem": atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
+            "2_fundo_caminho": atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=2),
         }
 
     def tratador_eventos(self):
@@ -55,20 +65,25 @@ class Jogo:
                 if chave == K_ESCAPE:
                     self.run = False
                 elif chave == K_SPACE and not self.jogador.pulando:
-                    self.som_pulo.play()
+                    self.lista_sons["pulo"].play()
                     self.jogador.pular()
 
     def atualizar_atores(self):
-        self.fundo.update()
+        for fundo in self.lista_fundos.values():
+            fundo.update()
+
         for ator in self.lista_atores.values():
             ator.update()
+
         self.status_moedas.update()
 
     def desenhar_atores(self):
-        self.fundo.draw(self.screen)
+        for fundo in self.lista_fundos.values():
+            fundo.draw(self.screen)
 
         for ator in self.lista_atores.values():
             ator.draw(self.screen)
+
         self.status_moedas.draw(self.screen)
 
     def checar_colisao_de_um_ator(self, ator, lista, matar):
@@ -98,7 +113,7 @@ class Jogo:
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
                 pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 250)]
-                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.som_moeda)
+                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores['moedas'].add(nova_moeda)
 
     def loop(self):
