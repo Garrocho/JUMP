@@ -37,17 +37,30 @@ class Jogador(pygame.sprite.Sprite):
         self.pulando = False
         self.fases_pulo = 0
         self.tempo_fatia = 2
+        self.tempo_fatia_1 = 7
         self.moedas = 0
+        self.cont = 0
 
     def pular(self):
         self.fases_pulo = 60
         self.pulando = True
-        self.image = self.fatias[1]
+        self.image = self.fatias[33]
 
     def atingido(self):
-        print 'atingido'
+        pass
+        #print 'atingido'
 
     def update(self):
+        if not self.pulando and self.cont < 36:
+            if self.tempo_fatia_1 == 0:
+                self.tempo_fatia_1 = 7
+                self.cont+=3
+                self.image = self.fatias[self.cont]
+            else:
+                self.tempo_fatia_1 = self.tempo_fatia_1 - 1
+        else:
+            self.cont = 0
+            
         # Trata os pulos do jogador
         if self.pulando:
             if self.tempo_fatia == 0:
@@ -58,13 +71,14 @@ class Jogador(pygame.sprite.Sprite):
                     self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
                     self.fases_pulo = self.fases_pulo - 1
                 elif self.fases_pulo >= -1:
+                    self.image = self.fatias[12]
                     self.tempo_fatia = 2
                     self.fases_pulo = self.fases_pulo - 1
                     self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
                 else:
                     self.pulando = False
                     self.fases_pulo = 0
-                    self.image = self.fatias[0]
+                    self.cont = 12
             else:
                 self.tempo_fatia = self.tempo_fatia - 1
 
