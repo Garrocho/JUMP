@@ -14,7 +14,7 @@ class Fundo:
 
     def update(self):
         self.var_largura+=self.tam_px
-        if (self.var_largura == self.largura):
+        if (self.var_largura >= self.largura):
             self.var_largura=self.tam_px
         # Recorta a imagem. Os dois primeiros argumentos representam de qual posicao vai comecar o corte.
         # os outros dois argumentos representar o tamanho do corte.
@@ -36,8 +36,8 @@ class Jogador(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         self.pulando = False
         self.fases_pulo = 0
-        self.tempo_fatia = 2
-        self.tempo_fatia_1 = 5
+        self.tempo_fatia = 1
+        self.tempo_fatia_1 = 4
         self.moedas = 0
         self.cont = 0
 
@@ -65,14 +65,14 @@ class Jogador(pygame.sprite.Sprite):
         if self.pulando:
             if self.tempo_fatia == 0:
                 if self.fases_pulo >= 30:
-                    self.tempo_fatia = 2
+                    self.tempo_fatia = 1
                     if self.fases_pulo <= 45:
-                        self.tempo_fatia = 3
+                        self.tempo_fatia = 1
                     self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
                     self.fases_pulo = self.fases_pulo - 1
                 elif self.fases_pulo >= -1:
                     self.image = self.fatias[12]
-                    self.tempo_fatia = 2
+                    self.tempo_fatia = 1
                     self.fases_pulo = self.fases_pulo - 1
                     self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
                 else:
@@ -118,7 +118,7 @@ class Moeda(pygame.sprite.Sprite):
             self.kill()
      
     def atingido(self):
-        self.som.play()
+        pass
 
 
 class StatusMoedas:
