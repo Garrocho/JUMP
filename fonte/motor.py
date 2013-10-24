@@ -26,6 +26,8 @@ class Jogo:
             "fundo_nuvem": dados.carrega_imagem_menu('background_nuvem.png'),
             "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
             "fundo_montanha": dados.carrega_imagem_menu('background_montanha.png'),
+            "fundo_arvores": dados.carrega_imagem_menu('background_arvore.png'),
+            "fundo_mato": dados.carrega_imagem_menu('background_mato.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
         }
 
@@ -36,7 +38,7 @@ class Jogo:
         }
 
         # Carregando Atores
-        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 135]
+        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 100]
         self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador)
         self.status_moedas = atores.StatusMoedas(self.jogador)
@@ -51,8 +53,11 @@ class Jogo:
         self.lista_fundos = [
             atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
             atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
-            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=4)
+            atores.Fundo(imagem=self.lista_imagens['fundo_arvores'], tam_px=2),
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=3)
         ]
+        
+        self.mato = atores.Fundo(imagem=self.lista_imagens['fundo_mato'], tam_px=6)
 
     def tratador_eventos(self):
         for evento in pygame.event.get():
@@ -71,6 +76,7 @@ class Jogo:
                     self.jogador.pular()
 
     def atualizar_atores(self):
+        self.mato.update()
         for fundo in self.lista_fundos:
             fundo.update()
 
@@ -87,6 +93,7 @@ class Jogo:
             ator.draw(self.screen)
 
         self.status_moedas.draw(self.screen)
+        self.mato.draw(self.screen)
 
     def checar_colisao_de_um_ator(self, ator, lista, matar):
         acertos = pygame.sprite.spritecollide(ator, lista, matar)
@@ -96,6 +103,9 @@ class Jogo:
 
     def checar_colisoes(self):
         moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores["moedas"], 1)
+        if len(moedas) > 0:
+            self.lista_sons["moeda"].play()
+            
         for i in moedas:
             i.atingido()
         self.jogador.moedas += len(moedas)
@@ -114,7 +124,7 @@ class Jogo:
                 self.aguardar = True
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
-                pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 400)]
+                pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 450)]
                 nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores['moedas'].add(nova_moeda)
 
