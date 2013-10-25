@@ -28,7 +28,7 @@ class Fundo:
 
 class Jogador(pygame.sprite.Sprite):
 
-    def __init__(self, imagem, posicao):
+    def __init__(self, imagem, posicao, som):
         pygame.sprite.Sprite.__init__(self)
         self.image = imagem[0]
         self.fatias = imagem
@@ -40,15 +40,16 @@ class Jogador(pygame.sprite.Sprite):
         self.tempo_fatia_1 = 4
         self.moedas = 0
         self.cont = 0
+        self.som = som
 
     def pular(self):
         self.fases_pulo = 60
         self.pulando = True
         self.image = self.fatias[33]
+        self.som.play()
 
     def atingido(self):
         pass
-        #print 'atingido'
 
     def update(self):
         if not self.pulando and self.cont < 36:
@@ -118,7 +119,7 @@ class Moeda(pygame.sprite.Sprite):
             self.kill()
      
     def atingido(self):
-        pass
+        self.som.play()
 
 
 class StatusMoedas:
