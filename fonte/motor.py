@@ -93,7 +93,7 @@ class Jogo:
             if self.aguardar_tmp == 0:
                 self.aguardar = False
         else:
-            fase = dados.carrega_fase(self.pos_fase)
+            fase = dados.carrega_mapa(self.pos_fase)
             self.pos_fase = self.pos_fase + 1
             if fase == None:
                 self.pos_fase = 0

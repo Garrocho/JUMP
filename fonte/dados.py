@@ -1,4 +1,5 @@
 import os
+import json
 import pygame
 from os.path import join as join_path
 
@@ -82,7 +83,7 @@ def carrega_imagem_fatias(w, h, nome_arquivo):
     return imagens
 
 
-def carrega_fase(posicao):
+def carrega_mapa(posicao):
     try:
         fase = carrega_fase('fase.json').read()
         fase = json.loads(fase)
