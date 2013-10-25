@@ -40,7 +40,7 @@ def carrega_imagem_menu(nome_arquivo):
     try:
         image = pygame.image.load(nome_arquivo).convert_alpha()
     except pygame.error:
-        raise SystemExit, "Unable to load: " + nome_arquivo
+        raise SystemExit, "Nao Conseguiu Carregar: " + nome_arquivo
     return image
 
 
@@ -55,7 +55,7 @@ def executar_musica(nome_arquivo, volume=0.5, loop=-1):
         pygame.mixer.music.set_volume(volume)
         pygame.mixer.music.play(loop)
     except:
-        raise SystemExit, "Unable to load: " + nome_arquivo
+        raise SystemExit, "Nao Conseguiu Carregar: " + nome_arquivo
 
 
 def parar_musica():
@@ -80,3 +80,12 @@ def carrega_imagem_fatias(w, h, nome_arquivo):
             pequeno_sprite = master_image.subsurface((j*w,i*h,w,h))
             imagens.append(pequeno_sprite)
     return imagens
+
+
+def carrega_fase(posicao):
+    try:
+        fase = dados.carrega_fase('fase.json').read()
+        fase = json.loads(fase)
+        return fase[posicao].split(':')
+    except:
+        return None
