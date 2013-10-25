@@ -84,7 +84,7 @@ def carrega_imagem_fatias(w, h, nome_arquivo):
 
 def carrega_fase(posicao):
     try:
-        fase = dados.carrega_fase('fase.json').read()
+        fase = carrega_fase('fase.json').read()
         fase = json.loads(fase)
         return fase[posicao].split(':')
     except:
