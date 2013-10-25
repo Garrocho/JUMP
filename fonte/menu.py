@@ -13,10 +13,9 @@ def novo_jogo(screen):
 class Menu(object):
 
     def __init__(self, screen):
-        dados.executar_musica("menu_loop.wav", 0.5)
+        dados.executar_musica("menu_loop.wav", 0.2)
         self.screen = screen
-        self.menu = NFMenu(
-            ["Novo Jogo", lambda: novo_jogo(screen)], ["Sair", sys.exit])
+        self.menu = NFMenu(["Novo Jogo", lambda: novo_jogo(screen)], ["Sair", sys.exit])
         self.clock = pygame.time.Clock()
         events = pygame.event.get()
         self.menu.atualizar(events)
@@ -43,7 +42,7 @@ class NFMenu:
     def __init__(self, *vetor_funcoes_menu):
 
         self.vetor_funcoes_menu = vetor_funcoes_menu
-        self.som_menu_item = dados.obter_som('menu_item.wav')
+        self.som_menu_item = dados.obter_som('menu_item.ogg')
         self.hcolor = (255, 0, 0)
         self.fonte = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 50)
         self.posicao_atual = 0
