@@ -26,8 +26,8 @@ class Jogo:
             "fundo_nuvem": dados.carrega_imagem_menu('background_nuvem.png'),
             "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
             "fundo_montanha": dados.carrega_imagem_menu('background_montanha.png'),
-            "fundo_mato": dados.carrega_imagem_menu('background_mato.png'),
-            "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png')
+            "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png'),
+            "buraco": dados.carrega_imagem_menu('buraco.png')
         }
 
         # Lista de Sons
@@ -37,16 +37,17 @@ class Jogo:
         }
 
         # Carregando Atores
-        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 100]
+        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 170]
         self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 100]
+        self.pos_buraco = [self.screen_size[0]+120, self.screen_size[1] - 100]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador, som=self.lista_sons["pulo"])
 
         # Lista de Atores
         self.lista_atores = [
             atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
             atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
-            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=3),
-            atores.Fundo(imagem=self.lista_imagens['fundo_mato'], tam_px=6),
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=4),
+            pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(self.jogador),
             atores.StatusMoedas(self.jogador)
@@ -76,16 +77,17 @@ class Jogo:
             ator.draw(self.screen)
 
     def checar_colisao_de_um_ator(self, ator, lista, matar):
-        acertos = pygame.sprite.spritecollide(ator, lista, matar)
-        if acertos:
-            self.jogador.atingido()
-        return acertos
+        atores_atingido = pygame.sprite.spritecollide(ator, lista, matar)
+        for ator in atores_atingido:
+            ator.atingido()
+        return len(atores_atingido)
 
     def checar_colisoes(self):
-        moedas = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 1)
-        for i in moedas:
-            i.atingido()
-        self.jogador.moedas += len(moedas)
+        qtde_moedas_atin = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[3], 1)
+        self.jogador.moedas += qtde_moedas_atin
+
+        if self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 0):
+            self.jogador.kill()
 
     def administrar(self):
         if self.aguardar:
@@ -103,7 +105,10 @@ class Jogo:
             elif fase[0] == 'M':
                 pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 450)]
                 nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
-                self.lista_atores[4].add(nova_moeda)
+                self.lista_atores[3].add(nova_moeda)
+            elif fase[0] == 'B':
+                novo_buraco = atores.Buraco(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5, som=self.lista_sons["moeda"])
+                self.lista_atores[4].add(novo_buraco)
 
     def loop(self):
 
