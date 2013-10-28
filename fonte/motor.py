@@ -120,15 +120,15 @@ class Jogo:
 
     def draw_game_over(self):
         self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 120)
-        self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
+        self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 25)
         ren_maior = self.fonte_grande.render("Game Over", 1, (255, 255, 255))
-        ren_menor = self.fonte_menor.render("Pressione ESC Para Sair do Jogo!", 1, (80, 100, 250))
+        ren_menor = self.fonte_menor.render("Pressione ESC Para Voltar ao Menu do Jogo!", 1, (80, 100, 250))
         text_rect = ren_maior.get_rect()
         text_x = self.screen.get_width()/2 - text_rect.width/2
         text_y = self.screen.get_height()/2 - text_rect.height/2
         self.screen.fill((0,0,0))
         self.screen.blit(ren_maior, [text_x, text_y])
-        self.screen.blit(ren_menor, [text_x+50, text_y+300])
+        self.screen.blit(ren_menor, [text_x+10, text_y+300])
         pygame.display.flip()
 
     def loop(self):
