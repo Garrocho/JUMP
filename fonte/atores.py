@@ -82,7 +82,7 @@ class Jogador(pygame.sprite.Sprite):
                 self.tempo_fatia = self.tempo_fatia - 1
 
 
-class Moeda(pygame.sprite.Sprite):
+class AtorComEfeito(pygame.sprite.Sprite):
 
     def __init__(self, imagem, posicao, velocidade, som):
         pygame.sprite.Sprite.__init__(self)
@@ -120,7 +120,7 @@ class Moeda(pygame.sprite.Sprite):
         self.som.play()
 
 
-class Buraco(pygame.sprite.Sprite):
+class AtorSemEfeito(pygame.sprite.Sprite):
 
     def __init__(self, imagem, posicao, velocidade, som):
         pygame.sprite.Sprite.__init__(self)
@@ -132,7 +132,7 @@ class Buraco(pygame.sprite.Sprite):
         self.area = screen.get_rect()
 
     def update(self):
-        self.rect.center = (self.rect.center[0] - 4, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - 5, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
             self.kill()
