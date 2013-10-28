@@ -10,7 +10,7 @@ def novo_jogo(screen):
     jogo.loop()
 
 
-def intrucoes(screen):
+def instrucoes(screen):
     pass
 
 
