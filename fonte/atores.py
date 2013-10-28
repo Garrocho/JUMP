@@ -43,7 +43,7 @@ class Jogador(pygame.sprite.Sprite):
         self.som = som
 
     def pular(self):
-        self.fases_pulo = 60
+        self.fases_pulo = 80
         self.pulando = True
         self.image = self.fatias[33]
         self.som.play()
@@ -65,10 +65,8 @@ class Jogador(pygame.sprite.Sprite):
         # Trata os pulos do jogador
         if self.pulando:
             if self.tempo_fatia == 0:
-                if self.fases_pulo >= 30:
+                if self.fases_pulo >= 40:
                     self.tempo_fatia = 1
-                    if self.fases_pulo <= 45:
-                        self.tempo_fatia = 1
                     self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
                     self.fases_pulo = self.fases_pulo - 1
                 elif self.fases_pulo >= -1:
@@ -111,6 +109,29 @@ class Moeda(pygame.sprite.Sprite):
         else:
             self.tempo_fatia = self.tempo_fatia - 1
 
+        self.rect.center = (self.rect.center[0] - 4, self.rect.center[1])
+
+        if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
+            self.kill()
+        if self.rect.bottom < -40:
+            self.kill()
+     
+    def atingido(self):
+        self.som.play()
+
+
+class Buraco(pygame.sprite.Sprite):
+
+    def __init__(self, imagem, posicao, velocidade, som):
+        pygame.sprite.Sprite.__init__(self)
+        self.som = som
+        self.image = imagem
+        self.rect = self.image.get_rect()
+        self.rect.center = (posicao)
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+
+    def update(self):
         self.rect.center = (self.rect.center[0] - 4, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
