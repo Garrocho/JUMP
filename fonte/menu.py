@@ -10,19 +10,23 @@ def novo_jogo(screen):
     jogo.loop()
 
 
+def intrucoes(screen):
+    pass
+
+
 class Menu(object):
 
     def __init__(self, screen):
-        dados.executar_musica("menu_loop.wav", 0.2)
+        dados.executar_musica("menu.ogg", 0.8)
         self.screen = screen
-        self.menu = NFMenu(["Novo Jogo", lambda: novo_jogo(screen)], ["Sair", sys.exit])
+        self.menu = NFMenu(["Novo Jogo", lambda: novo_jogo(screen)], ["Instrucoes", lambda: instrucoes(screen)],  ["Sair", sys.exit])
         self.clock = pygame.time.Clock()
         events = pygame.event.get()
         self.menu.atualizar(events)
         self.menu.desenhar(self.screen)
-        self.bg = dados.carrega_imagem_menu('menu_background.jpg')
-        self.fonteGrande = pygame.font.Font(
-            dados.carrega_fonte("BLADRMF_.TTF"), 120)
+        #self.bg = dados.carrega_imagem_menu('menu_background.jpg')
+        self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 120)
+        self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
         self.run = True
 
     def loop(self):
@@ -30,9 +34,11 @@ class Menu(object):
             self.clock.tick(40)
             events = pygame.event.get()
             self.menu.atualizar(events)
-            self.screen.blit(self.bg, (0, 0))
-            ren = self.fonteGrande.render("JUMP!", 1, (255, 255, 255))
-            self.screen.blit(ren, (250 - ren.get_width() / 2, 180))
+            self.screen.fill((0,0,0))
+            #self.screen.blit(self.bg, (0, 0))
+            ren_maior = self.fonte_grande.render("JUMP!", 1, (255, 255, 255))
+            self.posicao_x = self.screen.get_width()/2 - ren_maior.get_rect().width/2
+            self.screen.blit(ren_maior, [self.posicao_x, 100])
             self.menu.desenhar(self.screen)
             pygame.display.flip()
 
@@ -48,15 +54,15 @@ class NFMenu:
         self.posicao_atual = 0
         self.width = 1
         self.color = [255, 255, 255]
-        self.hcolor = [80, 50, 150]
+        self.hcolor = [80, 100, 250]
         self.height = len(self.vetor_funcoes_menu) * self.fonte.get_height()
         for funcao in self.vetor_funcoes_menu:
             texto = funcao[0]
             ren = self.fonte.render(texto, 1, (0, 0, 0))
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
-        self.x = 250 - (self.width / 2)
-        self.y = 450 - (self.height / 2)
+        self.x = 520 - (self.width / 2)
+        self.y = 400 - (self.height / 2)
 
     def desenhar(self, surface):
         i = 0
