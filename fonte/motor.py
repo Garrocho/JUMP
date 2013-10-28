@@ -13,6 +13,7 @@ class Jogo:
     aguardar = False
     aguardar_tmp = 0
     pos_fase = 0
+    game_over = False
 
     def __init__(self, screen):
         self.screen = screen
@@ -20,6 +21,9 @@ class Jogo:
         self.carrega_dados()
 
     def carrega_dados(self):
+        dados.parar_musica()
+        dados.executar_musica("fase_1.wav", 0.2)
+
         # Lista de Imagens
         self.lista_imagens = {
             "jogador": dados.carrega_imagem_fatias(400, 200, 'gato.png'),
@@ -33,6 +37,7 @@ class Jogo:
         # Lista de Sons
         self.lista_sons = {
             "moeda": dados.obter_som('moeda.wav'),
+            "game_over": dados.obter_som('game_over.ogg'),
             "pulo": dados.obter_som('pulo.ogg', 0.5),
         }
 
@@ -46,7 +51,7 @@ class Jogo:
         self.lista_atores = [
             atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
             atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
-            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=4),
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=5),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(self.jogador),
@@ -65,7 +70,7 @@ class Jogo:
             elif tipo == KEYDOWN:
                 if chave == K_ESCAPE:
                     self.run = False
-                elif chave == K_SPACE and not self.jogador.pulando:
+                elif chave == K_SPACE and not self.jogador.pulando and not self.game_over:
                     self.jogador.pular()
 
     def atualizar_atores(self):
@@ -88,6 +93,9 @@ class Jogo:
 
         if self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 0):
             self.jogador.kill()
+            self.game_over = True
+            dados.parar_musica()
+            self.lista_sons["game_over"].play()
 
     def administrar(self):
         if self.aguardar:
@@ -104,11 +112,24 @@ class Jogo:
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
                 pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 450)]
-                nova_moeda = atores.Moeda(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
+                nova_moeda = atores.AtorComEfeito(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores[3].add(nova_moeda)
             elif fase[0] == 'B':
-                novo_buraco = atores.Buraco(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5, som=self.lista_sons["moeda"])
+                novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores[4].add(novo_buraco)
+
+    def draw_game_over(self):
+        self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 120)
+        self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
+        ren_maior = self.fonte_grande.render("Game Over", 1, (255, 255, 255))
+        ren_menor = self.fonte_menor.render("Pressione ESC Para Sair do Jogo!", 1, (80, 100, 250))
+        text_rect = ren_maior.get_rect()
+        text_x = self.screen.get_width()/2 - text_rect.width/2
+        text_y = self.screen.get_height()/2 - text_rect.height/2
+        self.screen.fill((0,0,0))
+        self.screen.blit(ren_maior, [text_x, text_y])
+        self.screen.blit(ren_menor, [text_x+50, text_y+300])
+        pygame.display.flip()
 
     def loop(self):
 
@@ -117,17 +138,21 @@ class Jogo:
             # Trata os eventos de entrada.
             self.tratador_eventos()
 
-            # Atualiza Elementos.
-            self.atualizar_atores()
+            if self.game_over:
+                self.draw_game_over()
+            else:
 
-            # Checa se os Atores se Chocaram.
-            self.checar_colisoes()
+                # Atualiza Elementos.
+                self.atualizar_atores()
 
-            # Faca a manutencao do jogo, como criar inimigos, etc.
-            self.administrar()
+                # Checa se os Atores se Chocaram.
+                self.checar_colisoes()
 
-            # Desenhe os elementos do jogo.
-            self.desenhar_atores()
+                # Faca a manutencao do jogo, como criar inimigos, etc.
+                self.administrar()
 
-            # Por fim atualize o screen do jogo.
-            pygame.display.flip()
+                # Desenhe os elementos do jogo.
+                self.desenhar_atores()
+
+                # Por fim atualize o screen do jogo.
+                pygame.display.flip()
