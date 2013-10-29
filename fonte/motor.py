@@ -126,12 +126,16 @@ class Jogo:
         self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 25)
         ren_maior = self.fonte_grande.render("Game Over", 1, (255, 255, 255))
         ren_menor = self.fonte_menor.render("Pressione ESC Para Voltar ao Menu do Jogo!", 1, (80, 100, 250))
+        ren_pontua = self.fonte_menor.render("Distancia Percorrida: % 4d" % self.jogador.status["Distancia"], 1, (50, 100, 50))
+        ren_moedas = self.fonte_menor.render("Moedas Conquistadas: % 4d" % self.jogador.status["Moedas"], 1, (50, 100, 50))
         text_rect = ren_maior.get_rect()
         text_x = self.screen.get_width()/2 - text_rect.width/2
-        text_y = self.screen.get_height()/2 - text_rect.height/2
+        text_y = self.screen.get_height()/5 - text_rect.height/5
         self.screen.fill((0,0,0))
         self.screen.blit(ren_maior, [text_x, text_y])
-        self.screen.blit(ren_menor, [text_x+10, text_y+300])
+        self.screen.blit(ren_pontua, [text_x, text_y+150])
+        self.screen.blit(ren_moedas, [text_x, text_y+200])
+        self.screen.blit(ren_menor, [text_x+10, text_y+500])
         pygame.display.flip()
 
     def loop(self):
