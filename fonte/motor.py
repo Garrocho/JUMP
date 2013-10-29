@@ -73,6 +73,9 @@ class Jogo:
                     self.run = False
                 elif chave == K_SPACE and not self.jogador.pulando and not self.game_over:
                     self.jogador.pular()
+        if self.run == False:
+            dados.parar_musica()
+            dados.executar_musica("menu.ogg", 1.5)
 
     def atualizar_atores(self):
         for ator in self.lista_atores:
