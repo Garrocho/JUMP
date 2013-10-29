@@ -17,7 +17,7 @@ def instrucoes(screen):
 class Menu(object):
 
     def __init__(self, screen):
-        dados.executar_musica("menu.ogg", 0.8)
+        dados.executar_musica("menu.ogg", 1.5)
         self.screen = screen
         self.menu = NFMenu(["Novo Jogo", lambda: novo_jogo(screen)], ["Instrucoes", lambda: instrucoes(screen)],  ["Sair", sys.exit])
         self.clock = pygame.time.Clock()
