@@ -42,9 +42,9 @@ class Jogo:
         }
 
         # Carregando Atores
-        pos_jogador = [self.screen_size[0] / 3, self.screen_size[1] - 170]
-        self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 100]
-        self.pos_buraco = [self.screen_size[0]+120, self.screen_size[1] - 100]
+        pos_jogador = [self.screen_size[0] / 4 , self.screen_size[1] - 170]
+        self.pos_moeda = [self.screen_size[0], self.screen_size[1] - 170]
+        self.pos_buraco = [self.screen_size[0]+120, self.screen_size[1] - 46]
         self.jogador = atores.Jogador(imagem=self.lista_imagens['jogador'], posicao=pos_jogador, som=self.lista_sons["pulo"])
 
         # Lista de Atores
@@ -55,7 +55,8 @@ class Jogo:
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(self.jogador),
-            atores.StatusMoedas(self.jogador)
+            atores.Status(jogador=self.jogador, identificador="Distancia"),
+            atores.Status(jogador=self.jogador, posicao=(5,35), identificador="Moedas")
         ]
 
     def tratador_eventos(self):
@@ -88,8 +89,7 @@ class Jogo:
         return len(atores_atingido)
 
     def checar_colisoes(self):
-        qtde_moedas_atin = self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[3], 1)
-        self.jogador.moedas += qtde_moedas_atin
+        self.jogador.status["Moedas"] += self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[3], 1)
 
         if self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 0):
             self.jogador.kill()
@@ -98,6 +98,9 @@ class Jogo:
             self.lista_sons["game_over"].play()
 
     def administrar(self):
+        if pygame.time.get_ticks()%200:
+            self.jogador.status["Distancia"] += 1
+
         if self.aguardar:
             self.aguardar_tmp = self.aguardar_tmp - 1
             if self.aguardar_tmp == 0:
