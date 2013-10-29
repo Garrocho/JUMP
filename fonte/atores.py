@@ -38,9 +38,9 @@ class Jogador(pygame.sprite.Sprite):
         self.fases_pulo = 0
         self.tempo_fatia = 1
         self.tempo_fatia_1 = 4
-        self.moedas = 0
         self.cont = 0
         self.som = som
+        self.status = {"Moedas":0, "Distancia":0}
 
     def pular(self):
         self.fases_pulo = 80
@@ -109,7 +109,7 @@ class AtorComEfeito(pygame.sprite.Sprite):
         else:
             self.tempo_fatia = self.tempo_fatia - 1
 
-        self.rect.center = (self.rect.center[0] - 4, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - 5, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
             self.kill()
@@ -143,13 +143,15 @@ class AtorSemEfeito(pygame.sprite.Sprite):
         self.som.play()
 
 
-class StatusMoedas:
+class Status:
     fonte = None
-    ultima_moeda = -1
     cor = None
     imagem = None
+    jogador = None
+    identificador = None
     
-    def __init__(self, jogador, posicao=None, fonte=None, tam_texto=30, cor="0xffff00"):
+    def __init__(self, jogador, posicao=None, fonte=None, tam_texto=35, cor="0xff0f0f", identificador=None):
+        self.identificador = identificador
         self.jogador = jogador
         self.cor = pygame.color.Color(cor)
         self.posicao = posicao or [5, 5]
@@ -159,9 +161,6 @@ class StatusMoedas:
         pass
 
     def draw(self, screen):
-        moedas = self.jogador.moedas
-        if self.ultima_moeda != moedas:
-            self.ultima_moeda = moedas
-            texto = "Moedas: % 4d" % moedas
-            self.imagem = self.fonte.render(texto, True, self.cor)
-        screen.blit(self.imagem, self.posicao)
+        texto = self.identificador + ": % 4d" % self.jogador.status[self.identificador]
+        desenho = self.fonte.render(texto, True, self.cor)
+        screen.blit(desenho, self.posicao)
