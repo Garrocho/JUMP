@@ -43,7 +43,7 @@ var setConexao = function () {
                 try {
                     console.log(json[i.toString()]);
                     if (json[i.toString()] != undefined) {
-                        $('#lista').append('<div data-role="collapsible"><h4>' + json[i.toString()] + '</h4> </div>').trigger('create');
+                        $('#lista').append('<li>' + json[i.toString()] + '<span class="ui-li-count">525 Metros</span></li>').listview('refresh');
                         i+=1;
                     }
                     else
