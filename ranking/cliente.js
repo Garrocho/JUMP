@@ -56,4 +56,11 @@ var setEventos = function () {
 	}
 }
  
-
+var sendData = function (data) {
+	// essa função checa se conexao é diferente de null e, se for
+	// chama o método 'send' de conexao, que envia dados para o servidor
+	// no caso, uma string de 'data', que foi passado como argumento
+	if (conexao !== null) {
+		conexao.send(JSON.stringify(data));
+	}
+}
