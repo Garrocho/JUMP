@@ -67,15 +67,7 @@ wsServer.on('request', function(request) {
     // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
     var index = clientes.push(conexao) - 1;
     
-    // chamamos o método 'on' de 'conexao' passando 'message' e um callback.
-    // Ou seja, quando tivermos uma mensagen, vamos executar esse callback.
-    conexao.on('message', function(message) {
-        
-        // Se o tipo da mensagem for texto...
-        if (message.type === 'utf8') {
-            clientes[index].sendUTF(JSON.stringify('{"1":"Charles"}'));
-        }
-    });
+    conexao.sendUTF(JSON.stringify('{"1":"Charles", "2":"Arthur", "3":"Alemao"}'));
  
     // chamamos o método 'on' passando 'close' e um callback como você já deve
     // ter deduzido, o callback será chamado quando a conexão for fechada de
