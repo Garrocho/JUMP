@@ -4,7 +4,6 @@ var conexao = null;
 // depois do carregamento da página, chamamos 'setConexao' e 'setEventos'
 window.onload = function () {
     setConexao();
-	setEventos();
 }
  
 var setConexao = function () {
@@ -38,29 +37,24 @@ var setConexao = function () {
         try {
             var json = JSON.parse(message.data);
             json = JSON.parse(json);
-            // se der tudo certo, vamos imprimir o objeto json.utf8Data no console
-            console.log(json['1']);
+            var i = 1;
+            var sair = false;
+            while (!sair) {
+                try {
+                    console.log(json[i.toString()]);
+                    if (json[i.toString()] != undefined) {
+                        $('#lista').append('<div data-role="collapsible"><h4>' + json[i.toString()] + '</h4> </div>').trigger('create');
+                        i+=1;
+                    }
+                    else
+                        sair = true;
+                }catch (e) {
+                    sair = true;
+                }
+            }
         } catch (e) {
             console.log('JSON Inválido: ', message.data);
             return;
         }
     };
-}
- 
-var setEventos = function () {
-	// usamos document.getElementById para nos referirmos ao botão com id 'send'
-	// e passamos um callback para ser executado no 'onclick' deste
-	document.getElementById('send').onclick = function (ev) {
-		// chamamos a função 'sendData' com o timeStamp de 'ev'
-		sendData(ev.timeStamp);
-	}
-}
- 
-var sendData = function (data) {
-	// essa função checa se conexao é diferente de null e, se for
-	// chama o método 'send' de conexao, que envia dados para o servidor
-	// no caso, uma string de 'data', que foi passado como argumento
-	if (conexao !== null) {
-		conexao.send(JSON.stringify(data));
-	}
 }
