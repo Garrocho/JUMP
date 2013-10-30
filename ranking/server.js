@@ -35,3 +35,55 @@ var servidor = http.createServer(function(request, response) {
     });
 });
  
+servidor.listen(porta, function() {
+    // chamamos o método 'listen' de 'server' para indicarmos a porta que sera ouvida
+    console.log((new Date()) + " Node rodando na porta " + porta);
+});
+ 
+var webSocketServer = require('websocket').server;
+ 
+// clientes é um array simples onde colocaremos todos os clientes que forem conectados
+var clientes = [];
+ 
+// instanciamos um server passando um objeto como argumento esse objeto tem uma
+// propriedade 'httpServer' que recebe 'servidor' nossa variável criada acima que
+// nada mais é que o servidor http que usamos como host do nosso index.html
+var wsServer = new webSocketServer({
+    httpServer: servidor
+});
+ 
+// chamamos o método 'on' de 'wsServer' passando 'request' e um callback
+// Ou seja, toda vez que temos uma requisição, o callback será executado
+// esse callback recebe 'request' como argumento
+wsServer.on('request', function(request) {
+ 
+    // o objeto request tem um método chamado 'accept' onde aceitamos
+    // a conexão passando o protocolo e a origem (deixemos isso para depois)
+    var conexao = request.accept(null, request.origin); 
+ 
+    // index é o índice do usuário na "fila" que formamos de maneira que todas
+    // as conexões no socket são adicionadas no array 'clientes' pelo método
+    // 'push'. O método retorna o comprimento do array depois de adicionarmos
+    // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
+    var index = clientes.push(conexao) - 1;
+    
+    // chamamos o método 'on' de 'conexao' passando 'message' e um callback.
+    // Ou seja, quando tivermos uma mensagen, vamos executar esse callback.
+    conexao.on('message', function(message) {
+        
+        // Se o tipo da mensagem for texto...
+        if (message.type === 'utf8') {
+            clientes[index].sendUTF(JSON.stringify('{"1":"Charles"}'));
+        }
+    });
+ 
+    // chamamos o método 'on' passando 'close' e um callback como você já deve
+    // ter deduzido, o callback será chamado quando a conexão for fechada de
+    // alguma forma. Comumente acontece quando fechamos o browser.
+    conexao.on('close', function() {
+        // chamamos o método 'splice' do array passando 'index' e 1 como parâmetros
+        // assim vamos excluir 1 elemento na posição do 'index'. Logo, excluiremos
+        // o cliente que se desconectou.
+        clientes.splice(index, 1);
+    });
+});
