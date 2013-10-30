@@ -47,3 +47,13 @@ var setConexao = function () {
     };
 }
  
+var setEventos = function () {
+	// usamos document.getElementById para nos referirmos ao botão com id 'send'
+	// e passamos um callback para ser executado no 'onclick' deste
+	document.getElementById('send').onclick = function (ev) {
+		// chamamos a função 'sendData' com o timeStamp de 'ev'
+		sendData(ev.timeStamp);
+	}
+}
+ 
+
