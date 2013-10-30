@@ -54,3 +54,14 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
     <code>
         sudo make install
     </code>
+
+  4. Instalando Módulos do Node.js:
+
+    <code>
+        npm install node-static
+    </code>
+
+    <code>
+        npm install websocket
+    </code>
+
