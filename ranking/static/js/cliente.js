@@ -30,31 +30,28 @@ var setConexao = function () {
  
     // 'onmessage' é executado sempre que temos uma mensagem chegando do servidor
     conexao.onmessage = function (message) {
+
+        document.getElementById("lista").innerHTML="";
         
         // vamos tentar fazer um parse do objeto 'message.data' que é passado como
         // argumento do callback. Caso consigamos uma variável json é criada com
         // o parse de 'message.data', se não, imprimimos no console e retornamos o método.
         try {
-            var json = JSON.parse(message.data);
-            json = JSON.parse(json);
-            var i = 1;
-            var sair = false;
-            while (!sair) {
-                try {
-                    console.log(json[i.toString()]);
-                    if (json[i.toString()] != undefined) {
-                        $('#lista').append('<li>' + json[i.toString()] + '<span class="ui-li-count">525 Metros</span></li>').listview('refresh');
-                        i+=1;
-                    }
-                    else
-                        sair = true;
-                }catch (e) {
-                    sair = true;
-                }
+                var json = JSON.parse(message.data);
+                ordenarPorDistancia(json);
+            } catch (e) {
+                json = JSON.parse(json);
+                ordenarPorDistancia(json);
             }
-        } catch (e) {
-            console.log('JSON Inválido: ', message.data);
-            return;
-        }
+            for (i=0; i < json.length; i++) {
+                console.log(json[i]);
+                $('#lista').append('<li>' + json[i]["nome"] + '<span class="ui-li-count">' + json[i]["distancia"] + ' Metros</span></li>').listview('refresh');
+            }
     };
+}
+
+function ordenarPorDistancia(recorde) {
+    recorde.sort(function(a, b) {
+        return (b["distancia"] - a["distancia"]) ;
+    });
 }
