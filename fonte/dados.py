@@ -13,6 +13,7 @@ endereco_arquivos = dict(
     imagens=join_path(dados_dir, 'imagens'),
     sons=join_path(dados_dir, 'sons'),
     fases=join_path(dados_dir, 'fases'),
+    arquivos=join_path(dados_dir, 'arquivos'),
 )
 
 
@@ -34,6 +35,10 @@ def carrega_imagem(nome_arquivo):
 
 def carrega_fase(nome_arquivo):
     return open(endereco_arquivo('fases', nome_arquivo))
+
+
+def carrega_arquivo(nome_arquivo):
+    return open(endereco_arquivo('arquivos', nome_arquivo))
 
 
 def carrega_imagem_menu(nome_arquivo):
@@ -90,3 +95,16 @@ def carrega_mapa(posicao):
         return fase[posicao].split(':')
     except:
         return None
+
+
+def add_jogador_ranking(nome, distancia):
+    arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json')).read()
+    if len(arq_ranking) > 10:
+        json_ranking = json.loads(arq_ranking)
+        json_ranking.append({'nome': nome, 'distancia': str(distancia)})
+        json_ranking = json.dumps(json_ranking)
+    else:
+        json_ranking = json.dumps([{'nome': 115, 'distancia': 115}])
+    arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json'), 'w')
+    arq_ranking.write(json_ranking)
+    arq_ranking.close()
