@@ -99,6 +99,7 @@ class Jogo:
             self.game_over = True
             dados.parar_musica()
             self.lista_sons["game_over"].play()
+            dados.add_jogador_ranking(str(self.jogador.status["Distancia"]), self.jogador.status["Distancia"])
 
     def administrar(self):
         if pygame.time.get_ticks()%200:
