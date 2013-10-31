@@ -82,7 +82,7 @@ wsServer.on('request', function(request) {
     // 'push'. O método retorna o comprimento do array depois de adicionarmos
     // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
     var index = clientes.push(conexao) - 1;
-    fs.readFile(path, 'utf8', function(error, data) {
+    fs.readFile('../../../dados/arquivos/ranking.json', 'utf8', function(error, data) {
         conexao.sendUTF(data);
     });
     
