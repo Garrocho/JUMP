@@ -15,7 +15,23 @@ var url = require("url");
  
 // vai entender as requisições GET que fizermos
 var st = require('node-static');
- 
+
+var fs = require('fs');
+
+// vai monitorar o arquivo ranking.json e
+var chokidar = require('chokidar');
+var monitorador = chokidar.watch('../../../dados/arquivos/ranking.json', {persistence:true});
+
+// Monitora se o arquivo é modificado, caso verdadeiro, envia a todos
+// os clientes conectados no momento o novo ranking.
+monitorador.on('change', function(path) {
+    fs.readFile(path, 'utf8', function(error, data) {
+        for (var i=0; i < clientes.length; i++) {
+            clientes[i].sendUTF(data);
+        }
+    });
+});
+
 // criamos um servidor de arquivos...
 var fileServer = new st.Server();
  
@@ -66,8 +82,10 @@ wsServer.on('request', function(request) {
     // 'push'. O método retorna o comprimento do array depois de adicionarmos
     // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
     var index = clientes.push(conexao) - 1;
+    fs.readFile(path, 'utf8', function(error, data) {
+        conexao.sendUTF(data);
+    });
     
-    conexao.sendUTF(JSON.stringify('{"1":"Charles", "2":"Arthur", "3":"Alemao"}'));
  
     // chamamos o método 'on' passando 'close' e um callback como você já deve
     // ter deduzido, o callback será chamado quando a conexão for fechada de
