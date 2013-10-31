@@ -11,3 +11,4 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((1024, 768))
     m = menu.Menu(screen)
     m.loop()
+    pygame.quit()
