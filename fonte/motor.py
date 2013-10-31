@@ -3,6 +3,7 @@ import dados
 import pygame
 import atores
 import random
+import editor
 from pygame.locals import *
 
 
@@ -96,9 +97,11 @@ class Jogo:
 
         if self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 0):
             self.jogador.kill()
-            self.game_over = True
+            self.run = False
             dados.parar_musica()
             self.lista_sons["game_over"].play()
+            #ed = editor.Editor(self.screen)
+            #ed.loop()
             dados.add_jogador_ranking(str(self.jogador.status["Distancia"]), self.jogador.status["Distancia"])
 
     def administrar(self):
@@ -125,23 +128,6 @@ class Jogo:
                 novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores[4].add(novo_buraco)
 
-    def draw_game_over(self):
-        self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 120)
-        self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 25)
-        ren_maior = self.fonte_grande.render("Game Over", 1, (255, 255, 255))
-        ren_menor = self.fonte_menor.render("Pressione ESC Para Voltar ao Menu do Jogo!", 1, (80, 100, 250))
-        ren_pontua = self.fonte_menor.render("Distancia Percorrida: % 4d" % self.jogador.status["Distancia"], 1, (50, 100, 50))
-        ren_moedas = self.fonte_menor.render("Moedas Conquistadas: % 4d" % self.jogador.status["Moedas"], 1, (50, 100, 50))
-        text_rect = ren_maior.get_rect()
-        text_x = self.screen.get_width()/2 - text_rect.width/2
-        text_y = self.screen.get_height()/5 - text_rect.height/5
-        self.screen.fill((0,0,0))
-        self.screen.blit(ren_maior, [text_x, text_y])
-        self.screen.blit(ren_pontua, [text_x, text_y+150])
-        self.screen.blit(ren_moedas, [text_x, text_y+200])
-        self.screen.blit(ren_menor, [text_x+10, text_y+500])
-        pygame.display.flip()
-
     def loop(self):
 
         while self.run:
@@ -149,21 +135,17 @@ class Jogo:
             # Trata os eventos de entrada.
             self.tratador_eventos()
 
-            if self.game_over:
-                self.draw_game_over()
-            else:
+            # Atualiza Elementos.
+            self.atualizar_atores()
 
-                # Atualiza Elementos.
-                self.atualizar_atores()
+            # Checa se os Atores se Chocaram.
+            self.checar_colisoes()
 
-                # Checa se os Atores se Chocaram.
-                self.checar_colisoes()
+            # Faca a manutencao do jogo, como criar inimigos, etc.
+            self.administrar()
 
-                # Faca a manutencao do jogo, como criar inimigos, etc.
-                self.administrar()
+            # Desenhe os elementos do jogo.
+            self.desenhar_atores()
 
-                # Desenhe os elementos do jogo.
-                self.desenhar_atores()
-
-                # Por fim atualize o screen do jogo.
-                pygame.display.flip()
+            # Por fim atualize o screen do jogo.
+            pygame.display.flip()
