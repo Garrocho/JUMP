@@ -10,7 +10,7 @@ from pygame.locals import *
 class Jogo:
     screen = None
     screen_size = None
-    run = True
+    sair = False
     aguardar = False
     aguardar_tmp = 0
     pos_fase = 0
@@ -67,14 +67,14 @@ class Jogo:
                 chave = evento.key
 
             if tipo == QUIT:
-                self.run = False
+                self.sair = False
 
             elif tipo == KEYDOWN:
                 if chave == K_ESCAPE:
-                    self.run = False
+                    self.sair = True
                 elif chave == K_SPACE and not self.jogador.pulando and not self.game_over:
                     self.jogador.pular()
-        if self.run == False:
+        if self.sair == True:
             dados.parar_musica()
             dados.executar_musica("menu.ogg", 1.5)
 
@@ -97,12 +97,12 @@ class Jogo:
 
         if self.checar_colisao_de_um_ator(self.jogador, self.lista_atores[4], 0):
             self.jogador.kill()
-            self.run = False
+            self.sair = True
             dados.parar_musica()
             self.lista_sons["game_over"].play()
             ed = editor.Editor(self.screen, self.jogador.status["Distancia"], self.jogador.status["Moedas"])
             nome = ed.loop()
-            dados.add_jogador_ranking(nome, self.jogador.status["Distancia"])
+            dados.add_jogador_ranking(nome, self.jogador.status["Distancia"], self.jogador.status["Moedas"])
 
     def administrar(self):
         if pygame.time.get_ticks()%200:
@@ -130,7 +130,7 @@ class Jogo:
 
     def loop(self):
 
-        while self.run:
+        while not self.sair:
 
             # Trata os eventos de entrada.
             self.tratador_eventos()

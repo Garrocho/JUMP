@@ -97,14 +97,14 @@ def carrega_mapa(posicao):
         return None
 
 
-def add_jogador_ranking(nome, distancia):
+def add_jogador_ranking(nome, distancia, moedas):
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json')).read()
     if len(arq_ranking) > 10:
         json_ranking = json.loads(arq_ranking)
-        json_ranking.append({'nome': nome, 'distancia': str(distancia)})
+        json_ranking.append({'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas)})
         json_ranking = json.dumps(json_ranking)
     else:
-        json_ranking = json.dumps([{'nome': nome, 'distancia': distancia}])
+        json_ranking = json.dumps([{'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas)}])
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json'), 'w')
     arq_ranking.write(json_ranking)
     arq_ranking.close()
