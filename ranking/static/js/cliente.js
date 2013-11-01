@@ -31,7 +31,7 @@ var setConexao = function () {
     // 'onmessage' é executado sempre que temos uma mensagem chegando do servidor
     conexao.onmessage = function (message) {
 
-        document.getElementById("lista").innerHTML="";
+        document.getElementById("tabela_elementos").innerHTML="";
         
         // vamos tentar fazer um parse do objeto 'message.data' que é passado como
         // argumento do callback. Caso consigamos uma variável json é criada com
@@ -45,7 +45,11 @@ var setConexao = function () {
             }
             for (i=0; i < json.length; i++) {
                 console.log(json[i]);
-                $('#lista').append('<li>' + json[i]["nome"] + '<span class="ui-li-count">' + json[i]["distancia"] + ' Metros</span></li>').listview('refresh');
+                $("table#tabela tbody")
+                .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td></tr>')
+                .closest("table#tabela")
+                .table("refresh")
+                .trigger("create");
             }
     };
 }
