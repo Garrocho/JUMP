@@ -104,7 +104,7 @@ def add_jogador_ranking(nome, distancia):
         json_ranking.append({'nome': nome, 'distancia': str(distancia)})
         json_ranking = json.dumps(json_ranking)
     else:
-        json_ranking = json.dumps([{'nome': 115, 'distancia': 115}])
+        json_ranking = json.dumps([{'nome': nome, 'distancia': distancia}])
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json'), 'w')
     arq_ranking.write(json_ranking)
     arq_ranking.close()
