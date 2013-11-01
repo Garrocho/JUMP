@@ -1,13 +1,28 @@
+import os
 import pygame
 import subprocess
 from fonte import menu
 from fonte import dados
-import subprocess
+from multiprocessing import Process
 
-#subprocess.call(["node", dados.ranking_dir + "/static/js/servidor.js"])
-#subprocess.call(["python -m SimpleHTTPServer", dados.ranking_dir])
 
+def ex_servico(servico):
+	if servico == 'node':
+		os.system('cd ' + dados.ranking_dir + '/static/js/; node servidor.js')
+	elif servico == 'simple':
+		os.system('cd ranking; python -m SimpleHTTPServer')
+	
 
 if __name__ == '__main__':
-	m = menu.Menu()
-	m.loop()
+	try:
+		node = Process(target=ex_servico, args=('node',))
+		node.start()
+		simple = Process(target=ex_servico, args=('simple',))
+		simple.start()
+		m = menu.Menu()
+		m.loop()
+	except:
+		print 'Erro, Instale as Depencias...'
+	finally:
+		node.terminate()
+		simple.terminate()
