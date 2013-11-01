@@ -27,7 +27,7 @@ class Editor:
 					self.nome = self.nome[:-1]
 				elif chave == -70:
 					if len(self.nome) == 0:
-						self.nome = "Desconhecido"
+						self.nome = "NAO DEFINIDO"
 					self.sair = True
 				elif chave == -65:
 					self.nome += " "
