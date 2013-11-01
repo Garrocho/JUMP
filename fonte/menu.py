@@ -2,6 +2,7 @@ import sys
 import dados
 import motor
 import pygame
+import webbrowser
 from pygame.locals import *
 
 
@@ -22,7 +23,7 @@ class Menu(object):
         self.sair = False
         self.cor = [80, 100, 250]
         self.hcor = [255, 255, 255]
-        self.funcoes = ["Jogar", "Instrucoes", "Sair"]
+        self.funcoes = ["Jogar", "Ranking", "Instrucoes", "Sair"]
         self.posicao_atual = 1
 
     def loop(self):
@@ -42,9 +43,9 @@ class Menu(object):
                 if e.key == pygame.K_RETURN:
                     self.executar_funcao()
                 if e.type == QUIT:
-                    self.posicao_atual = 3
+                    self.posicao_atual = 4
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
-                    self.posicao_atual = 3
+                    self.posicao_atual = 4
         if self.posicao_atual > len(self.funcoes):
             self.posicao_atual = 1
         if self.posicao_atual < 1:
@@ -73,6 +74,8 @@ class Menu(object):
             jogo = motor.Jogo(self.screen)
             jogo.loop()
         elif self.posicao_atual == 2:
+            webbrowser.open('http://127.0.0.1:8000', new=0, autoraise=True)
+        elif self.posicao_atual == 3:
             pass
         else:
             self.sair = True
