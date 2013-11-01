@@ -100,9 +100,9 @@ class Jogo:
             self.run = False
             dados.parar_musica()
             self.lista_sons["game_over"].play()
-            #ed = editor.Editor(self.screen)
-            #ed.loop()
-            dados.add_jogador_ranking(str(self.jogador.status["Distancia"]), self.jogador.status["Distancia"])
+            ed = editor.Editor(self.screen, self.jogador.status["Distancia"], self.jogador.status["Moedas"])
+            nome = ed.loop()
+            dados.add_jogador_ranking(nome, self.jogador.status["Distancia"])
 
     def administrar(self):
         if pygame.time.get_ticks()%200:
