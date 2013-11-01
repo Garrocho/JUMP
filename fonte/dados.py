@@ -6,6 +6,7 @@ from os.path import join as join_path
 
 dados_py = os.path.abspath(os.path.dirname(__file__))
 dados_dir = os.path.normpath(join_path(dados_py, '..', 'dados'))
+ranking_dir = os.path.normpath(join_path(dados_py, '..', 'ranking'))
 
 
 endereco_arquivos = dict(
