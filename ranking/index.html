@@ -13,8 +13,19 @@
             <div data-role="header" data-theme="a">
                 <h1>Ranking JUMP!</h1>
             </div>
-		<ol data-role="listview" id="lista" data-count-theme="a" data-theme="d">
-		</ol>
+		
+            <table data-role="table" id="tabela" data-mode="column" class="ui-body-d ui-shadow table-stripe ui-responsive">
+             <thead>
+               <tr class="ui-bar-d">
+                 <th data-priority="3">Rank</th>
+                 <th>Jogador</th>
+                 <th data-priority="1">Distância</th>
+                 <th data-priority="2">Moedas</th>
+               </tr>
+             </thead>
+             <tbody id="tabela_elementos">
+             </tbody>
+            </table>
             
             <div data-role="footer" data-theme="c" role="contentinfo" data-inset="true">
 		      <p style="text-align:center;">&copy IFSUDESTEMG 2013</p>
