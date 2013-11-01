@@ -7,7 +7,13 @@ from pygame.locals import *
 
 class Menu(object):
 
-    def __init__(self, screen):
+    def __init__(self):
+        pygame.init()
+        pygame.mouse.set_visible(0)
+        pygame.display.set_caption("JUMP!")
+        # size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+        # screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        screen = pygame.display.set_mode((1024, 768))
         dados.executar_musica("menu.ogg", 1.5)
         self.som_menu_item = dados.obter_som('menu_item.ogg')
         self.screen = screen
@@ -23,6 +29,7 @@ class Menu(object):
         while not self.sair:
             self.atualizar()
             self.desenhar()
+        pygame.quit()
 
     def atualizar(self):
         eventos = pygame.event.get()
