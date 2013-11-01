@@ -4,7 +4,8 @@
 // título do processo
 process.title = 'server';
  
-// a porta que o servidor ouvirá
+// endereco e porta que o servidor ouvirá
+var endereco = '127.0.0.1'
 var porta = 1337;
  
 // http, com tudo que é necessário para server e client do protocolo http
@@ -51,9 +52,9 @@ var servidor = http.createServer(function(request, response) {
     });
 });
  
-servidor.listen(porta, function() {
+servidor.listen(porta, endereco, function() {
     // chamamos o método 'listen' de 'server' para indicarmos a porta que sera ouvida
-    console.log((new Date()) + " Node rodando na porta " + porta);
+    console.log((new Date()) + " Node rodando no endereco " + endereco + " na porta " + porta);
 });
  
 var webSocketServer = require('websocket').server;
