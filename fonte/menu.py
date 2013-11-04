@@ -1,6 +1,7 @@
 import sys
 import dados
 import motor
+import atores
 import pygame
 from pygame.locals import *
 
@@ -16,7 +17,7 @@ class Menu(object):
         screen = pygame.display.set_mode((1024, 768))
         dados.executar_musica("menu.ogg", 1.5)
         self.som_menu_item = dados.obter_som('menu_item.ogg')
-        self.bg = dados.carrega_imagem_menu('background_nuvem.png')
+        self.fundo = atores.Fundo(imagem=dados.carrega_imagem_menu('background_nuvem.png'), tam_px=0.2)
         self.screen = screen
         self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 150)
         self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 70)
@@ -33,6 +34,7 @@ class Menu(object):
         pygame.quit()
 
     def atualizar(self):
+        self.fundo.update()
         eventos = pygame.event.get()
         for e in eventos:
             if e.type == pygame.KEYDOWN:
@@ -53,7 +55,7 @@ class Menu(object):
             self.posicao_atual = len(self.funcoes)
 
     def desenhar(self):
-        self.screen.blit(self.bg, (0, 0))
+        self.fundo.draw(self.screen)
         ren_maior = self.fonte_grande.render("JUMP!", 1, self.hcor)
         self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
         self.screen.blit(ren_maior, [self.pos_central, 100])
@@ -92,6 +94,7 @@ class Menu(object):
 
         sair = False
         while not sair:
+            self.fundo.update()
             eventos = pygame.event.get()
             for e in eventos:
                 if e.type == pygame.KEYDOWN:
@@ -116,7 +119,7 @@ class Menu(object):
             if self.posicao_atual < 1:
                 self.pos = 3
 
-            self.screen.blit(self.bg, (0, 0))
+            self.fundo.draw(self.screen)
 
             ren_maior = self.fonte_g.render("Configuracoes do JUMP!", 1, self.hcor)
             self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
@@ -145,47 +148,49 @@ class Menu(object):
     def ranking(self):
         rank_json = dados.obter_ranking()
 
-        self.screen.blit(self.bg, (0, 0))
-        self.fonte_g = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 92)
-        ren_maior = self.fonte_g.render("Ranking do JUMP!", 1, self.hcor)
-        self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
-        self.screen.blit(ren_maior, [self.pos_central, 5])
+        s = False
+        while not s:
+            self.fundo.update()
+            self.fundo.draw(self.screen)
+            self.fonte_g = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 92)
+            ren_maior = self.fonte_g.render("Ranking do JUMP!", 1, self.hcor)
+            self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
+            self.screen.blit(ren_maior, [self.pos_central, 5])
 
-        self.fonte = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
-        ren = self.fonte.render('Rank', 1, self.cor)
-        self.screen.blit(ren, [5, 100])
-        ren = self.fonte.render('Jogador', 1, self.cor)
-        self.screen.blit(ren, [150, 100])
-        ren = self.fonte.render('Distancia', 1, self.cor)
-        self.screen.blit(ren, [550, 100])
-        ren = self.fonte.render('Moedas', 1, self.cor)
-        self.screen.blit(ren, [850, 100])
-        cont = 1
-        y = 140
+            self.fonte = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
+            ren = self.fonte.render('Rank', 1, self.cor)
+            self.screen.blit(ren, [5, 100])
+            ren = self.fonte.render('Jogador', 1, self.cor)
+            self.screen.blit(ren, [150, 100])
+            ren = self.fonte.render('Distancia', 1, self.cor)
+            self.screen.blit(ren, [550, 100])
+            ren = self.fonte.render('Moedas', 1, self.cor)
+            self.screen.blit(ren, [850, 100])
+            cont = 1
+            y = 140
 
-        if rank_json is not None:
-            for i in rank_json:
-                ren = self.fonte.render(str(cont), 1, self.hcor)
-                self.screen.blit(ren, [10, y])
-                ren = self.fonte.render(i['nome'], 1, self.hcor)
-                self.screen.blit(ren, [155, y])
-                ren = self.fonte.render(i['distancia'], 1, self.hcor)
-                self.screen.blit(ren, [555, y])
-                ren = self.fonte.render(i['moedas'], 1, self.hcor)
-                self.screen.blit(ren, [855, y])
-                cont += 1
-                y += 40
-                if cont == 16:
-                    break
+            if rank_json is not None:
+                for i in rank_json:
+                    ren = self.fonte.render(str(cont), 1, self.hcor)
+                    self.screen.blit(ren, [10, y])
+                    ren = self.fonte.render(i['nome'], 1, self.hcor)
+                    self.screen.blit(ren, [155, y])
+                    ren = self.fonte.render(i['distancia'], 1, self.hcor)
+                    self.screen.blit(ren, [555, y])
+                    ren = self.fonte.render(i['moedas'], 1, self.hcor)
+                    self.screen.blit(ren, [855, y])
+                    cont += 1
+                    y += 40
+                    if cont == 16:
+                        break
 
-        ren = self.fonte.render('Pressione ESC para Retornar ao menu principal', 1, self.cor)
-        self.screen.blit(ren, [self.pos_central, self.screen.get_height() - 35])
+            ren = self.fonte.render('Pressione ESC para Retornar ao menu principal', 1, self.cor)
+            self.screen.blit(ren, [self.pos_central, self.screen.get_height() - 35])
 
-        pygame.display.flip()
-        sair = False
-        while not sair:
+            pygame.display.flip()
             eventos = pygame.event.get()
             for e in eventos:
-                if e.type == KEYDOWN and e.key == K_ESCAPE:
-                    self.som_menu_item.play()
-                    sair = True
+                if e.type == pygame.KEYDOWN:
+                    if e.key == K_ESCAPE:
+                        self.som_menu_item.play()
+                        s = True
