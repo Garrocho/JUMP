@@ -109,3 +109,18 @@ def add_jogador_ranking(nome, distancia, moedas):
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json'), 'w')
     arq_ranking.write(json_ranking)
     arq_ranking.close()
+
+
+def obter_ranking():
+    arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json')).read()
+    if len(arq_ranking) < 7:
+        return None
+    else:
+        arq_json = json.loads(arq_ranking)
+        arq_json = sorted(arq_json, cmp=comparacao)
+        arq_json.reverse()
+        return arq_json
+
+
+def comparacao(x, y):
+    return int(x['distancia']) - int(y['distancia'])
