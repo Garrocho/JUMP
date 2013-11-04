@@ -1,14 +1,46 @@
+// link API geolocalização: 
+//https://developers.google.com/maps/documentation/javascript/geocoding?hl=pt-br
+
 // criamos uma variável 'conexao'
 var conexao = null;
- 
+
 // depois do carregamento da página, chamamos 'setConexao' e 'setEventos'
-window.onload = function () {
-    setConexao();
+window.onload = function(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var geocoder = new google.maps.Geocoder();
+            var endereco;
+            geocoder.geocode({'latLng': pos}, function(results, status){
+                if(status == google.maps.GeocoderStatus.OK){
+                    if(results[1]){
+                        var endereco = results[5].formatted_address;
+                        setConexao(endereco);
+                        console.log(endereco);
+                    }
+                }else{
+                    alert("Erro no serviço de geolocalização: " + status);
+                }
+            });
+            
+            //console.log(dados_localizacao[1]);            
+        }, function(){
+                handleNoGeolocation(true);
+        });
+    }else{
+        // Browser doesn't support Geolocation
+        handleNoGeolocation(false);
+    }   
+    //setConexao();
 }
  
-var setConexao = function () {
+var setConexao = function (endereco) {
 	// Se o objeto window.WebSocket não existe, imprimimos uma mensagem no console
 	// e retornamos null
+	
+	var dados_localizacao = endereco.split(", ");
+	console.log(dados_localizacao[0]);
+	
     if (!window.WebSocket) {
         console.log('O seu browser falhou com voce e nao pode abrir essa conexao');
         return null;
@@ -46,7 +78,7 @@ var setConexao = function () {
             for (i=0; i < json.length; i++) {
                 console.log(json[i]);
                 $("table#tabela tbody")
-                .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td></tr>')
+                .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td><a href="http://127.0.0.1:8000/static/localizacao.html">' + dados_localizacao[1] + '</a></td></tr>')
                 .closest("table#tabela")
                 .table("refresh")
                 .trigger("create");
@@ -58,4 +90,12 @@ function ordenarPorDistancia(recorde) {
     recorde.sort(function(a, b) {
         return (b["distancia"] - a["distancia"]) ;
     });
+}
+
+function handleNoGeolocation(errorFlag) {
+    if(errorFlag) {
+        var content = 'Erro no serviço de geolocaliazção.';
+    }else{
+        var content = 'Seu navegador não suporta o serviço de geolocalização.';
+    }
 }
