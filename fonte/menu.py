@@ -21,9 +21,9 @@ class Menu(object):
         self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 150)
         self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 70)
         self.sair = False
-        self.cor = [80, 100, 250]
+        self.cor = [34, 139, 34]
         self.hcor = [0, 0, 0]
-        self.funcoes = ["Jogar", "Ranking", "Instrucoes", "Sair"]
+        self.funcoes = ["Jogar", "Ranking", "Instrucoes", "Configuracoes", "Sair"]
         self.posicao_atual = 1
 
     def loop(self):
@@ -44,9 +44,9 @@ class Menu(object):
                 if e.key == pygame.K_RETURN:
                     self.executar_funcao()
                 if e.type == QUIT:
-                    self.posicao_atual = 4
+                    self.posicao_atual = 5
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
-                    self.posicao_atual = 4
+                    self.posicao_atual = 5
         if self.posicao_atual > len(self.funcoes):
             self.posicao_atual = 1
         if self.posicao_atual < 1:
@@ -78,8 +78,69 @@ class Menu(object):
             self.ranking()
         elif self.posicao_atual == 3:
             pass
+        elif self.posicao_atual == 4:
+            self.configuracoes()
         else:
             self.sair = True
+
+    def configuracoes(self):
+        self.fonte_g = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 66)
+        self.fonte_m = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 40)
+        self.fonte = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 30)
+        self.pos = 1
+        self.reso = ["1024x768", "Tela Cheia", "Voltar"]
+
+        sair = False
+        while not sair:
+            eventos = pygame.event.get()
+            for e in eventos:
+                if e.type == pygame.KEYDOWN:
+                    self.som_menu_item.play()
+                    if e.key == pygame.K_DOWN:
+                        self.pos += 1
+                    if e.key == pygame.K_UP:
+                        self.pos -= 1
+                    if e.key == pygame.K_RETURN:
+                        if self.pos == 1:
+                            self.screen = pygame.display.set_mode((1024, 768))
+                        elif self.pos == 2:
+                            self.screen = pygame.display.set_mode((1024, 768), pygame.FULLSCREEN)
+                        else:
+                            sair = True
+                    if e.type == QUIT:
+                        sair = True
+                    if e.type == KEYDOWN and e.key == K_ESCAPE:
+                        sair = True
+            if self.pos > 3:
+                self.pos = 1
+            if self.posicao_atual < 1:
+                self.pos = 3
+
+            self.screen.blit(self.bg, (0, 0))
+
+            ren_maior = self.fonte_g.render("Configuracoes do JUMP!", 1, self.hcor)
+            self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
+            self.screen.blit(ren_maior, [self.pos_central, 5])
+
+            ren = self.fonte_m.render('Selecione uma Resolucao', 1, self.hcor)
+            self.pos_cen = (self.screen.get_width() - ren.get_rect().width)/2
+            self.screen.blit(ren, [self.pos_cen, 100])
+
+            y = 100
+            cont = 1
+            for i in self.reso:
+                if cont == self.pos:
+                    ren = self.fonte.render(i, 1, self.cor)
+                else:
+                    ren = self.fonte.render(i, 1, self.hcor)
+                self.pos_cen = (self.screen.get_width() - ren.get_rect().width)/2
+                self.screen.blit(ren, [self.pos_cen, y+50])
+                y+=50
+                cont+=1
+
+            ren = self.fonte.render('Pressione ESC para Retornar ao menu principal', 1, self.cor)
+            self.screen.blit(ren, [self.pos_central, self.screen.get_height() - 35])
+            pygame.display.flip()
 
     def ranking(self):
         rank_json = dados.obter_ranking()
