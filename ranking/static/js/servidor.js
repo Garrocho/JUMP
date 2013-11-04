@@ -23,6 +23,12 @@ var fs = require('fs');
 var chokidar = require('chokidar');
 var monitorador = chokidar.watch('../../../dados/arquivos/ranking.json', {persistence:true});
 
+// variáveis referentes a geolocalização
+var app = http.createServer(handler);
+var io = require('socket.io').listen(app);
+var port = 8000;
+var files = new st.Server('../../static');
+
 // Monitora se o arquivo é modificado, caso verdadeiro, envia a todos
 // os clientes conectados no momento o novo ranking.
 monitorador.on('change', function(path) {
@@ -51,7 +57,11 @@ var servidor = http.createServer(function(request, response) {
         fileServer.serve(request, response);
     });
 });
- 
+
+// escuta na porta 8000 para exibição do mapa de geolocalização
+app.listen(port);
+console.log('geolocalização rodando em: http://localhost:'+ port +'/localizacao.html ');
+
 servidor.listen(porta, endereco, function() {
     // chamamos o método 'listen' de 'server' para indicarmos a porta que sera ouvida
     console.log((new Date()) + " Node rodando no endereco " + endereco + " na porta " + porta);
@@ -97,4 +107,21 @@ wsServer.on('request', function(request) {
         // o cliente que se desconectou.
         clientes.splice(index, 1);
     });
+});
+
+// função que recebe uma requisião feita na porta 8000 e devolve o resultado da solicitação
+function handler (request, response) {
+	request.on('end', function() {
+		files.serve(request, response);
+	}).resume();
+}
+
+// captura logs do socket
+io.set('log level', 1);
+
+io.sockets.on('connection', function (socket) {
+
+	socket.on('send:coords', function (data) {
+		socket.broadcast.emit('load:coords', data);
+	});
 });
