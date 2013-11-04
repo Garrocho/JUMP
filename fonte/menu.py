@@ -16,12 +16,13 @@ class Menu(object):
         screen = pygame.display.set_mode((1024, 768))
         dados.executar_musica("menu.ogg", 1.5)
         self.som_menu_item = dados.obter_som('menu_item.ogg')
+        self.bg = dados.carrega_imagem_menu('background_nuvem.png')
         self.screen = screen
         self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 150)
         self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 70)
         self.sair = False
         self.cor = [80, 100, 250]
-        self.hcor = [255, 255, 255]
+        self.hcor = [0, 0, 0]
         self.funcoes = ["Jogar", "Ranking", "Instrucoes", "Sair"]
         self.posicao_atual = 1
 
@@ -35,6 +36,7 @@ class Menu(object):
         eventos = pygame.event.get()
         for e in eventos:
             if e.type == pygame.KEYDOWN:
+                self.som_menu_item.play()
                 if e.key == pygame.K_DOWN:
                     self.posicao_atual += 1
                 if e.key == pygame.K_UP:
@@ -51,7 +53,7 @@ class Menu(object):
             self.posicao_atual = len(self.funcoes)
 
     def desenhar(self):
-        self.screen.fill((0,0,0))
+        self.screen.blit(self.bg, (0, 0))
         ren_maior = self.fonte_grande.render("JUMP!", 1, self.hcor)
         self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
         self.screen.blit(ren_maior, [self.pos_central, 100])
@@ -82,7 +84,7 @@ class Menu(object):
     def ranking(self):
         rank_json = dados.obter_ranking()
 
-        self.screen.fill((0,0,0))
+        self.screen.blit(self.bg, (0, 0))
         self.fonte_g = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 92)
         ren_maior = self.fonte_g.render("Ranking do JUMP!", 1, self.hcor)
         self.pos_central = (self.screen.get_width() - ren_maior.get_rect().width)/2
@@ -124,4 +126,5 @@ class Menu(object):
             eventos = pygame.event.get()
             for e in eventos:
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
+                    self.som_menu_item.play()
                     sair = True
