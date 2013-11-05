@@ -130,12 +130,12 @@ class Jogo:
                 novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5)
                 self.lista_atores[4].add(novo_buraco)
 
-                pos_aux_buraco = [self.pos_buraco[0]-self.lista_imagens['aux_buraco'].get_size()[0]-60, self.pos_buraco[1]]
+                pos_aux_buraco = [self.pos_buraco[0]-self.lista_imagens['aux_buraco'].get_size()[0]-40, self.pos_buraco[1]]
                 aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
                 self.lista_atores[5].add(aux_buraco)
 
                 pos_aux_buraco = [self.pos_buraco[0]+self.lista_imagens['buraco'].get_size()[0], self.pos_buraco[1]]
-                pos_aux_buraco[0]-=70
+                pos_aux_buraco[0]-=40
                 aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
                 self.lista_atores[5].add(aux_buraco)
 
