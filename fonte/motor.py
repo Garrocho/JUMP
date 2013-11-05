@@ -32,7 +32,8 @@ class Jogo:
             "fundo_caminho": dados.carrega_imagem_menu('background_caminho.png'),
             "fundo_montanha": dados.carrega_imagem_menu('background_montanha.png'),
             "moedas": dados.carrega_imagem_fatias(44, 40, 'moedas.png'),
-            "buraco": dados.carrega_imagem_menu('buraco.png')
+            "buraco": dados.carrega_imagem_menu('buraco.png'),
+            "aux_buraco": dados.carrega_imagem_menu('aux_buraco.png')
         }
 
         # Lista de Sons
@@ -53,6 +54,7 @@ class Jogo:
             atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
             atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
             atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=5),
+            pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(self.jogador),
@@ -125,8 +127,17 @@ class Jogo:
                 nova_moeda = atores.AtorComEfeito(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
                 self.lista_atores[3].add(nova_moeda)
             elif fase[0] == 'B':
-                novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5, som=self.lista_sons["moeda"])
+                novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5)
                 self.lista_atores[4].add(novo_buraco)
+
+                pos_aux_buraco = [self.pos_buraco[0]-self.lista_imagens['aux_buraco'].get_size()[0]-60, self.pos_buraco[1]]
+                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
+                self.lista_atores[5].add(aux_buraco)
+
+                pos_aux_buraco = [self.pos_buraco[0]+self.lista_imagens['buraco'].get_size()[0], self.pos_buraco[1]]
+                pos_aux_buraco[0]-=70
+                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
+                self.lista_atores[5].add(aux_buraco)
 
     def loop(self):
 
@@ -141,7 +152,7 @@ class Jogo:
             # Checa se os Atores se Chocaram.
             self.checar_colisoes()
 
-            # Faca a manutencao do jogo, como criar inimigos, etc.
+            # Faca a manutencao do jogo, como criar obstaculos, etc.
             self.administrar()
 
             # Desenhe os elementos do jogo.
