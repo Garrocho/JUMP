@@ -122,7 +122,7 @@ class AtorComEfeito(pygame.sprite.Sprite):
 
 class AtorSemEfeito(pygame.sprite.Sprite):
 
-    def __init__(self, imagem, posicao, velocidade, som):
+    def __init__(self, imagem, posicao, velocidade, som=None):
         pygame.sprite.Sprite.__init__(self)
         self.som = som
         self.image = imagem
@@ -132,15 +132,13 @@ class AtorSemEfeito(pygame.sprite.Sprite):
         self.area = screen.get_rect()
 
     def update(self):
+        if (self.rect.left+self.image.get_size()[0]) < 0:
+            self.kill()
         self.rect.center = (self.rect.center[0] - 5, self.rect.center[1])
-
-        if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
-            self.kill()
-        if self.rect.bottom < -40:
-            self.kill()
      
     def atingido(self):
-        self.som.play()
+        pass
+        #self.som.play()
 
 
 class Status:
