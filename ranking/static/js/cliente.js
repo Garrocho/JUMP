@@ -16,7 +16,6 @@ window.onload = function(){
                     if(results[1]){
                         var endereco = results[5].formatted_address;
                         setConexao(endereco);
-                        console.log(endereco);
                     }
                 }else{
                     alert("Erro no serviço de geolocalização: " + status);
@@ -39,10 +38,8 @@ var setConexao = function (endereco) {
 	// e retornamos null
 	
 	var dados_localizacao = endereco.split(", ");
-	console.log(dados_localizacao[0]);
 	
     if (!window.WebSocket) {
-        console.log('O seu browser falhou com voce e nao pode abrir essa conexao');
         return null;
     }
  
@@ -52,12 +49,10 @@ var setConexao = function (endereco) {
 
     // 'onopen' é executado quando o cliente é conectado
     conexao.onopen = function () {
-        console.log('conexao aberta')
     };
  
     // 'onerror' é executado sempre que temos um erro na conexão
     conexao.onerror = function (error) {
-        console.log('Erro na conexao');
     };
  
     // 'onmessage' é executado sempre que temos uma mensagem chegando do servidor
@@ -76,7 +71,6 @@ var setConexao = function (endereco) {
                 ordenarPorDistancia(json);
             }
             for (i=0; i < json.length; i++) {
-                console.log(json[i]);
                 $("table#tabela tbody")
                 .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td><a href="http://127.0.0.1:8000/static/localizacao.html">' + dados_localizacao[1] + '</a></td></tr>')
                 .closest("table#tabela")
