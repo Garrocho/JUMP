@@ -109,7 +109,7 @@ class AtorComEfeito(pygame.sprite.Sprite):
         else:
             self.tempo_fatia = self.tempo_fatia - 1
 
-        self.rect.center = (self.rect.center[0] - 5, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - self.velocidade, self.rect.center[1])
 
         if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
             self.kill()
@@ -130,11 +130,12 @@ class AtorSemEfeito(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
+        self.velocidade = velocidade
 
     def update(self):
         if (self.rect.left+self.image.get_size()[0]) < 0:
             self.kill()
-        self.rect.center = (self.rect.center[0] - 5, self.rect.center[1])
+        self.rect.center = (self.rect.center[0] - self.velocidade, self.rect.center[1])
      
     def atingido(self):
         pass
