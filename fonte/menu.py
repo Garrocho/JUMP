@@ -17,7 +17,7 @@ class Menu(object):
         screen = pygame.display.set_mode((1024, 768))
         dados.executar_musica("menu.ogg", 1.5)
         self.som_menu_item = dados.obter_som('menu_item.ogg')
-        self.fundo = atores.Fundo(imagem=dados.carrega_imagem_menu('background_nuvem.png'), tam_px=0.2)
+        self.fundo = atores.Fundo(imagem=dados.carrega_imagem_menu('background_nuvem.png'), tam_px=1)
         self.screen = screen
         self.fonte_grande = pygame.font.Font(dados.carrega_fonte("BLADRMF_.TTF"), 150)
         self.fonte_menor = pygame.font.Font(dados.carrega_fonte("GOODTIME.ttf"), 70)
@@ -26,11 +26,13 @@ class Menu(object):
         self.hcor = [0, 0, 0]
         self.funcoes = ["Jogar", "Ranking", "Instrucoes", "Configuracoes", "Sair"]
         self.posicao_atual = 1
+        self.relogio = pygame.time.Clock()
 
     def loop(self):
         while not self.sair:
             self.atualizar()
             self.desenhar()
+            self.relogio.tick(30)
         pygame.quit()
 
     def atualizar(self):
