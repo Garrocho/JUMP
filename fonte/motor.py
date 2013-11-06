@@ -19,6 +19,7 @@ class Jogo:
     def __init__(self, screen):
         self.screen = screen
         self.screen_size = self.screen.get_size()
+        self.relogio = pygame.time.Clock()
         self.carrega_dados()
 
     def carrega_dados(self):
@@ -51,9 +52,9 @@ class Jogo:
 
         # Lista de Atores
         self.lista_atores = [
-            atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.2),
-            atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=0.5),
-            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=5),
+            atores.Fundo(imagem=self.lista_imagens['fundo_nuvem'], tam_px=0.6),
+            atores.Fundo(imagem=self.lista_imagens['fundo_montanha'], tam_px=2),
+            atores.Fundo(imagem=self.lista_imagens['fundo_caminho'], tam_px=12),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
             pygame.sprite.RenderPlain(),
@@ -124,19 +125,19 @@ class Jogo:
                 self.aguardar_tmp = int(fase[1])
             elif fase[0] == 'M':
                 pos = [self.pos_moeda[0], self.pos_moeda[1]-random.randint(0, 450)]
-                nova_moeda = atores.AtorComEfeito(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=5, som=self.lista_sons["moeda"])
+                nova_moeda = atores.AtorComEfeito(imagem=self.lista_imagens['moedas'], posicao=pos, velocidade=15, som=self.lista_sons["moeda"])
                 self.lista_atores[3].add(nova_moeda)
             elif fase[0] == 'B':
-                novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=5)
+                novo_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['buraco'], posicao=self.pos_buraco, velocidade=15)
                 self.lista_atores[4].add(novo_buraco)
 
                 pos_aux_buraco = [self.pos_buraco[0]-self.lista_imagens['aux_buraco'].get_size()[0]-40, self.pos_buraco[1]]
-                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
+                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=15)
                 self.lista_atores[5].add(aux_buraco)
 
                 pos_aux_buraco = [self.pos_buraco[0]+self.lista_imagens['buraco'].get_size()[0], self.pos_buraco[1]]
                 pos_aux_buraco[0]-=40
-                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=5)
+                aux_buraco = atores.AtorSemEfeito(imagem=self.lista_imagens['aux_buraco'], posicao=pos_aux_buraco, velocidade=15)
                 self.lista_atores[5].add(aux_buraco)
 
     def loop(self):
@@ -160,3 +161,6 @@ class Jogo:
 
             # Por fim atualize o screen do jogo.
             pygame.display.flip()
+
+            # Pausa
+            self.relogio.tick(30)
