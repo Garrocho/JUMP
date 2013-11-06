@@ -36,14 +36,13 @@ class Jogador(pygame.sprite.Sprite):
         self.rect.center = (posicao)
         self.pulando = False
         self.fases_pulo = 0
-        self.tempo_fatia = 1
-        self.tempo_fatia_1 = 4
         self.cont = 0
         self.som = som
         self.status = {"Moedas":0, "Distancia":0}
+        self.cont_pulo = 0
 
     def pular(self):
-        self.fases_pulo = 80
+        self.fases_pulo = 40
         self.pulando = True
         self.image = self.fatias[33]
         self.som.play()
@@ -53,33 +52,30 @@ class Jogador(pygame.sprite.Sprite):
 
     def update(self):
         if not self.pulando and self.cont < 36:
-            if self.tempo_fatia_1 == 0:
-                self.tempo_fatia_1 = 5
-                self.cont+=3
-                self.image = self.fatias[self.cont]
-            else:
-                self.tempo_fatia_1 = self.tempo_fatia_1 - 1
+            self.cont+=3
+            self.image = self.fatias[self.cont]
         else:
             self.cont = 0
             
         # Trata os pulos do jogador
         if self.pulando:
-            if self.tempo_fatia == 0:
-                if self.fases_pulo >= 40:
-                    self.tempo_fatia = 1
-                    self.rect.center = (self.rect.center[0], self.rect.center[1] - 10)
-                    self.fases_pulo = self.fases_pulo - 1
-                elif self.fases_pulo >= -1:
-                    self.image = self.fatias[12]
-                    self.tempo_fatia = 1
-                    self.fases_pulo = self.fases_pulo - 1
-                    self.rect.center = (self.rect.center[0], self.rect.center[1] + 10)
-                else:
-                    self.pulando = False
-                    self.fases_pulo = 0
-                    self.cont = 12
+            if self.fases_pulo >= 20:
+                self.rect.center = (self.rect.center[0]+7, self.rect.center[1] - 20)
+                self.fases_pulo = self.fases_pulo - 1
+                self.cont_pulo += 7
+            elif self.fases_pulo >= -1:
+                self.image = self.fatias[12]
+                self.fases_pulo = self.fases_pulo - 1
+                self.rect.center = (self.rect.center[0]+4, self.rect.center[1] + 20)
+                self.cont_pulo += 4
             else:
-                self.tempo_fatia = self.tempo_fatia - 1
+                self.rect.center = (self.rect.center[0], self.rect.center[1])
+                self.pulando = False
+                self.fases_pulo = 0
+                self.cont = 12
+        elif self.cont_pulo > 0:
+            self.rect.center = (self.rect.center[0]-5, self.rect.center[1])
+            self.cont_pulo-=5
 
 
 class AtorComEfeito(pygame.sprite.Sprite):
@@ -91,30 +87,21 @@ class AtorComEfeito(pygame.sprite.Sprite):
         self.fatias = imagem
         self.rect = self.image.get_rect()
         self.rect.center = (posicao)
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        self.area = pygame.display.get_surface().get_rect()
         self.fatia_atual = -1
         self.fatia_tam = len(self.fatias)-1
-        self.tempo_fatia = velocidade
         self.velocidade = velocidade
 
     def update(self):
-        if self.tempo_fatia == 0:
-            self.tempo_fatia = self.velocidade
-            if self.fatia_atual < self.fatia_tam:
-                self.fatia_atual = self.fatia_atual + 1
-                if self.fatia_atual == self.fatia_tam:
-                    self.fatia_atual = 0
-            self.image = self.fatias[self.fatia_atual]
-        else:
-            self.tempo_fatia = self.tempo_fatia - 1
+        if self.fatia_atual < self.fatia_tam:
+            self.fatia_atual = self.fatia_atual + 1
+            if self.fatia_atual == self.fatia_tam:
+                self.fatia_atual = 0
+        self.image = self.fatias[self.fatia_atual]
 
+        if (self.rect.left+self.image.get_size()[0]) < 0:
+            self.kill()
         self.rect.center = (self.rect.center[0] - self.velocidade, self.rect.center[1])
-
-        if self.rect.left > self.area.right or self.rect.top > self.area.bottom or self.rect.right < 0:
-            self.kill()
-        if self.rect.bottom < -40:
-            self.kill()
      
     def atingido(self):
         self.som.play()
