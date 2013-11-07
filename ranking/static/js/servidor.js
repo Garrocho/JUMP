@@ -27,7 +27,7 @@ var monitorador = chokidar.watch('../../../dados/arquivos/ranking.json', {persis
 var app = http.createServer(handler);
 var io = require('socket.io').listen(app);
 var port = 8000;
-var files = new st.Server('../../.././ranking');
+var files = new st.Server('../.././static');
 
 // Monitora se o arquivo é modificado, caso verdadeiro, envia a todos
 // os clientes conectados no momento o novo ranking.
