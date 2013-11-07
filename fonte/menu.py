@@ -146,6 +146,7 @@ class Menu(object):
             ren = self.fonte.render('Pressione ESC para Retornar ao menu principal', 1, self.cor)
             self.screen.blit(ren, [self.pos_central, self.screen.get_height() - 35])
             pygame.display.flip()
+            self.relogio.tick(30)
 
     def ranking(self):
         rank_json = dados.obter_ranking()
@@ -196,3 +197,4 @@ class Menu(object):
                     if e.key == K_ESCAPE:
                         self.som_menu_item.play()
                         s = True
+            self.relogio.tick(30)
