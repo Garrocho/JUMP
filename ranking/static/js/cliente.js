@@ -6,38 +6,12 @@ var conexao = null;
 
 // depois do carregamento da página, chamamos 'setConexao' e 'setEventos'
 window.onload = function(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(position){
-            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            var geocoder = new google.maps.Geocoder();
-            var endereco;
-            geocoder.geocode({'latLng': pos}, function(results, status){
-                if(status == google.maps.GeocoderStatus.OK){
-                    if(results[1]){
-                        var endereco = results[5].formatted_address;
-                        setConexao(endereco);
-                    }
-                }else{
-                    alert("Erro no serviço de geolocalização: " + status);
-                }
-            });
-            
-            //console.log(dados_localizacao[1]);            
-        }, function(){
-                handleNoGeolocation(true);
-        });
-    }else{
-        // Browser doesn't support Geolocation
-        handleNoGeolocation(false);
-    }   
-    //setConexao();
+    setConexao();
 }
  
-var setConexao = function (endereco) {
+var setConexao = function () {
 	// Se o objeto window.WebSocket não existe, imprimimos uma mensagem no console
 	// e retornamos null
-	
-	var dados_localizacao = endereco.split(", ");
 	
     if (!window.WebSocket) {
         return null;
@@ -57,39 +31,30 @@ var setConexao = function (endereco) {
  
     // 'onmessage' é executado sempre que temos uma mensagem chegando do servidor
     conexao.onmessage = function (message) {
-
         document.getElementById("tabela_elementos").innerHTML="";
         
         // vamos tentar fazer um parse do objeto 'message.data' que é passado como
         // argumento do callback. Caso consigamos uma variável json é criada com
         // o parse de 'message.data', se não, imprimimos no console e retornamos o método.
-        try {
-                var json = JSON.parse(message.data);
-                ordenarPorDistancia(json);
-            } catch (e) {
-                json = JSON.parse(json);
-                ordenarPorDistancia(json);
-            }
-            for (i=0; i < json.length; i++) {
+        try{
+            var json = JSON.parse(message.data);
+            ordenarPorDistancia(json);
+        }catch(e){
+        }
+        if(json != null){
+            for (i=0; i < json.length; i++){
                 $("table#tabela tbody")
-                .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td><a href="http://127.0.0.1:8000/static/localizacao.html">' + dados_localizacao[1] + '</a></td></tr>')
+                .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td><a href="http://localhost:8000/localizacao.html?jogador=' + json[i]["nome"] + '&localizacao=' + json[i]["localizacao"] + '">' + json[i]["localizacao"] + '</a></td></tr>')
                 .closest("table#tabela")
-                .table("refresh")
-                .trigger("create");
-            }
+                //.table("refresh")
+                .trigger("create");   
+            }         
+        }
     };
-}
+};
 
 function ordenarPorDistancia(recorde) {
     recorde.sort(function(a, b) {
-        return (b["distancia"] - a["distancia"]) ;
+        return (b["distancia"] - a["distancia"]);
     });
-}
-
-function handleNoGeolocation(errorFlag) {
-    if(errorFlag) {
-        var content = 'Erro no serviço de geolocaliazção.';
-    }else{
-        var content = 'Seu navegador não suporta o serviço de geolocalização.';
-    }
 }
