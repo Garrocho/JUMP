@@ -43,14 +43,19 @@ var setConexao = function () {
         }
         if(json != null){
             for (i=0; i < json.length; i++){
-                $("table#tabela tbody")
-                if(json[i]["cidade"] == 'None' || json[i]["cidade"] == ''):
+                if(json[i]["cidade"] == 'None' || json[i]["cidade"] == ''){
+                    $("table#tabela tbody")
                     .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td> - </td></tr>')
-                else:
+                    .closest("table#tabela")
+                    //.table("refresh")
+                    .trigger("create");
+                }else{
+                    $("table#tabela tbody")
                     .append('<tr><th>' + (i+1) + '</th><td>' + json[i]["nome"] + ' </td><td>' + json[i]["distancia"] + '</td><td>' + json[i]["moedas"] + '</td><td><a href="http://localhost:8000/localizacao.html?jogador=' + json[i]["nome"] + '&localizacao=' + json[i]["cidade"] + '">' + json[i]["cidade"] + '</a></td></tr>')
-                .closest("table#tabela")
-                //.table("refresh")
-                .trigger("create");   
+                    .closest("table#tabela")
+                    //.table("refresh")
+                    .trigger("create");
+                }
             }         
         }
     };
