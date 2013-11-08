@@ -80,6 +80,7 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
     </code>        
 
   6. Crie um script para consultas do banco de daods do GeoIP (caso não tenha a pasta examples crie-a)
+  
     <code>
         vim /usr/share/doc/libgeoip1/examples/geolitecityupdate.sh
     </code>
@@ -112,6 +113,7 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
 
     
   8. Copie o arquivo GeoIPCity.dat para a pasta do GeoIP (o arquivo GeoIPCity.dat está localizado no diretório dados do projeto JUMP)
+  
       <code>
         sudo cp /dados/GeoIPCity.dat /usr/share/GeoIP/.
       </code>
