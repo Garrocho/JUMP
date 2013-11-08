@@ -1,6 +1,9 @@
 import os
 import json
 import pygame
+import requests
+import re
+import GeoIP
 from os.path import join as join_path
 
 
@@ -97,21 +100,30 @@ def carrega_mapa(posicao):
     except:
         return None
 
+def obter_localizacao():
+    # obtem as coordenadas do jogador a partir do ip da maquina
+    geolocalizacao = GeoIP.open("/usr/share/GeoIP/GeoLiteCity.dat",GeoIP.GEOIP_STANDARD)
+    ip_externo = str(re.findall(r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' ,requests.get("http://www.telize.com/ip").text)[0])
+    dados = geolocalizacao.record_by_addr(ip_externo)
+    return dados.get('city')
 
 def add_jogador_ranking(nome, distancia, moedas):
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json')).read()
+    cidade = obter_localizacao()
     if len(arq_ranking) > 10:
         json_ranking = json.loads(arq_ranking)
-        json_ranking.append({'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas)})
+        json_ranking.append({'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas), 'cidade' : str(cidade)})
         json_ranking = json.dumps(json_ranking)
     else:
-        json_ranking = json.dumps([{'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas)}])
+        json_ranking = json.dumps([{'nome': nome, 'distancia': str(distancia), 'moedas' : str(moedas), 'cidade' : str(cidade)}])
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json'), 'w')
     arq_ranking.write(json_ranking)
     arq_ranking.close()
 
 
 def obter_ranking():
+    requisicao = requests.open()
+    a = re.findall(r'<td>(.[0-9]{2}\.[0-9]{4,6})\,.(.[0-9]{2}\.[0-9]{4,6})', r.text)
     arq_ranking = open(endereco_arquivo('arquivos', 'ranking.json')).read()
     if len(arq_ranking) < 7:
         return None
@@ -120,7 +132,6 @@ def obter_ranking():
         arq_json = sorted(arq_json, cmp=comparacao)
         arq_json.reverse()
         return arq_json
-
 
 def comparacao(x, y):
     return int(x['distancia']) - int(y['distancia'])
