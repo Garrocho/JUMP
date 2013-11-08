@@ -85,7 +85,7 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
     </code>
     
   7. Conteúdo do script geolitecityupdate.sh
-    <code>
+
         #!/bin/shGUNZIP="/bin/gunzip"
         MAXMINDURL="http://geolite.maxmind.com/download/geoip/database/"
         WGET="/usr/bin/wget -q -O -"
@@ -109,7 +109,7 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
         exit 1
         fi
         exit 0
-    </code>
+
     
   8. Copie o arquivo GeoIPCity.dat para a pasta do GeoIP (o arquivo GeoIPCity.dat está localizado no diretório dados do projeto JUMP)
       <code>
