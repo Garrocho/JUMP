@@ -1,0 +1,91 @@
+<html>
+    <script src="phaser.js"></script>
+    <script type="text/javascript">
+
+        var game = new Phaser.Game(1024, 425, Phaser.AUTO, '', { preload: preload, create: create, update: update});
+        var fundo1, fundo2;
+        var corredor;
+        var texto;
+        var moedas = new Array();
+        var grupo;
+        var contador;
+        var normal;
+        
+        function preload() {
+             game.load.image('fundo1', './deserto/montanha.png');
+             game.load.image('fundo2', './deserto/caminho.png');
+             game.load.spritesheet('moeda', 'moedas.png', 44, 40, 10);
+             game.load.spritesheet('correndo', 'correndo.png', 75, 132, 14);
+        }
+        
+        function create() {
+            fundo1 = game.add.tileSprite(0, 0, 1024, 256, 'fundo1');
+            fundo2 = game.add.tileSprite(0, 170, 1024, 256, 'fundo2');
+            corredor = game.add.sprite(150, 10, 'correndo');
+            corredor.animations.add('correr');
+            corredor.animations.play('correr', 15, true);
+            corredor.pixelPerfect = true;
+            grupo = game.add.group();
+
+            for (var i = 0; i < 50; i++)
+            {
+                moeda = grupo.create(500+i*850, 360, 'moeda');
+                moeda.animations.add('transicao');
+                moeda.animations.play('transicao', 10, true);
+                moeda.pixelPerfect = true;
+                moedas[moedas.length] = moeda;
+            }
+
+            contador = 0;
+            normal = false;
+
+            texto = game.add.text(10, 10, "Moedas: " + contador, {
+                font: "20px Arial",
+                fill: "#ff0044",
+                align: "center"
+            });
+        }
+        
+        function update() {
+
+            fundo1.tilePosition.x -= 0.7;
+            fundo2.tilePosition.x -= 2.5;
+            corredor.body.velocity.x = 0;
+            corredor.body.velocity.y = 0;
+
+            for (i=0; i < moedas.length; i++)
+                moedas[i].body.velocity.x = -150;
+
+            if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+            {
+                corredor.body.velocity.y = -300;
+                normal = false;
+            }
+            else if (!normal && corredor.body.y < 220) {
+                corredor.body.velocity.y = corredor.body.y + 220;
+                if (corredor.body.y == 220)
+                    normal = true;
+            }
+
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
+            {
+                corredor.body.velocity.y = 250;
+                normal = false;
+            }
+            else if (!normal && corredor.body.y > 220) {
+                corredor.body.velocity.y = 220 - corredor.body.y;
+                if (corredor.body.y == 220)
+                    normal = true;
+            }
+
+            game.physics.collide(corredor, grupo, tratador_colisao, null, this);
+        }
+
+        function tratador_colisao(obj1, obj2) {
+            obj2.kill();
+            contador++;
+            texto.setText("Moedas: " + contador);
+        }
+
+    </script>
+</html>
