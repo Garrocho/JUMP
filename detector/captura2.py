@@ -6,6 +6,7 @@
 
 import cv2
 import numpy as np
+import sys
 
 def getThresholdedImage(hsv):
     #min_yellow = np.array((20, 100, 100), np.uint8)
@@ -39,7 +40,9 @@ movimento = 0  # 0 = parado, 1 subindo, -1 descendo, 2 agachado
 # linha vermelha
 #dentro_espaco = False
 
-c = cv2.VideoCapture(1)
+id_camera = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+
+c = cv2.VideoCapture(id_camera)
 if not c.isOpened():
     print 'Erro: Nao foi possivel ter acesso a camera'
     exit(0)
