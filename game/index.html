@@ -10,12 +10,14 @@
         var grupo;
         var contador;
         var normal;
+        var audio_moeda;
         
         function preload() {
              game.load.image('fundo1', './deserto/montanha.png');
              game.load.image('fundo2', './deserto/caminho.png');
              game.load.spritesheet('moeda', 'moedas.png', 44, 40, 10);
              game.load.spritesheet('correndo', 'correndo.png', 75, 132, 14);
+             game.load.audio('musica', ['assets/sons/fase_1.wav']);
         }
         
         function create() {
@@ -44,6 +46,8 @@
                 fill: "#ff0044",
                 align: "center"
             });
+            music = game.add.audio('musica',1,true);
+            music.play('jogo.mp3', 0, 1, true);
         }
         
         function update() {
