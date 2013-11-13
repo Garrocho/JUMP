@@ -2,40 +2,54 @@
     <script src="phaser.js"></script>
     <script type="text/javascript">
 
-        var game = new Phaser.Game(1024, 425, Phaser.AUTO, '', { preload: preload, create: create, update: update});
+        var game = new Phaser.Game(1024, 470, Phaser.AUTO, '', { preload: preload, create: create, update: update});
         var fundo1, fundo2;
         var corredor;
         var texto;
         var moedas = new Array();
+        var inimigos = new Array();
         var grupo;
         var contador;
         var normal;
         var audio_moeda;
         
         function preload() {
-             game.load.image('fundo1', './deserto/montanha.png');
-             game.load.image('fundo2', './deserto/caminho.png');
+             game.load.image('fundo1', './deserto/nuvem.png');
+             game.load.image('fundo2', './deserto/montanha.png');
+             game.load.image('fundo3', './deserto/caminho.png');
              game.load.spritesheet('moeda', 'moedas.png', 44, 40, 10);
              game.load.spritesheet('correndo', 'correndo.png', 75, 132, 14);
+             game.load.spritesheet('inimigo', 'inimigo_morte.png', 86, 132, 11);
+             //game.load.spritesheet('inimigo', 'inimigo_andando.png', 85, 132, 8);
              game.load.audio('musica', ['assets/sons/fase_1.wav']);
         }
         
         function create() {
             fundo1 = game.add.tileSprite(0, 0, 1024, 256, 'fundo1');
-            fundo2 = game.add.tileSprite(0, 170, 1024, 256, 'fundo2');
+            fundo2 = game.add.tileSprite(0, 40, 1024, 256, 'fundo2');
+            fundo3 = game.add.tileSprite(0, 215, 1024, 256, 'fundo3');
             corredor = game.add.sprite(150, 10, 'correndo');
             corredor.animations.add('correr');
             corredor.animations.play('correr', 15, true);
-            corredor.pixelPerfect = true;
+            corredor.animations.pixelPerfect = true;
             grupo = game.add.group();
 
             for (var i = 0; i < 50; i++)
             {
-                moeda = grupo.create(500+i*850, 360, 'moeda');
-                moeda.animations.add('transicao');
-                moeda.animations.play('transicao', 10, true);
-                moeda.pixelPerfect = true;
-                moedas[moedas.length] = moeda;
+                if (i%2 == 0) {
+                    ator = grupo.create(500+i*850, 430, 'moeda');
+                    ator.animations.add('transicao');
+                    ator.animations.play('transicao', 10, true);
+                    ator.animations.pixelPerfect = true;
+                    moedas[moedas.length] = ator;
+                }
+                else {
+                    ator = grupo.create(500+i*850, 270, 'inimigo');
+                    ator.animations.add('transicao');
+                    ator.animations.play('transicao', 5, true);
+                    ator.animations.pixelPerfect = true;
+                    inimigos[inimigos.length] = ator;
+                }
             }
 
             contador = 0;
@@ -52,33 +66,37 @@
         
         function update() {
 
-            fundo1.tilePosition.x -= 0.7;
-            fundo2.tilePosition.x -= 2.5;
+            fundo1.tilePosition.x -= 0.5;
+            fundo2.tilePosition.x -= 1;
+            fundo3.tilePosition.x -= 2;
             corredor.body.velocity.x = 0;
             corredor.body.velocity.y = 0;
 
             for (i=0; i < moedas.length; i++)
-                moedas[i].body.velocity.x = -150;
+                moedas[i].body.velocity.x = -120;
+
+            for (i=0; i < inimigos.length; i++)
+                inimigos[i].body.velocity.x = -120;
 
             if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
             {
-                corredor.body.velocity.y = -300;
+                corredor.body.velocity.y = -600;
                 normal = false;
             }
-            else if (!normal && corredor.body.y < 220) {
-                corredor.body.velocity.y = corredor.body.y + 220;
-                if (corredor.body.y == 220)
+            else if (!normal && corredor.body.y < 270) {
+                corredor.body.velocity.y = corredor.body.y + 270;
+                if (corredor.body.y == 270)
                     normal = true;
             }
 
             else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
             {
-                corredor.body.velocity.y = 250;
+                corredor.body.velocity.y = 300;
                 normal = false;
             }
-            else if (!normal && corredor.body.y > 220) {
-                corredor.body.velocity.y = 220 - corredor.body.y;
-                if (corredor.body.y == 220)
+            else if (!normal && corredor.body.y > 270) {
+                corredor.body.velocity.y = 270 - corredor.body.y;
+                if (corredor.body.y == 270)
                     normal = true;
             }
 
