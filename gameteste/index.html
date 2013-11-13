@@ -5,9 +5,10 @@
     var game = new Phaser.Game(1024, 800, Phaser.CANVAS, 'Agachar e Pular', { preload: preload, create: create, update: update });
 
     function preload() {
-        game.load.tilemap('mapa', 'mapa.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('mapa', 'novo_mapa.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.tileset('deserto', 'deserto.png', 32, 32, -1, 1, 1);
-        game.load.image('mato', 'mato.png');
+        game.load.spritesheet('corredor', 'corredor.png', 23.28, 40, 14);
+	game.load.image('agachado', 'agachar.png');
     }
 
     var mapa;
@@ -15,6 +16,7 @@
     var camada;
     var cursores;
     var jogador;
+    var agachado;
 
     function create() {
 
@@ -27,12 +29,14 @@
         camada = game.add.tilemapLayer(0, 0, 1024, 800, tileset, mapa, 0);
 
         camada.resizeWorld();
+	agachado = false;
 
-        jogador = game.add.sprite(150, 550, 'mato');
+        jogador = game.add.sprite(100, 735, 'corredor');
         jogador.anchor.setTo(0.5, 0.5);
+	jogador.animations.add('correr');
+        jogador.animations.play('correr', 15, true);
 
         game.camera.follow(jogador);
-
         cursores = game.input.keyboard.createCursorKeys();
     }
 
@@ -45,10 +49,18 @@
         if (cursores.up.isDown)
         {
             jogador.body.velocity.y = -100;
+	    
         }
         else if (cursores.down.isDown)
         {
             jogador.body.velocity.y = 100;
+	    if (!agachado) {
+		    agachado = true;
+		    x = jogador.body.x;
+		    y = jogador.body.y;
+		    jogador.kill();
+		    jogador = game.add.sprite(x, y, 'agachado');
+		}
         }
 
         if (cursores.left.isDown)
