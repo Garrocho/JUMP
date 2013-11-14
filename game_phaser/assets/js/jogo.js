@@ -2,12 +2,11 @@ var game = new Phaser.Game(1024, 645, Phaser.AUTO, '', { preload: preload, creat
 var fundo1, fundo2;
 var corredor;
 var texto;
-var moedas = new Array();
-var inimigos = new Array();
 var grupo;
 var contador;
 var normal;
-var audio_moeda;
+var inimigos = new Array();
+var moedas = new Array();
 
 function preload() {
      game.load.image('nuvem', 'assets/img/nuvem.png');
@@ -22,7 +21,7 @@ function preload() {
 function create() {
     fundo1 = game.add.tileSprite(0, 0, 1024, 512, 'nuvem');
     fundo2 = game.add.tileSprite(0, 200, 1024, 512, 'montanha');
-    corredor = game.add.sprite(150, 10, 'correndo');
+    corredor = game.add.sprite(250, 10, 'correndo');
     corredor.animations.add('correr');
     corredor.animations.play('correr', 15, true);
     corredor.animations.pixelPerfect = true;
@@ -30,27 +29,6 @@ function create() {
     corredor.body.bounce.y = 0.4;
     corredor.body.collideWorldBounds = true;
     grupo = game.add.group();
-
-    for (var i = 0; i < 50; i++)
-    {
-        if (i%2 == 0) {
-            ator = grupo.create(500+i*850, 512, 'moeda');
-            ator.animations.add('transicao');
-            ator.animations.play('transicao', 10, true);
-            ator.animations.pixelPerfect = true;
-            moedas[moedas.length] = ator;
-        }
-        else {
-            ator = grupo.create(500+i*850, 270, 'inimigo');
-            ator.animations.add('transicao');
-            ator.animations.play('transicao', 5, true);
-            ator.animations.pixelPerfect = true;
-            ator.body.gravity.y = 10;
-            ator.body.bounce.y = 0.4;
-            ator.body.collideWorldBounds = true;
-            inimigos[inimigos.length] = ator;
-        }
-    }
 
     contador = 0;
     normal = false;
@@ -60,41 +38,52 @@ function create() {
         fill: "#ff0044",
         align: "center"
     });
-    //music = game.add.audio('musica',1,true);
-    //music.play('jogo.mp3', 0, 1, true);
-    //game.stage.scale.startFullScreen();
     cursors = game.input.keyboard.createCursorKeys();
+    criar_ator(moedas, 'moeda', 2024, 580);
+    criar_ator(inimigos, 'inimigo', 1024, 580);
 }
 
 function update() {
-
     fundo1.tilePosition.x -= 0.5;
     fundo2.tilePosition.x -= 1;
-    //corredor.body.velocity.x = 0;
-    //corredor.body.velocity.y = 0;
-
-    for (i=0; i < moedas.length; i++)
-        moedas[i].body.velocity.x = -120;
-
-    for (i=0; i < inimigos.length; i++)
-        inimigos[i].body.velocity.x = -120;
 
     corredor.body.velocity.x = 0;
 
     if (cursors.up.isDown)
     {
-            corredor.body.velocity.y = -400;
+        corredor.body.velocity.y = -400;
     }
-    else if (cursors.down.isDown)
-    {
-        // game.camera.y += 4;
-    }
-
+    atualiza_atores();
     game.physics.collide(corredor, grupo, tratador_colisao, null, this);
 }
 
 function tratador_colisao(obj1, obj2) {
-    obj2.kill();
-    contador++;
-    texto.setText("Moedas: " + contador);
+    if (obj2.name === 'moeda'){
+        obj2.kill();
+        contador++;
+        texto.setText("Moedas: " + contador);
+        criar_ator(moedas, 'moeda', 1024, 380);
+    }
+    else
+    {
+        obj1.kill();
+        texto.setText("Game Over");
+    }
+}
+
+function criar_ator(grupo_ator, nome_ator, x, y) {
+    var ator = grupo.create(x, y, nome_ator);
+    ator.name = nome_ator;
+    ator.animations.add('correr');
+    ator.animations.play('correr', 5, true);
+    ator.animations.pixelPerfect = true;
+    grupo_ator[grupo_ator.length] = ator;
+}
+
+function atualiza_atores() {
+    for (i=0; i < inimigos.length; i++)
+        inimigos[i].body.velocity.x = -150;
+
+    for (i=0; i < moedas.length; i++)
+        moedas[i].body.velocity.x = -150;
 }
