@@ -7,7 +7,7 @@ html, body
 
 canvas
 {
-	margin: auto;
+	margin: 100px auto;
 }
 
 a
@@ -23,6 +23,7 @@ a
 	text-decoration: none;
 	color: #FFF;
 	padding: 15px;
+	margin-top: 20px;
 	text-align: center;
 	border-radius: 10px;
 	font-size: 24px;
