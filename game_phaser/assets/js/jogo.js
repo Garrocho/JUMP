@@ -9,7 +9,6 @@ var inimigos = new Array();
 var moedas = new Array();
 var qtde_moedas;
 var som_moeda, som_pulo;
-var pos_atual;
 
 function preload() {
      game.load.image('nuvem', 'assets/img/nuvem.png');
@@ -35,9 +34,11 @@ function create() {
     corredor.body.collideWorldBounds = true;
     grupo = game.add.group();
     qtde_moedas = 0;
+    pulando = false;
 
     contador = 0;
     normal = false;
+    cont_pulo = 4800;
 
     texto = game.add.text(10, 10, "Moedas: " + contador, {
         font: "20px Arial",
@@ -46,13 +47,13 @@ function create() {
     });
     cursors = game.input.keyboard.createCursorKeys();
     //criar_ator(moedas, 'moeda', 1024, 580);
-    criar_ator(inimigos, 'inimigo', 2024, 580);
+    criar_ator(inimigos, 'inimigo', 2024, 650);
     
     musica = game.add.audio('musica',1,true);
     som_moeda = game.add.audio('moeda',1,true);
     som_pulo = game.add.audio('pulo',1,true);
     administrar_moedas();
-    //musica.play('',0,1,true);
+    musica.play('',0,1,true);
     game.stage.scale.startFullScreen();
 }
 
@@ -63,17 +64,17 @@ function update() {
 
     corredor.body.velocity.x = 0;
 
-    if (cursors.up.isDown)
+    if (cursors.up.isDown && corredor.body.y >= 580)
     {
         som_pulo.play();
-        corredor.body.velocity.y = -400;
-        pos_atual += 200;
-        corredor.body.velocity.x = 200;
+        var pulo = game.add.tween(corredor);
+        pulo.to({ y: 400 }, 500, Phaser.Easing.Linear.None, false);
+        pulo.to({ y: 300 }, 600, Phaser.Easing.Linear.None, false);
+        pulo.to({ y: 400 }, 600, Phaser.Easing.Linear.None, false);
+        pulo.to({ y: 580 }, 500, Phaser.Easing.Linear.None, false);
+        pulo.start();
     }
-    else if (pos_atual >= 0) {
-        corredor.body.velocity.x = -300;
-        pos_atual -= 300;
-    }
+
     administra_atores(inimigos, 'inimigo');
     administra_atores(moedas, 'moeda');
     administrar_moedas();
@@ -101,7 +102,7 @@ function administrar_moedas() {
         x = game.rnd.integerInRange(2, 10);
         eixox = 1024;
         for (i=0; i < x; i++) {
-            criar_ator(moedas, 'moeda', eixox, 300);
+            criar_ator(moedas, 'moeda', eixox, 400);
             eixox+=50;
             qtde_moedas++;
         }
@@ -123,7 +124,7 @@ function administra_atores(grupo_ator, nome_ator) {
         if (grupo_ator[i].body.x < -150) {
             grupo_ator[i].kill();
             grupo_ator.splice(i, 1);
-            criar_ator(grupo_ator, nome_ator, 1024, 580);
+            criar_ator(grupo_ator, nome_ator, 1024, 650);
         }
     }
 }
