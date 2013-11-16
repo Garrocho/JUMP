@@ -37,6 +37,7 @@ BasicGame.Jogo.prototype = {
         this.pulando = false;
         this.agachado = false;
         this.contador = 0;
+        this.kmh = 5;
         this.pulando = false;
         this.aux_pulo = 0;
         
@@ -44,8 +45,14 @@ BasicGame.Jogo.prototype = {
         this.moeda_cont.animations.add('correr');
         this.moeda_cont.animations.play('correr', 10, true);
         
+        this.corredor_cont = this.add.sprite(120, 10, 'correndo_min');
+        this.corredor_cont.animations.add('correr');
+        this.corredor_cont.animations.play('correr', 10, true);
+        
         this.estilo = { font: "bold 20pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 3 };
-        this.texto2 = this.add.text(80, 30, "999", this.estilo);
+        this.texto1 = this.add.text(220, 30, "5 Km/h", this.estilo);
+        this.texto1.anchor.setTo(0.5, 0.5);
+        this.texto2 = this.add.text(80, 30, "0", this.estilo);
         this.texto2.anchor.setTo(0.5, 0.5);
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -60,11 +67,13 @@ BasicGame.Jogo.prototype = {
 
 	update: function () {
 	    this.ver_level++;
-	    if (this.ver_level == 500) {
-	        this.velocidade[0] += 0.25;
-	        this.velocidade[1] += 0.5;
-	        this.velocidade[2] += 1;
+	    if (this.ver_level == 100) {
+	        this.velocidade[0] += 0.05;
+	        this.velocidade[1] += 0.10;
+	        this.velocidade[2] += 0.20;
 	        this.ver_level = 0;
+	        this.kmh++;
+	        this.texto1.setText(this.kmh + " Km/h");
 	    }
 	     
         this.fundo1.tilePosition.x -= this.velocidade[0];
