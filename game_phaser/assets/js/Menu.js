@@ -16,8 +16,7 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-130, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-		this.jogar = this.add.button(this.world.centerX - 150, 400, 'botao_jogar', this.startGame, this, 2, 1, 0);
-		this.sair = this.add.button(this.world.centerX - 150, 470, 'botao_sair', this.startGame, this, 2, 1, 0);
+		this.jogar = this.add.button(this.world.centerX - 150, 500, 'botao_jogar', this.startGame, this, 2, 1, 0);
 	},
 
 	update: function () {
