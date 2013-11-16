@@ -34,7 +34,7 @@ BasicGame.Jogo.prototype = {
         this.jogador.body.collideWorldBounds = true;
         this.grupo = this.add.group();
         this.pulando = false;
-        this.jogador.scale.x = -1;
+        //this.jogador.scale.x = -1;
         this.contador = 0;
         this.pulando = false;
         this.aux_pulo = 0;
@@ -47,7 +47,6 @@ BasicGame.Jogo.prototype = {
         this.musica = this.add.audio('musica',1,true);
         this.som_moeda = this.add.audio('moeda',1,true);
         this.som_pulo = this.add.audio('pulo',1,true);
-        this.administrar_moedas();
         this.musica.play('',0,1,true);
         this.stage.scale.startFullScreen();
         this.ver_level = 0;
