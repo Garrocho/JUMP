@@ -36,15 +36,18 @@ BasicGame.Jogo.prototype = {
         this.fabrica = this.add.group();
         this.pulando = false;
         this.agachado = false;
-        //this.jogador.scale.x = -1;
         this.contador = 0;
         this.pulando = false;
         this.aux_pulo = 0;
-        this.texto2 = this.add.text(10, 10, "Moedas: " + this.contador, {
-            font: "20px Arial",
-            fill: "#ff0044",
-            align: "center"
-        });
+        
+        this.moeda_cont = this.add.sprite(10, 10, 'moeda');
+        this.moeda_cont.animations.add('correr');
+        this.moeda_cont.animations.play('correr', 10, true);
+        
+        this.estilo = { font: "bold 20pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 3 };
+        this.texto2 = this.add.text(80, 30, "999", this.estilo);
+        this.texto2.anchor.setTo(0.5, 0.5);
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.som_musica = this.add.audio('som_musica',1,true);
         this.som_moeda = this.add.audio('som_moeda',1,true);
@@ -139,7 +142,7 @@ BasicGame.Jogo.prototype = {
             this.som_moeda.play();
             obj2.kill();
             this.contador++;
-            this.texto2.setText("Moedas: " + this.contador);
+            this.texto2.setText(this.contador);
         }
         else
         {
