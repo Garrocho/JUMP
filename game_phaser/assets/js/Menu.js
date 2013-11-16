@@ -8,7 +8,7 @@ BasicGame.Menu.prototype = {
 	create: function () {
 	    this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
 	    this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
-		this.musica = this.add.audio('musica');
+		this.musica = this.add.audio('som_musica');
 		this.musica.play('',0,1,true);
 		this.estilo = { font: "bold 150pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
 		this.estilo2 = { font: "bold 22pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 5 };
