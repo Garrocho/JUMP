@@ -19,6 +19,7 @@ BasicGame.PreCarregamento.prototype = {
 		this.load.image('nuvem', 'assets/img/nuvem.png');
         this.load.image('montanha', 'assets/img/montanha.png');
         this.load.image('caminho', 'assets/img/caminho.png');
+        this.load.image('agachado', 'assets/img/agachado.png');
         this.load.spritesheet('moeda', 'assets/img/moedas.png', 44, 40, 10);
         this.load.spritesheet('botao_jogar', 'assets/img/botao_jogar.png', 250, 60);
         this.load.spritesheet('botao_sair', 'assets/img/botao_sair.png', 250, 60);
@@ -26,9 +27,11 @@ BasicGame.PreCarregamento.prototype = {
         this.load.spritesheet('correndo', 'assets/img/correndo2.png', 58.71, 100);
         //this.load.spritesheet('pulando', 'assets/img/pulando.png', 100, 100);
         this.load.spritesheet('pulando', 'assets/img/pulando2.png', 57.2, 100);
-        this.load.spritesheet('inimigo', 'assets/img/inimigo.png', 75, 65, 4);
-        this.load.audio('musica', ['assets/sons/fase_1.wav']);
-        this.load.audio('pulo', ['assets/sons/pulo.ogg']);
+        //this.load.spritesheet('inimigo', 'assets/img/inimigo.png', 75, 65);
+        this.load.spritesheet('inimigo', 'assets/img/passaro.png', 74.9, 72);
+        this.load.audio('som_musica', ['assets/sons/fase_1.wav']);
+        this.load.audio('som_moeda', ['assets/sons/moeda.wav']);
+        this.load.audio('som_pulo', ['assets/sons/pulo.ogg']);
 	},
 
 	create: function () {
@@ -37,7 +40,7 @@ BasicGame.PreCarregamento.prototype = {
 
 	update: function () {
 		
-		if (this.cache.isSoundDecoded('musica') && this.ready == false)
+		if (this.cache.isSoundDecoded('som_musica') && this.ready == false)
 		{
 			this.ready = false;
 			this.game.state.start('Menu');
