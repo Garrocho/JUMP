@@ -15,6 +15,7 @@ BasicGame.Jogo = function (game) {
     this.physics;
     this.rnd;
     this.moedas = new Array();
+    this.inimigos = new Array();
     this.velocidade = new Array();
 };
 
@@ -32,8 +33,9 @@ BasicGame.Jogo.prototype = {
         this.jogador.animations.play('correr', 10, true);
         this.jogador.animations.pixelPerfect = true;
         this.jogador.body.collideWorldBounds = true;
-        this.grupo = this.add.group();
+        this.fabrica = this.add.group();
         this.pulando = false;
+        this.agachado = false;
         //this.jogador.scale.x = -1;
         this.contador = 0;
         this.pulando = false;
@@ -44,12 +46,13 @@ BasicGame.Jogo.prototype = {
             align: "center"
         });
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.musica = this.add.audio('musica',1,true);
-        this.som_moeda = this.add.audio('moeda',1,true);
-        this.som_pulo = this.add.audio('pulo',1,true);
-        this.musica.play('',0,1,true);
+        this.som_musica = this.add.audio('som_musica',1,true);
+        this.som_moeda = this.add.audio('som_moeda',1,true);
+        this.som_pulo = this.add.audio('som_pulo',1,true);
+        this.som_musica.play('',0,1,true);
         this.stage.scale.startFullScreen();
         this.ver_level = 0;
+        this.ultimo_eixo_x = 1024;
 	},
 
 	update: function () {
@@ -66,8 +69,26 @@ BasicGame.Jogo.prototype = {
         this.fundo3.tilePosition.x -= this.velocidade[2];
         this.jogador.body.velocity.x = 0;
         this.jogador.body.velocity.y = 0;
+        
+        if (this.cursors.down.isDown && !this.pulando)
+        {
+            if (!this.agachado) {
+                this.som_pulo.play();
+                this.agachado = true;
+            }
+            this.jogador.loadTexture('agachado', 0);
+            this.jogador.body.y=650;
+        }
+        else if (this.cursors.down.isUp && this.agachado) {
+            this.som_pulo.play();
+            this.agachado = false;
+            this.jogador.loadTexture('correndo', 0);
+            this.jogador.animations.add('correr');
+            this.jogador.animations.pixelPerfect = true;
+            this.jogador.animations.play('correr', 10, true);
+        }
 
-        if (this.cursors.up.isDown && !this.pulando)
+        if (this.cursors.up.isDown && !this.pulando && !this.agachado)
         {
             this.som_pulo.play();
             this.pulando = true;
@@ -78,7 +99,7 @@ BasicGame.Jogo.prototype = {
         }
 
         if (this.pulando) {
-            if (this.aux_pulo == 6000) {
+            if (this.aux_pulo == 8000) {
                 this.aux_pulo = 0;
                 this.pulando = false;
                 this.jogador.loadTexture('correndo', 0);
@@ -87,10 +108,14 @@ BasicGame.Jogo.prototype = {
                 this.jogador.animations.play('correr', 10, true);
             }
             else {
-                if (this.aux_pulo <= 2600)
+                if (this.aux_pulo <= 3600) {
                     this.jogador.body.velocity.y = -500;
-                else
+                    this.jogador.body.velocity.x = 50;
+                }
+                else {
                     this.jogador.body.velocity.y = 400;
+                    this.jogador.body.velocity.x = 50;
+                }
                 this.aux_pulo+= 100;
             }
         }
@@ -99,19 +124,19 @@ BasicGame.Jogo.prototype = {
                 this.jogador.body.velocity.y = -Math.abs(600-this.jogador.y);
             else
                 this.jogador.body.velocity.y = Math.abs(600-this.jogador.y);
+            if (this.jogador.body.x > 250)
+                this.jogador.body.velocity.x = -Math.abs(250-this.jogador.x);
+            else
+                this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         }
-
-        if (this.jogador.body.x > 250)
-            this.jogador.body.velocity.x = -Math.abs(250-this.jogador.x);
-        else
-            this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
-        this.administrar_moedas();
-        this.physics.collide(this.jogador, this.grupo, this.tratador_colisao, null, this);
+        this.administrar_grupo(this.moedas, 'moeda', 50, 5, 10, 300);
+        this.administrar_grupo(this.inimigos, 'inimigo', 100, 5, 10, 550);
+        this.physics.collide(this.jogador, this.fabrica, this.tratador_colisao, null, this);
 	},
 	
 	tratador_colisao: function (obj1, obj2) {
 	    if (obj2.name === 'moeda'){
-            this.som_pulo.play();
+            this.som_moeda.play();
             obj2.kill();
             this.contador++;
             this.texto2.setText("Moedas: " + this.contador);
@@ -123,25 +148,37 @@ BasicGame.Jogo.prototype = {
         }
 	},
 	
-    administrar_moedas: function () {
-        if (this.moedas.length <= 1) {
-            this.x = this.rnd.integerInRange(2, 10);
-            this.eixox = 1024;
-            for (i=0; i < this.x; i++) {
-                this.ator = this.grupo.create(this.eixox, 500, 'moeda');
-                this.ator.name = 'moeda';
-                this.ator.animations.add('correr');
-                this.ator.animations.play('correr', 10, true);
-                this.ator.body.pixelPerfect = true;
-                this.moedas[this.moedas.length] = this.ator;
-                this.eixox+=50;
+    administrar_grupo: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
+        if (grupo.length <= 1) {
+            if (eixo_y < 400) {
+                qtde_y = this.rnd.integerInRange(3, 6);
+                aux_eixo_x = this.ultimo_eixo_x;
+            }
+            else {
+                aux_eixo_x = this.ultimo_eixo_x;
+                qtde_y = 1;
+            }
+            qtde_x = this.rnd.integerInRange(qtde_min, qtde_max);
+            for (k=0; k < qtde_y; k++) {
+                eixo_x = aux_eixo_x;
+                for (i=0; i < qtde_x; i++) {
+                    ator = this.fabrica.create(eixo_x, eixo_y, nome_ator);
+                    ator.name = nome_ator;
+                    ator.animations.add('correr');
+                    ator.animations.play('correr', 10, true);
+                    ator.body.pixelPerfect = true;
+                    grupo[grupo.length] = ator;
+                    eixo_x+=distancia;
+                }
+                eixo_y+=distancia;
             }
         }
-        for (i=0; i < this.moedas.length-1; i++) {
-            this.moedas[i].body.velocity.x = -(this.velocidade[2]*60);
-            if (this.moedas[i].body.x < -150 || !this.moedas[i].exists) {
-                this.moedas[i].kill();
-                this.moedas.splice(i, 1);
+        this.ultimo_eixo_x = eixo_x;
+        for (i=0; i < grupo.length-1; i++) {
+            grupo[i].body.velocity.x = -(this.velocidade[2]*60);
+            if (grupo[i].body.x < -150 || !grupo[i].exists) {
+                grupo[i].kill();
+                grupo.splice(i, 1);
             }
         }
     },
