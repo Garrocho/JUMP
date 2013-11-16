@@ -15,11 +15,15 @@ BasicGame.Jogo = function (game) {
     this.physics;
     this.rnd;
     this.moedas = new Array();
+    this.velocidade = new Array();
 };
 
 BasicGame.Jogo.prototype = {
 
 	create: function () {
+	    this.velocidade[0] = 0.5;
+	    this.velocidade[1] = 1;
+	    this.velocidade[2] = 2;
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 220, 1024, 512, 'montanha');
         this.fundo3 = this.add.tileSprite(0, 520, 1024, 256, 'caminho');
@@ -46,12 +50,21 @@ BasicGame.Jogo.prototype = {
         this.administrar_moedas();
         this.musica.play('',0,1,true);
         this.stage.scale.startFullScreen();
+        this.ver_level = 0;
 	},
 
 	update: function () {
-        this.fundo1.tilePosition.x -= 0.5;
-        this.fundo2.tilePosition.x -= 1;
-        this.fundo3.tilePosition.x -= 2;
+	    this.ver_level++;
+	    if (this.ver_level == 500) {
+	        this.velocidade[0] += 0.25;
+	        this.velocidade[1] += 0.5;
+	        this.velocidade[2] += 1;
+	        this.ver_level = 0;
+	    }
+	     
+        this.fundo1.tilePosition.x -= this.velocidade[0];
+        this.fundo2.tilePosition.x -= this.velocidade[1];
+        this.fundo3.tilePosition.x -= this.velocidade[2];
         this.jogador.body.velocity.x = 0;
         this.jogador.body.velocity.y = 0;
 
@@ -89,6 +102,10 @@ BasicGame.Jogo.prototype = {
                 this.jogador.body.velocity.y = Math.abs(600-this.jogador.y);
         }
 
+        if (this.jogador.body.x > 250)
+            this.jogador.body.velocity.x = -Math.abs(250-this.jogador.x);
+        else
+            this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         this.administrar_moedas();
         this.physics.collide(this.jogador, this.grupo, this.tratador_colisao, null, this);
 	},
@@ -121,9 +138,8 @@ BasicGame.Jogo.prototype = {
                 this.eixox+=50;
             }
         }
-        console.log(this.moedas.length);
         for (i=0; i < this.moedas.length-1; i++) {
-            this.moedas[i].body.velocity.x = -150;
+            this.moedas[i].body.velocity.x = -(this.velocidade[2]*60);
             if (this.moedas[i].body.x < -150 || !this.moedas[i].exists) {
                 this.moedas[i].kill();
                 this.moedas.splice(i, 1);
