@@ -10,9 +10,10 @@ BasicGame.PreCarregamento.prototype = {
 
 	preload: function () {
 		this.background = this.add.sprite(0, 0, 'background');
-		this.preloadBar = this.add.sprite(350, 100, 'barra');
-		this.estilo = { font: "bold 60pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
-		this.titulo = this.add.text(this.world.centerX-400, this.world.centerY-250, "Carregando o JUMP...", this.estilo);
+		this.preloadBar = this.add.sprite(15, 650, 'barra');
+		this.estilo = { font: "bold 115pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
+        this.titulo = this.add.text(this.world.centerX, this.world.centerY+130, "Carregando...", this.estilo);
+        this.titulo.anchor.setTo(0.5, 0.5);
         
 		this.load.setPreloadSprite(this.preloadBar);
 		this.load.image('nuvem', 'assets/img/nuvem.png');
