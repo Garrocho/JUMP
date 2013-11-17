@@ -157,6 +157,11 @@ BasicGame.Jogo.prototype = {
         {
             obj1.kill();
             this.som_musica.stop();
+            var recorde = {
+                'moedas': this.contador,
+                'kmh': this.kmh
+            }
+            localStorage['recorde'] = JSON.stringify(recorde);
 		    this.game.state.start('GameOver');
         }
 	},
