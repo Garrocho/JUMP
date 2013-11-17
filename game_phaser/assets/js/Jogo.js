@@ -156,7 +156,8 @@ BasicGame.Jogo.prototype = {
         else
         {
             obj1.kill();
-            this.texto2.setText("Game Over");
+            this.som_musica.stop();
+		    this.game.state.start('GameOver');
         }
 	},
 	
