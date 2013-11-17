@@ -16,7 +16,8 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-130, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-		this.botao_jogar = this.add.button(this.world.centerX - 150, 500, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+		this.botao_jogar = this.add.button(this.world.centerX - 150, 400, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+		this.botao_ranking = this.add.button(this.world.centerX - 150, 500, 'botao_ranking', this.ranking, this, 2, 1, 0);
 	},
 
 	update: function () {
@@ -27,5 +28,10 @@ BasicGame.Menu.prototype = {
 	novo_jogo: function (pointer) {
 		this.musica.stop();
 		this.game.state.start('Jogo');
+	},
+	
+	ranking: function (pointer) {
+		this.musica.stop();
+		this.game.state.start('Ranking');
 	},
 };
