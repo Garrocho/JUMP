@@ -1,6 +1,5 @@
 BasicGame.Ranking = function (game) {
 	this.musica = null;
-	this.nomes = "NOMES\n";
 };
 
 BasicGame.Ranking.prototype = {
@@ -63,6 +62,7 @@ BasicGame.Ranking.prototype = {
 
 	menu: function (pointer) {
 		this.musica.stop();
+		this.conexao.close();
 		this.game.state.start('Menu');
 	},
 };
