@@ -15,25 +15,15 @@ BasicGame.GameOver.prototype = {
 		this.musica = this.add.audio('som_musica');
 		this.musica.play('',0,1,true);
 		
-        this.estilo1 = { font: "bold 60pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
-        this.estilo = { font: "bold 22pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 5 };
+        this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
+        this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
+        this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
         this.titulo = this.add.text(0, 0, "Game Over!", this.estilo1);
+        this.titulo2 = this.add.text(0, 720, "Descreva Melhor Seu Nome e Pressione Enter", this.estilo2);
         
-        this.moeda_cont = this.add.sprite(200, 400, 'moeda');
-        this.moeda_cont.animations.add('correr');
-        this.moeda_cont.animations.play('correr', 10, true);
-        
-        this.corredor_cont = this.add.sprite(200, 500, 'correndo_min');
-        this.corredor_cont.animations.add('correr');
-        this.corredor_cont.animations.play('correr', 10, true);
-        
-        this.estilo = { font: "bold 20pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 3 };
-        this.texto1 = this.add.text(250, 400, this.contador, this.estilo);
-        this.texto1.anchor.setTo(0.5, 0.5);
-        this.texto2 = this.add.text(250, 500, this.kmh, this.estilo);
-        this.texto2.anchor.setTo(0.5, 0.5);
-        
-        this.texto = this.add.text(250, 450, "SEU NOME: ", this.estilo);
+       this.recorde = JSON.parse(localStorage['recorde']);
+        this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
+        this.texto = this.add.text(300, 400, this.informacao, this.estilo);
         this.texto.anchor.setTo(0.5, 0.5);
         
         this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);
@@ -43,7 +33,11 @@ BasicGame.GameOver.prototype = {
 	    this.fundo1.tilePosition.x -= 0.5;
 	    this.fundo2.tilePosition.x -= 1;
 	    this.processa_letras();
-	    this.texto.setText("NOME: " + this.nome);
+	    this.texto.setText(this.informacao + this.nome);
+	    if (this.nome.length > 3)
+	        this.titulo2.setText("Seu Nome Está OK! Pressione Enter Para Continuar!")
+	    else
+	        this.titulo2.setText("Descreva Melhor Seu Nome!");
 	},
 
 	menu: function (pointer) {
@@ -71,16 +65,14 @@ BasicGame.GameOver.prototype = {
 	                    this.nome += " ";
 	                }
 	                else if (i >= 65 && i <= 90){
-                        console.log(i);
                         var chave = i-65;
                         if (chave < this.ALFABETO.length && chave >= 0) {
-	                        if (this.nome.length < 10) {
-	                            console.log(this.ALFABETO[chave]);
+	                        if (this.nome.length < 8) {
 		                        this.nome += this.ALFABETO[chave];
 		                    }
 		                }
                     }
-                    this.tempo = this.time.now + 250;
+                    this.tempo = this.time.now + 180;
                 }
             }
         }
