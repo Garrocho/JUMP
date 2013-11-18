@@ -18,6 +18,7 @@ BasicGame.Ranking.prototype = {
                 this.nome = "NOME";
                 this.distancia = "DISTANCIA";
                 this.moedas = "MOEDAS";
+                this.localizacao = "LOCALIZAÇÃO";
                 json.sort(function(a, b) {
                     return (b["distancia"] - a["distancia"]);
                 });
@@ -29,6 +30,7 @@ BasicGame.Ranking.prototype = {
                         this.nome += "\n" + json[i]["nome"];
                         this.distancia += "\n" + json[i]["distancia"];
                         this.moedas += "\n" + json[i]["moedas"];
+                        this.localizacao += "\n" + json[i]["localizacao"];
                     }
                 }
             }
@@ -39,12 +41,14 @@ BasicGame.Ranking.prototype = {
         
         this.rank = this.add.text(50, 450, "RANK", this.estilo);
         this.rank.anchor.setTo(0.5, 0.5);
-        this.nome = this.add.text(250, 450, "NOME", this.estilo);
+        this.nome = this.add.text(200, 450, "NOME", this.estilo);
         this.nome.anchor.setTo(0.5, 0.5);
-        this.distancia = this.add.text(600, 450, "DISTANCIA", this.estilo);
+        this.distancia = this.add.text(400, 450, "DISTANCIA", this.estilo);
         this.distancia.anchor.setTo(0.5, 0.5);
-        this.moedas = this.add.text(900, 450, "MOEDAS", this.estilo);
-        this.moedas.anchor.setTo(0.5, 0.5);
+        this.moedas = this.add.text(650, 450, "MOEDAS", this.estilo);
+        this.moedas.anchor.setTo(0.5, 0.5);        
+        this.localizacao = this.add.text(900, 450, "LOCALIZAÇÃO", this.estilo);
+        this.localizacao.anchor.setTo(0.5, 0.5);
         
         this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);
 	},
@@ -57,6 +61,7 @@ BasicGame.Ranking.prototype = {
 	        this.nome.setText(this.conexao.nome);
 	        this.distancia.setText(this.conexao.distancia);
 	        this.moedas.setText(this.conexao.moedas);
+	        this.localizacao.setText(this.conexao.localizacao);
 	    }
 	},
 
