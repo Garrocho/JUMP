@@ -184,9 +184,13 @@ while(c.isOpened()):
                 if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
                     if movimento == 1 or movimento == -1:
                         print 'De pé em px: {}'.format(y)
+                        movimento = 0
+                        y_momento_pulo = None
                 if y_momento_agachar != None and y > y_momento_agachar - MARGEM_TOLERANCIA and y < y_momento_agachar + MARGEM_TOLERANCIA:
                     if movimento == -1:
                         print 'De pé em px: {}'.format(y)
+                        movimento = 0
+                        y_momento_agachar = None
 
     if desenhar_linhas:
         # linha superior (640 x 50)
