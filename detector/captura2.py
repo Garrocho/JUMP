@@ -10,13 +10,11 @@ import sys
 
 
 def getThresholdedImage(hsv):
-    #min_yellow = np.array((20, 100, 100), np.uint8)
-    #max_yellow = np.array((30, 255, 255), np.uint8)
-    min_yellow = np.array((10, 70, 70), np.uint8)
-    max_yellow = np.array((30, 255, 255), np.uint8)
+    min_cor = np.array((100, 150, 150), np.uint8)
+    max_cor = np.array((130, 255, 255), np.uint8)
 
-    yellow = cv2.inRange(hsv, min_yellow, max_yellow)
-    return yellow
+    cor = cv2.inRange(hsv, min_cor, max_cor)
+    return cor
 
 
 def verificar_movimento(ys):
@@ -41,7 +39,7 @@ LARGURA_QUADRADO_CENTRO = 150
 CALIBRADO = False
 MARGEM_ERRO = 20
 # evita que um simples aumento na altura da pessoa seja considerado um pulo
-MARGEM_TOLERANCIA = 30
+MARGEM_TOLERANCIA = 70
 NUM_PONTOS_ANALIZADOS = 5
 
 Y_GUARDADOS = 5
@@ -57,7 +55,7 @@ if not c.isOpened():
     print 'Erro: Nao foi possivel ter acesso a camera'
     exit(0)
 width, height = c.get(3), c.get(4)
-print 'Resolução da camera {} x {}'.format(width, height)
+print 'Resolução da camera {0} x {1}'.format(width, height)
 
 ys = []
 y_momento_pulo = None
@@ -164,32 +162,33 @@ while(c.isOpened()):
                     elif movimento == Movimentos.SUBINDO:
                         movimento = Movimentos.DESCENDO
                         mudou_movimento = True
+
                 if movimento == Movimentos.DESCENDO:
                     # voltou ao chao
+                    print y, y_momento_pulo
                     if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
                         movimento = Movimentos.EM_PE
                         y_momento_pulo = None
                         mudou_movimento = True
-                # print 'mov:{} mov_ant: {} mov_var: {}'.format(movimento,
-                # movimento_antigo, variacao_movimento)
+                print 'mov:{0} mov_ant: {1} mov_var: {2}'.format(movimento, movimento_antigo, variacao_movimento)
                 if mudou_movimento:
                     if movimento == Movimentos.SUBINDO:
-                        print 'Pulou em px: {}'.format(y - y_momento_pulo)
+                        print 'Pulou em px: {0}'.format(y_momento_pulo)
                     elif movimento == Movimentos.AGACHADO:
-                        print 'Agachou em px: {}'.format(y_momento_agachar - y)
+                        print 'Agachou em px: {0}'.format(y_momento_agachar)
                     elif movimento == Movimentos.EM_PE:
-                        print 'De pé em px: {}'.format(y)
+                        print 'De pé em px: {0}'.format(y)
             # nao houve variacao grande entre os pontos
             else:
                 if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
-                    if movimento == 1 or movimento == -1:
-                        print 'De pé em px: {}'.format(y)
-                        movimento = 0
+                    if movimento == Movimentos.DESCENDO:
+                        print 'De pé em px: {0}'.format(y)
+                        movimento = Movimentos.EM_PE
                         y_momento_pulo = None
                 if y_momento_agachar != None and y > y_momento_agachar - MARGEM_TOLERANCIA and y < y_momento_agachar + MARGEM_TOLERANCIA:
-                    if movimento == -1:
-                        print 'De pé em px: {}'.format(y)
-                        movimento = 0
+                    if movimento == Movimentos.AGACHADO:
+                        print 'De pé em px: {0}'.format(y)
+                        movimento = Movimentos.EM_PE
                         y_momento_agachar = None
 
     if desenhar_linhas:
@@ -202,7 +201,7 @@ while(c.isOpened()):
 
         # linha que define se o usuário agachou (640 x 330)
         cv2.line(frame, (0, int(height - 150)),
-                (int(width), int(height - 150)), (0, 0, 255), 2)
+                 (int(width), int(height - 150)), (0, 0, 255), 2)
 
     cv2.imshow('Camera', frame)
 
