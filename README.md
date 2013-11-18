@@ -112,6 +112,11 @@ Jogo Unificado para Movimentação Projetada
         node JogoCliente.js
     </code>
 
+    <code>
+        Abra o navegador do Google Chrome e entre no endereço: http://0.0.0.0:29755
+    </code>
+
+
   6. Instalando Módulo GeoIP
 
     <code>
