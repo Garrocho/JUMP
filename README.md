@@ -71,8 +71,26 @@ Jogo Unificado para Movimentação Projetada
         npm install
     </code>
 
+  4. Instalando Módulos do Node.js:
 
-  4. Inicializando o Serviço do Cliente e do Servidor:
+    <code>
+        cd jump
+    </code>
+
+    <code>
+        npm install node-static
+    </code>
+
+    <code>
+        npm install websocket
+    </code>
+
+    <code>
+        npm install chokidar
+    </code>
+
+
+  5. Inicializando o Serviço do Cliente e do Servidor:
 
     <code>
         cd jump
@@ -92,24 +110,6 @@ Jogo Unificado para Movimentação Projetada
 
     <code>
         node JogoCliente.js
-    </code>
-
-  5. Instalando Módulos do Node.js:
-
-    <code>
-        cd jump
-    </code>
-
-    <code>
-        npm install node-static
-    </code>
-
-    <code>
-        npm install websocket
-    </code>
-
-    <code>
-        npm install chokidar
     </code>
 
   6. Instalando Módulo GeoIP
