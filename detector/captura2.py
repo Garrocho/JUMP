@@ -8,10 +8,11 @@ import cv2
 import numpy as np
 import sys
 
+
 def getThresholdedImage(hsv):
     #min_yellow = np.array((20, 100, 100), np.uint8)
     #max_yellow = np.array((30, 255, 255), np.uint8)
-    min_yellow = np.array((20, 70, 70), np.uint8)
+    min_yellow = np.array((10, 70, 70), np.uint8)
     max_yellow = np.array((30, 255, 255), np.uint8)
 
     yellow = cv2.inRange(hsv, min_yellow, max_yellow)
@@ -21,21 +22,30 @@ def getThresholdedImage(hsv):
 def verificar_movimento(ys):
     ultimo_y = ys[len(ys) - 1]
     primeiro_y = ys[0]
-    if primeiro_y < ultimo_y:  #ta descendo
+    if primeiro_y < ultimo_y:  # ta descendo
         return -1
     else:
         return 1
+
+
+class Movimentos:
+    EM_PE = 0
+    SUBINDO = 1
+    DESCENDO = -1
+    AGACHADO = -2
+
 
 ALTURA_QUADRADO_CENTRO = 150
 LARGURA_QUADRADO_CENTRO = 150
 # tem que receber false e so quando calibrar receber True
 CALIBRADO = False
 MARGEM_ERRO = 20
-MARGEM_TOLERANCIA = 20  # evita que um simples aumento na altura da pessoa seja considerado um pulo
+# evita que um simples aumento na altura da pessoa seja considerado um pulo
+MARGEM_TOLERANCIA = 30
 NUM_PONTOS_ANALIZADOS = 5
 
 Y_GUARDADOS = 5
-movimento = 0  # 0 = parado, 1 subindo, -1 descendo, 2 agachado
+movimento = Movimentos.EM_PE
 # dentro do espaço delimitado pelas duas linhas amarelas, incluindo a
 # linha vermelha
 #dentro_espaco = False
@@ -49,9 +59,11 @@ if not c.isOpened():
 width, height = c.get(3), c.get(4)
 print 'Resolução da camera {} x {}'.format(width, height)
 
-ys = [height - 50]
+ys = []
+y_momento_pulo = None
+y_momento_agachar = None
 
-desenhar_linhas = True
+desenhar_linhas = False
 while(c.isOpened()):
     _, frame = c.read()
     frame = cv2.flip(frame, 1)
@@ -72,6 +84,11 @@ while(c.isOpened()):
                 centro_y - (ALTURA_QUADRADO_CENTRO / 2)),
         (centro_x + (LARGURA_QUADRADO_CENTRO / 2), centro_y + (ALTURA_QUADRADO_CENTRO / 2)), [0, 255, 0], 2)
 
+    if not CALIBRADO:
+        ys = []
+        y_momento_pulo = None
+        y_momento_agachar = None
+
     if contours:
         maior_area = 0
         maior_contorno = contours[0]
@@ -86,55 +103,89 @@ while(c.isOpened()):
         cx, cy = x + w / 2, y + h / 2
 
         # verifica se ta no centro
-        #if (cx > centro_x - (LARGURA_QUADRADO_CENTRO / 2)) and (cx < centro_x - (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx > centro_x + (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx < centro_x + (LARGURA_QUADRADO_CENTRO / 2)):
-        #print y, y + h, centro_y - (ALTURA_QUADRADO_CENTRO / 2), centro_y + (ALTURA_QUADRADO_CENTRO / 2)
+        # if (cx > centro_x - (LARGURA_QUADRADO_CENTRO / 2)) and (cx < centro_x - (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx > centro_x + (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx < centro_x + (LARGURA_QUADRADO_CENTRO / 2)):
+        # print y, y + h, centro_y - (ALTURA_QUADRADO_CENTRO / 2), centro_y +
+        # (ALTURA_QUADRADO_CENTRO / 2)
 
         if y > centro_y - (ALTURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO and \
-         y < centro_y - (ALTURA_QUADRADO_CENTRO / 2) + MARGEM_ERRO and \
-         y + h > centro_y + (ALTURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO and \
-         y + h < centro_y + (ALTURA_QUADRADO_CENTRO / 2) + MARGEM_ERRO:
+            y < centro_y - (ALTURA_QUADRADO_CENTRO / 2) + MARGEM_ERRO and \
+            y + h > centro_y + (ALTURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO and \
+                y + h < centro_y + (ALTURA_QUADRADO_CENTRO / 2) + MARGEM_ERRO:
             if not CALIBRADO:
                 print 'ta dentro'
                 CALIBRADO = True
+            # dentro do quadrado
+            cv2.rectangle(
+                frame, (centro_x - (LARGURA_QUADRADO_CENTRO / 2),
+                        centro_y - (ALTURA_QUADRADO_CENTRO / 2)),
+                (centro_x + (LARGURA_QUADRADO_CENTRO / 2), centro_y + (ALTURA_QUADRADO_CENTRO / 2)), [0, 0, 255], 2)
 
         # print hsv.item(cy, cx, 0), hsv.item(cy, cx, 1), hsv.item(cy, cx, 2)
         # if 100 < hsv.item(cy, cx, 0) < 120:
         cv2.rectangle(frame, (x, y), (x + w, y + h), [255, 0, 0], 2)
-        if y > 50 and y < height - 50:
-            #dentro_espaco = True
-            if len(ys) >= Y_GUARDADOS:
-                ys = ys[1:Y_GUARDADOS]
-            ys.append(y)
-            # ta guardando ate Y_GUARDADOS Y
-            if CALIBRADO:
-                ultimos_valores_y = [0]
-                if len(ys) >= NUM_PONTOS_ANALIZADOS:
-                    ultimos_valores_y = ys[len(ys)-NUM_PONTOS_ANALIZADOS:len(ys)]
-                if max(ultimos_valores_y) - min(ultimos_valores_y) > MARGEM_TOLERANCIA:
-                    novo_movimento = verificar_movimento(ys)
-                    mudou_movimento = False
-                    if novo_movimento == 1:
-                        if movimento == 0:
-                            movimento = 1
+        #dentro_espaco = True
+        if len(ys) >= Y_GUARDADOS:
+            ys = ys[1:Y_GUARDADOS]
+        ys.append(y)
+        # ta guardando ate Y_GUARDADOS Y
+        if CALIBRADO:
+            ultimos_valores_y = [0]
+            if len(ys) >= NUM_PONTOS_ANALIZADOS:
+                ultimos_valores_y = ys[len(ys) - NUM_PONTOS_ANALIZADOS:len(ys)]
+            # houve diferenca maior que a margem entre dois pontos Y dentro do
+            # numero de pontos analizados
+            if max(ultimos_valores_y) - min(ultimos_valores_y) > MARGEM_TOLERANCIA:
+                # verifica o tipo do movimento, 1 para subiu e -1 para desceu
+                variacao_movimento = verificar_movimento(ys)
+                # guarda o movimento antigo, mas pra nada
+                movimento_antigo = movimento
+                mudou_movimento = False
+                # subiu, mas o que houve?
+                if variacao_movimento == 1:
+                    # pulou
+                    if movimento == Movimentos.EM_PE:
+                        movimento = Movimentos.SUBINDO
+                        y_momento_pulo = y
+                        mudou_movimento = True
+                    # levantou
+                    elif movimento == Movimentos.AGACHADO:
+                        if y_momento_agachar != None and y > y_momento_agachar - MARGEM_TOLERANCIA and y < y_momento_agachar + MARGEM_TOLERANCIA:
+                            movimento = Movimentos.EM_PE
                             mudou_movimento = True
-                        elif movimento == -2:
-                            movimento = 0
-                            mudou_movimento = True
-                    elif novo_movimento == -1:
-                        if movimento == 0:
-                            movimento = -2
-                            mudou_movimento = True
-                        elif movimento == 1:
-                            movimento == 0
-                            mudou_movimento = True
-                    if mudou_movimento:
-                        if movimento == 1:
-                            print 'Pulou em px: {}'.format((int(height) - 50) - y)
-                        elif movimento == -2:
-                            print 'Agachou em px: {}'.format((int(height) - 50) - y)
-        else:
-            #dentro_espaco = False
-            pass
+                # desceu, mas o que houve?
+                elif variacao_movimento == -1:
+                    # agachou
+                    if movimento == Movimentos.EM_PE:
+                        y_momento_agachar = y
+                        movimento = Movimentos.AGACHADO
+                        mudou_movimento = True
+                    # ta descendo do pulo
+                    elif movimento == Movimentos.SUBINDO:
+                        movimento = Movimentos.DESCENDO
+                        mudou_movimento = True
+                if movimento == Movimentos.DESCENDO:
+                    # voltou ao chao
+                    if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
+                        movimento = Movimentos.EM_PE
+                        y_momento_pulo = None
+                        mudou_movimento = True
+                # print 'mov:{} mov_ant: {} mov_var: {}'.format(movimento,
+                # movimento_antigo, variacao_movimento)
+                if mudou_movimento:
+                    if movimento == Movimentos.SUBINDO:
+                        print 'Pulou em px: {}'.format(y - y_momento_pulo)
+                    elif movimento == Movimentos.AGACHADO:
+                        print 'Agachou em px: {}'.format(y_momento_agachar - y)
+                    elif movimento == Movimentos.EM_PE:
+                        print 'De pé em px: {}'.format(y)
+            # nao houve variacao grande entre os pontos
+            else:
+                if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
+                    if movimento == 1 or movimento == -1:
+                        print 'De pé em px: {}'.format(y)
+                if y_momento_agachar != None and y > y_momento_agachar - MARGEM_TOLERANCIA and y < y_momento_agachar + MARGEM_TOLERANCIA:
+                    if movimento == -1:
+                        print 'De pé em px: {}'.format(y)
 
     if desenhar_linhas:
         # linha superior (640 x 50)
