@@ -8,7 +8,6 @@ import cv2
 import numpy as np
 import sys
 
-
 def getThresholdedImage(hsv):
     min_cor = np.array((100, 150, 150), np.uint8)
     max_cor = np.array((130, 255, 255), np.uint8)
@@ -26,6 +25,18 @@ def verificar_movimento(ys):
         return 1
 
 
+def alterar_arquivo(estado):
+    novo_estado = 0
+    if estado == Movimentos.EM_PE:
+        novo_estado = 0
+    elif estado == Movimentos.SUBINDO:
+        novo_estado = 1
+    elif estado == Movimentos.AGACHADO:
+        novo_estado = -1
+    with open(ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
+        arq.write(str(novo_estado))
+
+
 class Movimentos:
     EM_PE = 0
     SUBINDO = 1
@@ -33,6 +44,7 @@ class Movimentos:
     AGACHADO = -2
 
 
+ARQUIVO_ESTADO_JOGADOR = '../assets/file/estado_jogador.json'
 ALTURA_QUADRADO_CENTRO = 150
 LARGURA_QUADRADO_CENTRO = 150
 # tem que receber false e so quando calibrar receber True
@@ -178,6 +190,7 @@ while(c.isOpened()):
                         print 'Agachou em px: {0}'.format(y_momento_agachar)
                     elif movimento == Movimentos.EM_PE:
                         print 'De pé em px: {0}'.format(y)
+                    alterar_arquivo(movimento)
             # nao houve variacao grande entre os pontos
             else:
                 if y_momento_pulo != None and y > y_momento_pulo - MARGEM_TOLERANCIA and y < y_momento_pulo + MARGEM_TOLERANCIA:
@@ -185,11 +198,13 @@ while(c.isOpened()):
                         print 'De pé em px: {0}'.format(y)
                         movimento = Movimentos.EM_PE
                         y_momento_pulo = None
+                        alterar_arquivo(movimento)
                 if y_momento_agachar != None and y > y_momento_agachar - MARGEM_TOLERANCIA and y < y_momento_agachar + MARGEM_TOLERANCIA:
                     if movimento == Movimentos.AGACHADO:
                         print 'De pé em px: {0}'.format(y)
                         movimento = Movimentos.EM_PE
                         y_momento_agachar = None
+                        alterar_arquivo(movimento)
 
     if desenhar_linhas:
         # linha superior (640 x 50)
