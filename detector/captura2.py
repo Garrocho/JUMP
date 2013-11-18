@@ -44,7 +44,7 @@ class Movimentos:
     AGACHADO = -2
 
 
-ARQUIVO_ESTADO_JOGADOR = '../assets/file/estado_jogador.json'
+ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
 ALTURA_QUADRADO_CENTRO = 150
 LARGURA_QUADRADO_CENTRO = 150
 # tem que receber false e so quando calibrar receber True
