@@ -63,6 +63,14 @@ BasicGame.Jogo.prototype = {
         this.stage.scale.startFullScreen();
         this.ver_level = 0;
         this.ultimo_eixo_x = 1024;
+
+        if (window.WebSocket) {
+            this.conexao = new WebSocket('ws://127.0.0.1:1338');
+            this.conexao.onmessage = function(message) {
+                this.movimento = parseInt(message.data);
+                console.log("Movimento: ", this.movimento);
+            }
+        }
 	},
 
 	update: function () {
@@ -82,7 +90,7 @@ BasicGame.Jogo.prototype = {
         this.jogador.body.velocity.x = 0;
         this.jogador.body.velocity.y = 0;
         
-        if (this.cursors.down.isDown && !this.pulando)
+        if ((this.cursors.down.isDown && !this.pulando) || (this.conexao.movimento === -1 && !this.pulando))
         {
             if (!this.agachado) {
                 this.som_pulo.play();
@@ -91,7 +99,8 @@ BasicGame.Jogo.prototype = {
             this.jogador.loadTexture('agachado', 0);
             this.jogador.body.y=650;
         }
-        else if (this.cursors.down.isUp && this.agachado) {
+        else if ((this.cursors.down.isUp && this.agachado) || (this.conexao.movimento === 0 && this.agachado))
+        {
             this.som_pulo.play();
             this.agachado = false;
             this.jogador.loadTexture('correndo', 0);
@@ -100,7 +109,7 @@ BasicGame.Jogo.prototype = {
             this.jogador.animations.play('correr', 10, true);
         }
 
-        if (this.cursors.up.isDown && !this.pulando && !this.agachado)
+        if ((this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
         {
             this.som_pulo.play();
             this.pulando = true;
@@ -114,6 +123,7 @@ BasicGame.Jogo.prototype = {
             if (this.aux_pulo == 8000) {
                 this.aux_pulo = 0;
                 this.pulando = false;
+                this.conexao.movimento = 0;
                 this.jogador.loadTexture('correndo', 0);
                 this.jogador.animations.add('correr');
                 this.jogador.animations.pixelPerfect = true;
@@ -156,6 +166,7 @@ BasicGame.Jogo.prototype = {
         else
         {
             obj1.kill();
+            this.conexao.close();
             this.som_musica.stop();
             var recorde = {
                 'moedas': this.contador,
