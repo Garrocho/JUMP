@@ -1,17 +1,17 @@
 JUMP!
 =====
-Jogo para a Semana Nacional de Ciência e Tecnologia
+Jogo Unificado para Movimentação Projetada
 
 # Instalação
 
-  1. Instale o Pygame e o Git:
+  1. Instale o Git:
 
     <code>
         apt-get install python-pygame git
     </code>
    
 
-  2. Baixar e Executar o Jogo:
+  2. Baixe o Jogo:
 
     <code>
         git clone https://github.com/CharlesGarrocho/jump.git
@@ -21,9 +21,6 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
         cd jump
     </code>
 
-    <code>
-        python start.py
-    </code>
 
   3. Instalando e Configurando o Node.js:
 
@@ -55,7 +52,34 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
         sudo make install
     </code>
 
+
+  3. Inicializando o Serviço do Cliente e do Servidor:
+
+    <code>
+        cd jump
+    </code>
+
+    <code>
+        node JogoServidor.js
+    </code>
+
+    <code>
+        Abra um Novo Terminal ou aba.
+    </code>
+
+    <code>
+        cd jump
+    </code>
+
+    <code>
+        node JogoCliente.js
+    </code>
+
   4. Instalando Módulos do Node.js:
+
+    <code>
+        cd jump
+    </code>
 
     <code>
         npm install node-static
@@ -63,6 +87,10 @@ Jogo para a Semana Nacional de Ciência e Tecnologia
 
     <code>
         npm install websocket
+    </code>
+
+    <code>
+        npm install chokidar
     </code>
 
   5. Instalando Módulo GeoIP
