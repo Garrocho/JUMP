@@ -53,7 +53,26 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
 
-  3. Inicializando o Serviço do Cliente e do Servidor:
+  3. Instalando e Configurando o Phaser:
+
+    <code>
+        git clone https://github.com/photonstorm/phaser.git
+    </code>
+
+    <code>
+        npm install -g grunt-cli
+    </code>
+
+    <code>
+        cd phaser
+    </code>
+
+    <code>
+        npm install
+    </code>
+
+
+  4. Inicializando o Serviço do Cliente e do Servidor:
 
     <code>
         cd jump
@@ -75,7 +94,7 @@ Jogo Unificado para Movimentação Projetada
         node JogoCliente.js
     </code>
 
-  4. Instalando Módulos do Node.js:
+  5. Instalando Módulos do Node.js:
 
     <code>
         cd jump
@@ -93,7 +112,7 @@ Jogo Unificado para Movimentação Projetada
         npm install chokidar
     </code>
 
-  5. Instalando Módulo GeoIP
+  6. Instalando Módulo GeoIP
 
     <code>
         sudo apt-get install python-geoip
@@ -107,13 +126,13 @@ Jogo Unificado para Movimentação Projetada
         sudo apt-get install libgeoip1
     </code>        
 
-  6. Crie um script para consultas do banco de daods do GeoIP (caso não tenha a pasta examples crie-a)
+  7. Crie um script para consultas do banco de daods do GeoIP (caso não tenha a pasta examples crie-a)
   
     <code>
         vim /usr/share/doc/libgeoip1/examples/geolitecityupdate.sh
     </code>
     
-  7. Conteúdo do script geolitecityupdate.sh
+  8. Conteúdo do script geolitecityupdate.sh
 
         #!/bin/shGUNZIP="/bin/gunzip"
         MAXMINDURL="http://geolite.maxmind.com/download/geoip/database/"
@@ -140,7 +159,7 @@ Jogo Unificado para Movimentação Projetada
         exit 0
 
     
-  8. Copie o arquivo GeoIPCity.dat para a pasta do GeoIP (o arquivo GeoIPCity.dat está localizado no diretório dados do projeto JUMP)
+  9. Copie o arquivo GeoIPCity.dat para a pasta do GeoIP (o arquivo GeoIPCity.dat está localizado no diretório dados do projeto JUMP)
   
       <code>
         sudo cp /dados/GeoIPCity.dat /usr/share/GeoIP/.
