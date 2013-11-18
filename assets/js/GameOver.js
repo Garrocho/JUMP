@@ -1,3 +1,5 @@
+// link: https://developers.google.com/maps/documentation/javascript/geocoding?hl=pt-br
+
 BasicGame.GameOver = function (game) {
 	this.musica = null;
 	this.input;
@@ -5,10 +7,10 @@ BasicGame.GameOver = function (game) {
 	this.ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 	this.nome = "";
 	this.tempo = 0;
+	this.localizacao = "não identificado";
 };
 
 BasicGame.GameOver.prototype = {
-
 	create: function () {
 	    this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
 	    this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
@@ -20,13 +22,12 @@ BasicGame.GameOver.prototype = {
         this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
         this.titulo = this.add.text(0, 0, "Game Over!", this.estilo1);
         this.titulo2 = this.add.text(0, 720, "Descreva Melhor Seu Nome e Pressione Enter", this.estilo2);
-        
-       this.recorde = JSON.parse(localStorage['recorde']);
-        this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
         this.texto = this.add.text(300, 400, this.informacao, this.estilo);
         this.texto.anchor.setTo(0.5, 0.5);
-        
-        this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);
+        this.recorde = JSON.parse(localStorage['recorde']);
+        this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
+        this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);        
+        this.localizacao = this.iniciar();
 	},
 
 	update: function () {
@@ -77,4 +78,43 @@ BasicGame.GameOver.prototype = {
             }
         }
 	},
+	
+	iniciar: function() {
+        // Try HTML5 geolocation
+        
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': pos}, function(results, status) {
+                    if(status == google.maps.GeocoderStatus.OK){
+                        if (results[1]){
+                            lista_dados = results[0].formatted_address.split(", ");
+                            gerarJson(lista_dados[2]);
+                         }
+                     }else{
+                        alert("Erro no serviço de geolocalização: " + status);
+                     }
+                     }, function(){
+                        this.handleNoGeolocation(true); 
+                     }
+                 )
+            });
+        }else{
+            // Browser doesn't support Geolocation
+            this.handleNoGeolocation(false);
+        }
+    },
+    
+    handleNoGeolocation: function(errorFlag) {
+        if(errorFlag) {
+            var content = 'Erro no serviço de geolocaliazção.';
+        }else{
+            var content = 'Seu navegador não suporta o serviço de geolocalização.';
+        }
+    }
 };
+
+function gerarJson(cidade){
+    alert(cidade);
+}
