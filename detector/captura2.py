@@ -64,6 +64,7 @@ y_momento_pulo = None
 y_momento_agachar = None
 
 desenhar_linhas = False
+
 while(c.isOpened()):
     _, frame = c.read()
     frame = cv2.flip(frame, 1)

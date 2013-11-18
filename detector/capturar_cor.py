@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 import sys
 
+def tratar_mouse(event, x, y, flag, param):
+    print param[y, x]
+
 ALTURA_QUADRADO_CENTRO = 150
 LARGURA_QUADRADO_CENTRO = 150
 
@@ -26,8 +29,9 @@ while(c.isOpened()):
                 centro_y - (ALTURA_QUADRADO_CENTRO / 2)),
         (centro_x + (LARGURA_QUADRADO_CENTRO / 2), centro_y + (ALTURA_QUADRADO_CENTRO / 2)), [0, 255, 0], 2)
 
-    print hsv[centro_x, centro_y]
+    #print hsv[centro_x, centro_y]
 
+    cv2.cv.SetMouseCallback('Camera', tratar_mouse, param=hsv)
     cv2.imshow('Camera', frame)
 
     key = cv2.waitKey(25)
