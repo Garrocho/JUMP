@@ -1,6 +1,6 @@
 *.pyc
 *~
-ranking.json
+
 # Node.
 lib-cov
 *.seed
