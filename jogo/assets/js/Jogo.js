@@ -34,7 +34,6 @@ BasicGame.Jogo.prototype = {
         this.kmh = 5;
         this.pulando = false;
         this.aux_pulo = 0;
-        this.eSom = true;
         
         this.moeda_cont = this.add.sprite(10, 10, 'moeda');
         this.moeda_cont.animations.add('correr');
@@ -54,7 +53,6 @@ BasicGame.Jogo.prototype = {
         this.som_musica = this.add.audio('som_musica',0.1,true);
         this.som_moeda = this.add.audio('som_moeda',1,true);
         this.som_pulo = this.add.audio('som_pulo',1,true);
-        this.som_musica.play('',0,1,true);
         this.ver_level = 0;
         this.ultimo_eixo_x = 1024;
 
@@ -77,6 +75,8 @@ BasicGame.Jogo.prototype = {
 	    this.velocidade[1] = 1;
 	    this.velocidade[2] = 2;
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
+        this.som_musica.play('',0,1,true);
+        this.valida_config();
 	},
 
 	update: function () {
@@ -217,10 +217,6 @@ BasicGame.Jogo.prototype = {
             }
         }
     },
-    
-	quitGame: function (pointer) {
-		this.game.state.start('Menu');
-	},
 	
 	mudar_tela: function() {
 	    if (this.stage.scale.isFullScreen == null) {
@@ -233,19 +229,37 @@ BasicGame.Jogo.prototype = {
 	    }
 	},
 
-    mudar_som: function (pointer) {
-        this.eSom = !this.eSom;
-        if (this.eSom) {
+    mudar_som: function () {
+        if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
             this.som_musica.volume = 1;
             this.som_moeda.volume = 1;
             this.som_pulo.volume = 1;
+            localStorage.setItem('jump_som', 1);
+            this.som = 1;
         }
         else {
             this.botao_som.loadTexture('botao_som_off');
             this.som_musica.volume = 0;
             this.som_moeda.volume = 0;
             this.som_pulo.volume = 0;
+            localStorage.setItem('jump_som', 0);
+            this.som = 0;
         }
     },
+    
+	valida_config: function() {
+	    this.som = localStorage.getItem('jump_som');
+        if (this.som == null)
+            this.som = 1;
+        else
+            this.som = parseInt(this.som);
+        if (this.som == 0)
+            this.botao_som.loadTexture('botao_som_off');
+        else
+            this.botao_som.loadTexture('botao_som_on');
+        this.som_musica.volume = this.som;
+        this.som_moeda.volume = this.som;
+        this.som_pulo.volume = this.som;
+	},
 };
