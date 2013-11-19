@@ -176,7 +176,9 @@ BasicGame.Jogo.prototype = {
             this.som_musica.stop();
             var recorde = {
                 'moedas': this.contador,
-                'kmh': this.kmh
+                'kmh': this.kmh,
+                'nome': "NÃO DEFINIDO",
+                'cidade': "NÃO DEFINIDO"
             }
             localStorage['recorde'] = JSON.stringify(recorde);
 		    this.game.state.start('GameOver');

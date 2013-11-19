@@ -82,10 +82,10 @@ wsServer.on('request', function(request) {
     // as conexões no socket são adicionadas no array 'clientes' pelo método
     // 'push'. O método retorna o comprimento do array depois de adicionarmos
     // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
-    var index = clientes.push(conexao) - 1;
-    fs.readFile('./assets/file/ranking.json', 'utf8', function(error, data) {
+   /* var index = clientes.push(conexao) - 1;
+    fs.readFile('./file/ranking.json', 'utf8', function(error, data) {
         conexao.sendUTF(data);
-    });
+    });*/
     
  
     // chamamos o método 'on' passando 'close' e um callback como você já deve
@@ -97,4 +97,8 @@ wsServer.on('request', function(request) {
         // o cliente que se desconectou.
         clientes.splice(index, 1);
     });
+    
+   conexao.on('message', function(message) {
+        console.log(message);
+    });  
 });

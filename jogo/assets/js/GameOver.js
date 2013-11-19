@@ -27,7 +27,6 @@ BasicGame.GameOver.prototype = {
         this.recorde = JSON.parse(localStorage['recorde']);
         this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
         this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);        
-        this.localizacao = this.iniciar();
 	},
 
 	update: function () {
@@ -56,10 +55,13 @@ BasicGame.GameOver.prototype = {
                     else if (i == 13 || i == 27) {
 	                    if (this.nome.length == 0) {
 		                    this.nome = "NAO DEFINIDO";
+		                    this.enviar_recorde(this.recorde);
 		                    this.menu();
                         }
                         else if (this.nome.length > 3) {
-                            this.menu();
+                            this.recorde['nome'] = this.nome;
+                             this.enviar_recorde(this.recorde);
+                             this.menu();
                         }
                     }
                     else if (i == 32) {
@@ -79,9 +81,7 @@ BasicGame.GameOver.prototype = {
         }
 	},
 	
-	iniciar: function() {
-        // Try HTML5 geolocation
-        
+	enviar_recorde: function(recorde) {
         if(navigator.geolocation){
             navigator.geolocation.getCurrentPosition(function(position) {
                 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -90,8 +90,15 @@ BasicGame.GameOver.prototype = {
                     if(status == google.maps.GeocoderStatus.OK){
                         if (results[1]){
                             lista_dados = results[0].formatted_address.split(", ");
-                            gerarJson(lista_dados[2]);
-                         }
+                            cidade = lista_dados[2];
+                            if (window.WebSocket) {
+                                    recorde['localizacao'] = cidade;
+                                    var conexao = new WebSocket('ws://127.0.0.1:1337');
+                                    conexao.onopen = function(){
+                                        conexao.send(JSON.stringify(recorde));
+                                    };
+                                } 
+                            }
                      }else{
                         alert("Erro no serviço de geolocalização: " + status);
                      }
@@ -101,7 +108,6 @@ BasicGame.GameOver.prototype = {
                  )
             });
         }else{
-            // Browser doesn't support Geolocation
             this.handleNoGeolocation(false);
         }
     },
@@ -114,7 +120,3 @@ BasicGame.GameOver.prototype = {
         }
     }
 };
-
-function gerarJson(cidade){
-    alert(cidade);
-}
