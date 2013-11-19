@@ -16,8 +16,8 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-        this.botao_ranking = this.add.button(this.world.centerX + 20, 330, 'botao_ranking', this.ranking, this, 2, 1, 0);
-		this.botao_jogar = this.add.button(this.world.centerX - 270, 330, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX + 20, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
+		this.botao_jogar = this.add.button(this.world.centerX - 270, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
 		if (this.stage.scale.isFullScreen == null)
 	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
 	    else
@@ -51,7 +51,7 @@ BasicGame.Menu.prototype = {
             }
         }
 
-        this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        
+        //this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        
         this.titulo3 = this.add.text(-10, this.world.centerY, "----------------------------------------------------------------------------------------", this.estilo3);
         
         this.rank = this.add.text(50, 610, "", this.estilo2);
@@ -65,14 +65,14 @@ BasicGame.Menu.prototype = {
         this.localizacao = this.add.text(900, 610, "", this.estilo2);
         this.localizacao.anchor.setTo(0.5, 0.5);
 
-        this.descricao = this.add.text(270, 570, "", this.estilo4);
+        this.descricao = this.add.text(250, 520, "", this.estilo4);
         this.descricao.anchor.setTo(0.5, 0.5);
 
         this.equipe = this.add.text(800, 610, "", this.estilo4);
         this.equipe.anchor.setTo(0.5, 0.5);
         this.musica.play('',0,1,true);
         this.valida_config();
-        
+        this.ifet = this.add.sprite(15, 600, 'ifet');
 	},
 
 	update: function () {
@@ -94,8 +94,8 @@ BasicGame.Menu.prototype = {
 	        this.localizacao.setText("");
 	        this.moedas.setText("");
 
-	        this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens\naplicado ao desenvolvimento de um\njogo interativo direcionado à prática\nde exercícios físicos.");
-	        this.equipe.setText("Equipe:\nArthur Nascimento Assunção\nBruno Ferreira da Costa\nCharles Tim Batista Garrocho\nLucas Gabriel de Araújo Assis\nMariana Wamser Campos\nPaulo Vitor Francisco");
+	        this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado ao\ndesenvolvimento de um jogo interativo\n direcionado à prática de exercícios físicos.");
+	        this.equipe.setText("Orientador:\nRafael José de Alencar Almeida\n\nEquipe:\nArthur Nascimento Assunção\nBruno Ferreira da Costa\nCharles Tim Batista Garrocho\nLucas Gabriel de Araújo Assis\nMariana Wamser Campos\nPaulo Vitor Francisco");
 	    }
 	},
 
@@ -106,10 +106,14 @@ BasicGame.Menu.prototype = {
 	
 	ranking: function (pointer) {
 		this.eRanking = !this.eRanking;
-		if (this.eRanking)
+		if (this.eRanking) {
+		    this.ifet.visible = false;
 			this.botao_ranking.loadTexture('botao_sobre');
-		else
+        }
+		else {
+		    this.ifet.visible = true;
 			this.botao_ranking.loadTexture('botao_ranking');
+	    }
 	},
 
 	mudar_som: function (pointer) {
