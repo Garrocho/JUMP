@@ -18,6 +18,7 @@ BasicGame.Inicio.prototype = {
 	    if (this.game.device.desktop)
 	    {
 		    this.game.stage.scale.pageAlignHorizontally = true;
+		    this.game.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
 	    }
 	    else
 	    {
