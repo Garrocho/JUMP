@@ -5,11 +5,9 @@ BasicGame.Menu.prototype = {
 
 	create: function () {
 		this.eRanking = false;
-		this.eSom = true;
 	    this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
 	    this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
 		this.musica = this.add.audio('som_musica');
-		this.musica.play('',0,1,true);
 		this.estilo = { font: "bold 150pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
 		this.estilo2 = { font: "bold 22pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 5 };
 		this.estilo4 = { font: "bold 15pt Arial", fill: "#ffffff", align: "left", stroke: "#000000", strokeThickness: 5 };
@@ -52,7 +50,7 @@ BasicGame.Menu.prototype = {
                 }
             }
         }
-        
+
         this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        
         this.titulo3 = this.add.text(-10, this.world.centerY, "----------------------------------------------------------------------------------------", this.estilo3);
         
@@ -72,6 +70,9 @@ BasicGame.Menu.prototype = {
 
         this.equipe = this.add.text(800, 610, "", this.estilo4);
         this.equipe.anchor.setTo(0.5, 0.5);
+        this.musica.play('',0,1,true);
+        this.valida_config();
+        
 	},
 
 	update: function () {
@@ -112,14 +113,17 @@ BasicGame.Menu.prototype = {
 	},
 
 	mudar_som: function (pointer) {
-		this.eSom = !this.eSom;
-		if (this.eSom) {
+		if (this.som == 0) {
 			this.botao_som.loadTexture('botao_som_on');
 			this.musica.volume = 1;
+			localStorage.setItem('jump_som', 1);
+			this.som = 1;
 		}
 		else {
 			this.botao_som.loadTexture('botao_som_off');
 			this.musica.volume = 0;
+			localStorage.setItem('jump_som', 0);
+			this.som = 0;
 		}
 	},
 
@@ -132,5 +136,18 @@ BasicGame.Menu.prototype = {
 	        this.stage.scale.stopFullScreen();
 	        this.botao_tela.loadTexture('botao_tela_cheia');
 	    }
+	},
+	
+	valida_config: function() {
+	    this.som = localStorage.getItem('jump_som');
+        if (this.som == null)
+            this.som = 1;
+        else
+            this.som = parseInt(this.som);
+        if (this.som == 0)
+            this.botao_som.loadTexture('botao_som_off');
+        else
+            this.botao_som.loadTexture('botao_som_on');
+        this.musica.volume = this.som;
 	},
 };
