@@ -1,6 +1,8 @@
 // vai ajudar numa série de coisas, uma delas é suporte nativo a JSON
 "use strict";
- 
+
+var URL_RANKING = "./file/ranking.json";
+
 // título do processo
 process.title = 'server';
  
@@ -83,7 +85,7 @@ wsServer.on('request', function(request) {
     // 'push'. O método retorna o comprimento do array depois de adicionarmos
     // aquele elemento. Se subtraírmos um, temos a posição do último elemento.
     var index = clientes.push(conexao) - 1;
-    fs.readFile('./assets/file/ranking.json', 'utf8', function(error, data) {
+    fs.readFile(URL_RANKING, 'utf8', function(error, data) {
         conexao.sendUTF(data);
     });
     
@@ -97,4 +99,13 @@ wsServer.on('request', function(request) {
         // o cliente que se desconectou.
         clientes.splice(index, 1);
     });
+    
+   conexao.on('message', function(message) {
+        console.log(message);
+        fs.readFile(URL_RANKING, 'utf8', function(error, data) {
+            var arq = JSON.parse(data);
+            arq.append(JSON.parse(message));
+            fs.writeFile(URL_RANKING, JSON.stringify(arq));
+        });
+    });  
 });
