@@ -1,6 +1,5 @@
 
 BasicGame.PreCarregamento = function (game) {
-
 	this.background = null;
 	this.preloadBar = null;
 	this.ready = false;
@@ -23,6 +22,8 @@ BasicGame.PreCarregamento.prototype = {
         this.load.spritesheet('moeda', 'assets/img/moedas.png', 44, 40, 10);
         this.load.spritesheet('botao_jogar', 'assets/img/botao_jogar.png', 250, 60);
         this.load.spritesheet('botao_ranking', 'assets/img/botao_ranking.png', 250, 60);
+        this.load.spritesheet('botao_tela_normal', 'assets/img/botao_tela_normal.png', 250, 60);
+        this.load.spritesheet('botao_tela_cheia', 'assets/img/botao_tela_cheia.png', 250, 60);
         this.load.spritesheet('botao_sair', 'assets/img/botao_sair.png', 250, 60);
         this.load.spritesheet('correndo', 'assets/img/correndo2.png', 58.71, 100);
         this.load.spritesheet('correndo_min', 'assets/img/correndo2_min.png', 23.5, 40);
