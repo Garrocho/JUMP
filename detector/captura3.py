@@ -6,6 +6,9 @@ import sys
 
 
 class Movimentos:
+    '''
+    Classe para simular uma enumeração com os possiveis valores para o movimento
+    '''
     EM_PE = 0
     SUBINDO = 1
     DESCENDO = -1
@@ -13,7 +16,9 @@ class Movimentos:
 
 
 class DetectorMovimento:
-
+    '''
+    Classe para detectar o movimento
+    '''
     # Constantes
     ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
     ALTURA_QUADRADO_CENTRO = 150
