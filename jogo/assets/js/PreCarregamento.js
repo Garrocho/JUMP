@@ -32,8 +32,9 @@ BasicGame.PreCarregamento.prototype = {
         this.load.spritesheet('correndo_min', 'assets/img/correndo2_min.png', 23.5, 40);
         this.load.spritesheet('pulando', 'assets/img/pulando2.png', 57.2, 100);
         this.load.spritesheet('inimigo', 'assets/img/passaro.png', 74.9, 72);
-        this.load.audio('som_musica', ['assets/sons/fase_1.wav']);
-        this.load.audio('som_moeda', ['assets/sons/moeda.wav']);
+        this.load.audio('som_musica', ['assets/sons/fase_1.ogg']);
+        this.load.audio('som_moeda', ['assets/sons/moeda.ogg']);
+        this.load.audio('som_menu', ['assets/sons/menu.ogg']);
         this.load.audio('som_pulo', ['assets/sons/pulo.ogg']);
 	},
 
