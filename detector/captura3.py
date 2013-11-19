@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding:utf-8
 
 import cv2
@@ -5,7 +6,8 @@ import numpy as np
 import sys
 
 
-class Movimentos:
+class Movimentos(object):
+
     '''
     Classe para simular uma enumeração com os possiveis valores para o movimento
     '''
@@ -15,12 +17,45 @@ class Movimentos:
     AGACHADO = -2
 
 
-class DetectorMovimento:
+class GerenciadorEstadoJogador(object):
+
+    '''
+    Classe para gerenciar o estado do jogador
+    '''
+    # Constantes
+    ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
+
+    class EstadosJogador(object):
+
+        '''
+        Classe para simular uma enumeração com os etados do jogador
+        '''
+        EM_PE = 0
+        PULANDO = 1
+        AGACHADO = -1
+
+    def atualizar_estado(self, movimento):
+        '''
+        Atualiza o estado do jogador no arquivo
+        '''
+        novo_estado = 0
+        if movimento == Movimentos.EM_PE:
+            novo_estado = EstadosJogador.EM_PE
+        elif movimento == Movimentos.SUBINDO:
+            novo_estado = EstadosJogador.PULANDO
+        elif movimento == Movimentos.AGACHADO:
+            novo_estado = EstadosJogador.AGACHADO
+        # Recria o arquivo e insere o novo estado do jogador
+        with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
+            arq.write(str(novo_estado))
+
+
+class DetectorMovimento(object):
+
     '''
     Classe para detectar o movimento
     '''
     # Constantes
-    ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
     ALTURA_QUADRADO_CENTRO = 150
     LARGURA_QUADRADO_CENTRO = 150
     # tem que receber false e so quando calibrar receber True
@@ -32,11 +67,13 @@ class DetectorMovimento:
     Y_GUARDADOS = 5
 
     def __init__(self, id_camera=0):
+        '''
+        Construtor da Classe
+        :param id_camera: identificador da camera que será utilizada, o padrão é 0
+        '''
         self.movimento = Movimentos.EM_PE
         # dentro do espaço delimitado pelas duas linhas amarelas, incluindo a
         # linha vermelha
-        #dentro_espaco = False
-
         self.id_camera = id_camera
 
         self.camera = cv2.VideoCapture(self.id_camera)
@@ -49,14 +86,25 @@ class DetectorMovimento:
         self.desenhar_linhas = False
         self.calibrado = False
 
+        self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
+
     def getThresholdedImage(self, hsv):
+        '''
+        Gera uma faixa de cor
+        :param hsv: imagem no formato de cor hsv
+        :returns: a faixa de cor
+        '''
         min_cor = np.array((100, 150, 150), np.uint8)
         max_cor = np.array((130, 255, 255), np.uint8)
 
-        cor = cv2.inRange(hsv, min_cor, max_cor)
-        return cor
+        faixa_cor = cv2.inRange(hsv, min_cor, max_cor)
+        return faixa_cor
 
     def verificar_movimento(self):
+        '''
+        Verifica se houve movimento e se foi para baixo ou para cima
+        :returns: 0 se não houve movimento, 1 se houve movimento para cima e -1 se houve movimento para baixo
+        '''
         ultimos_valores_y = [0]
         if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
             ultimos_valores_y = self.ys[
@@ -73,18 +121,10 @@ class DetectorMovimento:
         else:
             return 0
 
-    def atualizar_arquivo(self):
-        novo_estado = 0
-        if self.movimento == Movimentos.EM_PE:
-            novo_estado = 0
-        elif self.movimento == Movimentos.SUBINDO:
-            novo_estado = 1
-        elif self.movimento == Movimentos.AGACHADO:
-            novo_estado = -1
-        with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
-            arq.write(str(novo_estado))
-
     def start(self):
+        '''
+        Inicia a detecção
+        '''
         y_momento_pulo = None
         y_momento_agachar = None
         while(self.camera.isOpened()):
@@ -142,7 +182,7 @@ class DetectorMovimento:
                 # print hsv.item(cy, cx, 0), hsv.item(cy, cx, 1), hsv.item(cy, cx, 2)
                 # if 100 < hsv.item(cy, cx, 0) < 120:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), [255, 0, 0], 2)
-                #dentro_espaco = True
+
                 if len(self.ys) >= self.Y_GUARDADOS:
                     self.ys = self.ys[1:self.Y_GUARDADOS]
                 self.ys.append(y)
@@ -194,7 +234,8 @@ class DetectorMovimento:
                                 print 'Agachou em px: {0}'.format(y_momento_agachar)
                             elif self.movimento == Movimentos.EM_PE:
                                 print 'De pé em px: {0}'.format(y)
-                            atualizar_arquivo()
+                            self.gerenciador_estado_jogador.atualizar_estado(
+                                self.movimento)
                     # nao houve variacao grande entre os pontos
                     else:
                         if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
@@ -202,13 +243,15 @@ class DetectorMovimento:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
-                                atualizar_arquivo()
+                                self.gerenciador_estado_jogador.atualizar_estado(
+                                    self.movimento)
                         if y_momento_agachar != None and y > y_momento_agachar - self.MARGEM_TOLERANCIA and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_agachar = None
-                                atualizar_arquivo()
+                                self.gerenciador_estado_jogador.atualizar_estado(
+                                    self.movimento)
 
             if self.desenhar_linhas:
                 # linha superior (640 x 50)
@@ -223,7 +266,7 @@ class DetectorMovimento:
                 cv2.line(frame, (0, int(self.height - 150)),
                          (int(self.width), int(self.height - 150)), (0, 0, 255), 2)
 
-            cv2.imshow('Camera', frame)
+            cv2.imshow('JUMP Detecção', frame)
 
             key = cv2.waitKey(25)
             # print 'key: ', key
@@ -231,6 +274,9 @@ class DetectorMovimento:
                 break
 
     def finish(self):
+        '''
+        finaliza a detecção e os recursos
+        '''
         cv2.destroyAllWindows()
         self.camera.release()
 
