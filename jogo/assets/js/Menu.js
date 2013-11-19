@@ -16,14 +16,15 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-        this.botao_ranking = this.add.button(this.world.centerX + 20, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
-		this.botao_jogar = this.add.button(this.world.centerX - 270, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX - 100, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
+		this.botao_jogar = this.add.button(this.world.centerX - 400, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
 		if (this.stage.scale.isFullScreen == null)
 	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
 	    else
 	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
 
 	    this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
+	    this.botao_sair = this.add.button(this.world.centerX + 200, 300, 'botao_sair', this.sair, this, 2, 1, 0);
 		
 		if (window.WebSocket) {
             this.conexao = new WebSocket('ws://108.59.6.230:14527');
@@ -153,5 +154,9 @@ BasicGame.Menu.prototype = {
         else
             this.botao_som.loadTexture('botao_som_on');
         this.musica.volume = this.som;
+	},
+	
+	sair: function() {
+	    window.close();
 	},
 };
