@@ -9,9 +9,9 @@ BasicGame.PreCarregamento.prototype = {
 
 	preload: function () {
 		this.background = this.add.sprite(0, 0, 'background');
-		this.preloadBar = this.add.sprite(15, 650, 'barra');
-		this.estilo = { font: "bold 115pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
-        this.titulo = this.add.text(this.world.centerX, this.world.centerY+130, "Carregando...", this.estilo);
+		this.preloadBar = this.add.sprite(15, this.world.centerY+170, 'barra');
+		this.estilo = { font: "bold 50pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 8 };
+        this.titulo = this.add.text(this.world.centerX, this.world.centerY+120, "Carregando...", this.estilo);
         this.titulo.anchor.setTo(0.5, 0.5);
         
 		this.load.setPreloadSprite(this.preloadBar);
@@ -19,9 +19,12 @@ BasicGame.PreCarregamento.prototype = {
         this.load.image('montanha', 'assets/img/montanha.png');
         this.load.image('caminho', 'assets/img/caminho.png');
         this.load.image('agachado', 'assets/img/agachado.png');
+        this.load.image('botao_som_on', 'assets/img/botao_som_on.png');
+        this.load.image('botao_som_off', 'assets/img/botao_som_off.png');
         this.load.spritesheet('moeda', 'assets/img/moedas.png', 44, 40, 10);
         this.load.spritesheet('botao_jogar', 'assets/img/botao_jogar.png', 250, 60);
         this.load.spritesheet('botao_ranking', 'assets/img/botao_ranking.png', 250, 60);
+        this.load.spritesheet('botao_sobre', 'assets/img/botao_sobre.png', 250, 60);
         this.load.spritesheet('botao_tela_normal', 'assets/img/botao_tela_normal.png', 250, 60);
         this.load.spritesheet('botao_tela_cheia', 'assets/img/botao_tela_cheia.png', 250, 60);
         this.load.spritesheet('botao_sair', 'assets/img/botao_sair.png', 250, 60);
