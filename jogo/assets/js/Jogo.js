@@ -34,6 +34,7 @@ BasicGame.Jogo.prototype = {
         this.kmh = 5;
         this.pulando = false;
         this.aux_pulo = 0;
+        this.eSom = true;
         
         this.moeda_cont = this.add.sprite(10, 10, 'moeda');
         this.moeda_cont.animations.add('correr');
@@ -50,7 +51,7 @@ BasicGame.Jogo.prototype = {
         this.texto2.anchor.setTo(0.5, 0.5);
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.som_musica = this.add.audio('som_musica',1,true);
+        this.som_musica = this.add.audio('som_musica',0.1,true);
         this.som_moeda = this.add.audio('som_moeda',1,true);
         this.som_pulo = this.add.audio('som_pulo',1,true);
         this.som_musica.play('',0,1,true);
@@ -65,9 +66,9 @@ BasicGame.Jogo.prototype = {
             }
         }
         if (this.stage.scale.isFullScreen == null)
-	        this.botao_tela = this.add.button(this.world.centerX + 250, 10, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
+	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
 	    else
-	        this.botao_tela = this.add.button(this.world.centerX + 250, 10, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
 	    
         this.moedas = new Array();
         this.inimigos = new Array();
@@ -75,6 +76,7 @@ BasicGame.Jogo.prototype = {
         this.velocidade[0] = 0.5;
 	    this.velocidade[1] = 1;
 	    this.velocidade[2] = 2;
+        this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
 	},
 
 	update: function () {
@@ -230,4 +232,20 @@ BasicGame.Jogo.prototype = {
 	        this.botao_tela.loadTexture('botao_tela_cheia');
 	    }
 	},
+
+    mudar_som: function (pointer) {
+        this.eSom = !this.eSom;
+        if (this.eSom) {
+            this.botao_som.loadTexture('botao_som_on');
+            this.som_musica.volume = 1;
+            this.som_moeda.volume = 1;
+            this.som_pulo.volume = 1;
+        }
+        else {
+            this.botao_som.loadTexture('botao_som_off');
+            this.som_musica.volume = 0;
+            this.som_moeda.volume = 0;
+            this.som_pulo.volume = 0;
+        }
+    },
 };

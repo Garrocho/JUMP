@@ -5,6 +5,7 @@ BasicGame.Menu.prototype = {
 
 	create: function () {
 		this.eRanking = false;
+		this.eSom = true;
 	    this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
 	    this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
 		this.musica = this.add.audio('som_musica');
@@ -17,12 +18,14 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-		this.botao_jogar = this.add.button(this.world.centerX - 430, 330, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
-		this.botao_ranking = this.add.button(this.world.centerX - 130, 330, 'botao_ranking', this.ranking, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX + 20, 330, 'botao_ranking', this.ranking, this, 2, 1, 0);
+		this.botao_jogar = this.add.button(this.world.centerX - 270, 330, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
 		if (this.stage.scale.isFullScreen == null)
-	        this.botao_tela = this.add.button(this.world.centerX + 170, 330, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
+	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
 	    else
-	        this.botao_tela = this.add.button(this.world.centerX + 170, 330, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+
+	    this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
 		
 		if (window.WebSocket) {
             this.conexao = new WebSocket('ws://108.59.6.230:14527');
@@ -106,6 +109,18 @@ BasicGame.Menu.prototype = {
 			this.botao_ranking.loadTexture('botao_sobre');
 		else
 			this.botao_ranking.loadTexture('botao_ranking');
+	},
+
+	mudar_som: function (pointer) {
+		this.eSom = !this.eSom;
+		if (this.eSom) {
+			this.botao_som.loadTexture('botao_som_on');
+			this.musica.volume = 1;
+		}
+		else {
+			this.botao_som.loadTexture('botao_som_off');
+			this.musica.volume = 0;
+		}
 	},
 
 	mudar_tela: function() {
