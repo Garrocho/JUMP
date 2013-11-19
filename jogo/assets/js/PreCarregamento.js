@@ -15,6 +15,7 @@ BasicGame.PreCarregamento.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         
 		this.load.setPreloadSprite(this.preloadBar);
+		this.load.image('ifet', 'assets/img/ifet.png');
 		this.load.image('nuvem', 'assets/img/nuvem.png');
         this.load.image('montanha', 'assets/img/montanha.png');
         this.load.image('caminho', 'assets/img/caminho.png');
