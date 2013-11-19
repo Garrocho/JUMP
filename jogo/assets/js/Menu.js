@@ -16,15 +16,15 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-        this.botao_ranking = this.add.button(this.world.centerX - 100, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
-		this.botao_jogar = this.add.button(this.world.centerX - 400, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX - 130, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
+		this.botao_jogar = this.add.button(this.world.centerX - 430, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
 		if (this.stage.scale.isFullScreen == null)
 	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
 	    else
 	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
 
 	    this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
-	    this.botao_sair = this.add.button(this.world.centerX + 200, 300, 'botao_sair', this.sair, this, 2, 1, 0);
+	    this.botao_sair = this.add.button(this.world.centerX + 170, 300, 'botao_sair', this.sair, this, 2, 1, 0);
 		
 		if (window.WebSocket) {
             this.conexao = new WebSocket('ws://108.59.6.230:14527');
@@ -73,7 +73,7 @@ BasicGame.Menu.prototype = {
         this.equipe.anchor.setTo(0.5, 0.5);
         this.musica.play('',0,1,true);
         this.valida_config();
-        this.ifet = this.add.sprite(15, 600, 'ifet');
+        this.ifet = this.add.sprite(38, 600, 'ifet');
 	},
 
 	update: function () {
@@ -94,8 +94,7 @@ BasicGame.Menu.prototype = {
 	        this.distancia.setText("");
 	        this.localizacao.setText("");
 	        this.moedas.setText("");
-
-	        this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado ao\ndesenvolvimento de um jogo interativo\n direcionado à prática de exercícios físicos.");
+	        this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado\nao desenvolvimento de um jogo interativo\ndirecionado à prática de exercícios físicos.");
 	        this.equipe.setText("Orientador:\nRafael José de Alencar Almeida\n\nEquipe:\nArthur Nascimento Assunção\nBruno Ferreira da Costa\nCharles Tim Batista Garrocho\nLucas Gabriel de Araújo Assis\nMariana Wamser Campos\nPaulo Vitor Francisco");
 	    }
 	},
