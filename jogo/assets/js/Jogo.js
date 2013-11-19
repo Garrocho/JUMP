@@ -14,17 +14,11 @@ BasicGame.Jogo = function (game) {
     this.particles;
     this.physics;
     this.rnd;
-    this.moedas = new Array();
-    this.inimigos = new Array();
-    this.velocidade = new Array();
 };
 
 BasicGame.Jogo.prototype = {
 
 	create: function () {
-	    this.velocidade[0] = 0.5;
-	    this.velocidade[1] = 1;
-	    this.velocidade[2] = 2;
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 220, 1024, 512, 'montanha');
         this.fundo3 = this.add.tileSprite(0, 520, 1024, 256, 'caminho');
@@ -60,7 +54,6 @@ BasicGame.Jogo.prototype = {
         this.som_moeda = this.add.audio('som_moeda',1,true);
         this.som_pulo = this.add.audio('som_pulo',1,true);
         this.som_musica.play('',0,1,true);
-        this.stage.scale.startFullScreen();
         this.ver_level = 0;
         this.ultimo_eixo_x = 1024;
 
@@ -71,6 +64,17 @@ BasicGame.Jogo.prototype = {
                 console.log("Movimento: ", this.movimento);
             }
         }
+        if (this.stage.scale.isFullScreen == null)
+	        this.botao_tela = this.add.button(this.world.centerX + 250, 10, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
+	    else
+	        this.botao_tela = this.add.button(this.world.centerX + 250, 10, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+	    
+        this.moedas = new Array();
+        this.inimigos = new Array();
+        this.velocidade = new Array();
+        this.velocidade[0] = 0.5;
+	    this.velocidade[1] = 1;
+	    this.velocidade[2] = 2;
 	},
 
 	update: function () {
@@ -214,5 +218,16 @@ BasicGame.Jogo.prototype = {
     
 	quitGame: function (pointer) {
 		this.game.state.start('Menu');
-	}
+	},
+	
+	mudar_tela: function() {
+	    if (this.stage.scale.isFullScreen == null) {
+	        this.stage.scale.startFullScreen();
+	        this.botao_tela.loadTexture('botao_tela_normal');
+	    }
+	    else {
+	        this.stage.scale.stopFullScreen();
+	        this.botao_tela.loadTexture('botao_tela_cheia');
+	    }
+	},
 };
