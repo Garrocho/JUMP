@@ -12,7 +12,7 @@ class Movimentos:
     AGACHADO = -2
 
 
-class DetectorWebCam:
+class DetectorMovimento:
 
     # Constantes
     ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
@@ -52,12 +52,21 @@ class DetectorWebCam:
         return cor
 
     def verificar_movimento(self):
-        ultimo_y = self.ys[len(self.ys) - 1]
-        primeiro_y = self.ys[0]
-        if primeiro_y < ultimo_y:  # ta descendo
-            return -1
+        ultimos_valores_y = [0]
+        if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
+            ultimos_valores_y = self.ys[
+                len(self.ys) - self.NUM_PONTOS_ANALIZADOS:len(self.ys)]
+        # houve diferenca maior que a margem entre dois pontos Y dentro do
+        # numero de pontos analizados
+        if max(ultimos_valores_y) - min(ultimos_valores_y) > self.MARGEM_TOLERANCIA:
+            ultimo_y = self.ys[len(self.ys) - 1]
+            primeiro_y = self.ys[0]
+            if primeiro_y < ultimo_y:  # ta descendo
+                return -1
+            else:
+                return 1
         else:
-            return 1
+            return 0
 
     def atualizar_arquivo(self, estado):
         novo_estado = 0
@@ -121,7 +130,7 @@ class DetectorWebCam:
                     y + h > centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO and \
                         y + h < centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO:
                     if not self.calibrado:
-                        print 'ta dentro'
+                        print 'Calibrou'
                         self.calibrado = True
                     # dentro do quadrado
                     cv2.rectangle(
@@ -138,16 +147,10 @@ class DetectorWebCam:
                 self.ys.append(y)
                 # ta guardando ate Y_GUARDADOS Y
                 if self.calibrado:
-                    ultimos_valores_y = [0]
-                    if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
-                        ultimos_valores_y = self.ys[
-                            len(self.ys) - self.NUM_PONTOS_ANALIZADOS:len(self.ys)]
-                    # houve diferenca maior que a margem entre dois pontos Y dentro do
-                    # numero de pontos analizados
-                    if max(ultimos_valores_y) - min(ultimos_valores_y) > self.MARGEM_TOLERANCIA:
-                        # verifica o tipo do movimento, 1 para subiu e -1 para
-                        # desceu
-                        variacao_movimento = verificar_movimento(self.ys)
+                    # verifica o tipo do movimento, 1 para subiu e -1 para
+                    # desceu e 0 para nao movimentou
+                    variacao_movimento = verificar_movimento()
+                    if variacao_movimento:
                         # guarda o movimento antigo, mas pra nada
                         movimento_antigo = movimento
                         mudou_movimento = False
@@ -235,6 +238,6 @@ if __name__ == "__main__":
         id_camera = int(sys.argv[1]) if len(sys.argv) > 1 else 0
     except ValueError as e:
         id_camera = 0
-    detector_web_cam = DetectorWebCam(id_camera)
-    detector_web_cam.start()
-    detector_web_cam.finish()
+    detector_movimento = DetectorMovimento(id_camera)
+    detector_movimento.start()
+    detector_movimento.finish()
