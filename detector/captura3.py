@@ -6,14 +6,19 @@ import sys
 
 
 class Movimentos:
+    '''
+    Classe para simular uma enumeração com os possiveis valores para o movimento
+    '''
     EM_PE = 0
     SUBINDO = 1
     DESCENDO = -1
     AGACHADO = -2
 
 
-class DetectorWebCam:
-
+class DetectorMovimento:
+    '''
+    Classe para detectar o movimento
+    '''
     # Constantes
     ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
     ALTURA_QUADRADO_CENTRO = 150
@@ -52,20 +57,29 @@ class DetectorWebCam:
         return cor
 
     def verificar_movimento(self):
-        ultimo_y = self.ys[len(self.ys) - 1]
-        primeiro_y = self.ys[0]
-        if primeiro_y < ultimo_y:  # ta descendo
-            return -1
+        ultimos_valores_y = [0]
+        if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
+            ultimos_valores_y = self.ys[
+                len(self.ys) - self.NUM_PONTOS_ANALIZADOS:len(self.ys)]
+        # houve diferenca maior que a margem entre dois pontos Y dentro do
+        # numero de pontos analizados
+        if max(ultimos_valores_y) - min(ultimos_valores_y) > self.MARGEM_TOLERANCIA:
+            ultimo_y = self.ys[len(self.ys) - 1]
+            primeiro_y = self.ys[0]
+            if primeiro_y < ultimo_y:  # ta descendo
+                return -1
+            else:
+                return 1
         else:
-            return 1
+            return 0
 
-    def atualizar_arquivo(self, estado):
+    def atualizar_arquivo(self):
         novo_estado = 0
-        if estado == Movimentos.EM_PE:
+        if self.movimento == Movimentos.EM_PE:
             novo_estado = 0
-        elif estado == Movimentos.SUBINDO:
+        elif self.movimento == Movimentos.SUBINDO:
             novo_estado = 1
-        elif estado == Movimentos.AGACHADO:
+        elif self.movimento == Movimentos.AGACHADO:
             novo_estado = -1
         with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
             arq.write(str(novo_estado))
@@ -112,16 +126,12 @@ class DetectorWebCam:
                 cx, cy = x + w / 2, y + h / 2
 
                 # verifica se ta no centro
-                # if (cx > centro_x - (LARGURA_QUADRADO_CENTRO / 2)) and (cx < centro_x - (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx > centro_x + (LARGURA_QUADRADO_CENTRO / 2) - MARGEM_ERRO) and (cx < centro_x + (LARGURA_QUADRADO_CENTRO / 2)):
-                # print y, y + h, centro_y - (ALTURA_QUADRADO_CENTRO / 2), centro_y +
-                # (ALTURA_QUADRADO_CENTRO / 2)
-
                 if y > centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO and \
                     y < centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO and \
                     y + h > centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO and \
                         y + h < centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO:
                     if not self.calibrado:
-                        print 'ta dentro'
+                        print 'Calibrou'
                         self.calibrado = True
                     # dentro do quadrado
                     cv2.rectangle(
@@ -138,73 +148,67 @@ class DetectorWebCam:
                 self.ys.append(y)
                 # ta guardando ate Y_GUARDADOS Y
                 if self.calibrado:
-                    ultimos_valores_y = [0]
-                    if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
-                        ultimos_valores_y = self.ys[
-                            len(self.ys) - self.NUM_PONTOS_ANALIZADOS:len(self.ys)]
-                    # houve diferenca maior que a margem entre dois pontos Y dentro do
-                    # numero de pontos analizados
-                    if max(ultimos_valores_y) - min(ultimos_valores_y) > self.MARGEM_TOLERANCIA:
-                        # verifica o tipo do movimento, 1 para subiu e -1 para
-                        # desceu
-                        variacao_movimento = verificar_movimento(self.ys)
+                    # verifica o tipo do movimento, 1 para subiu e -1 para
+                    # desceu e 0 para nao movimentou
+                    variacao_movimento = verificar_movimento()
+                    if variacao_movimento:
                         # guarda o movimento antigo, mas pra nada
-                        movimento_antigo = movimento
+                        movimento_antigo = self.movimento
                         mudou_movimento = False
                         # subiu, mas o que houve?
                         if variacao_movimento == 1:
                             # pulou
-                            if movimento == Movimentos.EM_PE:
-                                movimento = Movimentos.SUBINDO
+                            if self.movimento == Movimentos.EM_PE:
+                                self.movimento = Movimentos.SUBINDO
                                 y_momento_pulo = y
                                 mudou_movimento = True
                             # levantou
-                            elif movimento == Movimentos.AGACHADO:
+                            elif self.movimento == Movimentos.AGACHADO:
                                 if y_momento_agachar != None and y > y_momento_agachar - self.MARGEM_TOLERANCIA and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
-                                    movimento = Movimentos.EM_PE
+                                    self.movimento = Movimentos.EM_PE
                                     mudou_movimento = True
                         # desceu, mas o que houve?
                         elif variacao_movimento == -1:
                             # agachou
-                            if movimento == Movimentos.EM_PE:
+                            if self.movimento == Movimentos.EM_PE:
                                 y_momento_agachar = y
-                                movimento = Movimentos.AGACHADO
+                                self.movimento = Movimentos.AGACHADO
                                 mudou_movimento = True
                             # ta descendo do pulo
-                            elif movimento == Movimentos.SUBINDO:
-                                movimento = Movimentos.DESCENDO
+                            elif self.movimento == Movimentos.SUBINDO:
+                                self.movimento = Movimentos.DESCENDO
                                 mudou_movimento = True
 
-                        if movimento == Movimentos.DESCENDO:
+                        if self.movimento == Movimentos.DESCENDO:
                             # voltou ao chao
                             print y, y_momento_pulo
                             if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
-                                movimento = Movimentos.EM_PE
+                                self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
                                 mudou_movimento = True
-                        print 'mov:{0} mov_ant: {1} mov_var: {2}'.format(movimento, movimento_antigo, variacao_movimento)
+                        print 'mov:{0} mov_ant: {1} mov_var: {2}'.format(self.movimento, movimento_antigo, variacao_movimento)
                         if mudou_movimento:
-                            if movimento == Movimentos.SUBINDO:
+                            if self.movimento == Movimentos.SUBINDO:
                                 print 'Pulou em px: {0}'.format(y_momento_pulo)
-                            elif movimento == Movimentos.AGACHADO:
+                            elif self.movimento == Movimentos.AGACHADO:
                                 print 'Agachou em px: {0}'.format(y_momento_agachar)
-                            elif movimento == Movimentos.EM_PE:
+                            elif self.movimento == Movimentos.EM_PE:
                                 print 'De pé em px: {0}'.format(y)
-                            atualizar_arquivo(movimento)
+                            atualizar_arquivo()
                     # nao houve variacao grande entre os pontos
                     else:
                         if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
-                            if movimento == Movimentos.DESCENDO:
+                            if self.movimento == Movimentos.DESCENDO:
                                 print 'De pé em px: {0}'.format(y)
-                                movimento = Movimentos.EM_PE
+                                self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
-                                atualizar_arquivo(movimento)
+                                atualizar_arquivo()
                         if y_momento_agachar != None and y > y_momento_agachar - self.MARGEM_TOLERANCIA and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
-                            if movimento == Movimentos.AGACHADO:
+                            if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
-                                movimento = Movimentos.EM_PE
+                                self.movimento = Movimentos.EM_PE
                                 y_momento_agachar = None
-                                atualizar_arquivo(movimento)
+                                atualizar_arquivo()
 
             if self.desenhar_linhas:
                 # linha superior (640 x 50)
@@ -235,6 +239,6 @@ if __name__ == "__main__":
         id_camera = int(sys.argv[1]) if len(sys.argv) > 1 else 0
     except ValueError as e:
         id_camera = 0
-    detector_web_cam = DetectorWebCam(id_camera)
-    detector_web_cam.start()
-    detector_web_cam.finish()
+    detector_movimento = DetectorMovimento(id_camera)
+    detector_movimento.start()
+    detector_movimento.finish()
