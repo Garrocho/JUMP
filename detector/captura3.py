@@ -65,21 +65,29 @@ class DetectorMovimento(object):
 
     NUM_Y_GUARDADOS = 5
 
+    class VariacoesMovimento(object):
+
+        '''
+        Classe para simular uma enumeração com as variações de movimento
+        '''
+        PARA_CIMA = 1
+        PARA_BAIXO = -1
+        SEM_MOVIMENTO = 0
+
     def __init__(self, id_camera=0):
         '''
         Construtor da Classe
         :param id_camera: identificador da camera que será utilizada, o padrão é 0
         '''
         self.movimento = Movimentos.EM_PE
-        # dentro do espaço delimitado pelas duas linhas amarelas, incluindo a
-        # linha vermelha
         self.id_camera = id_camera
 
         self.camera = cv2.VideoCapture(self.id_camera)
         if not self.camera.isOpened():
             raise IOError('Não foi possivel ter acesso a camera')
         if self.NUM_Y_ANALIZADOS > self.NUM_Y_GUARDADOS:
-            raise ValueError("Número de pontos analisados deve ser igual ou menor que o numero de Y guardados")
+            raise ValueError(
+                "Número de pontos analisados deve ser igual ou menor que o número de Y guardados")
         self.width, self.height = self.camera.get(3), self.camera.get(4)
         print 'Resolução da camera {0} x {1}'.format(self.width, self.height)
 
@@ -116,11 +124,11 @@ class DetectorMovimento(object):
             ultimo_y = self.ys[len(self.ys) - 1]
             primeiro_y = self.ys[0]
             if primeiro_y < ultimo_y:  # ta descendo
-                return -1
-            else:
-                return 1
+                return self.VariacoesMovimento.PARA_BAIXO
+            else:  # ta subindo
+                return self.VariacoesMovimento.PARA_CIMA
         else:
-            return 0
+            return self.VariacoesMovimento.SEM_MOVIMENTO
 
     def start(self):
         '''
@@ -197,7 +205,7 @@ class DetectorMovimento(object):
                         movimento_antigo = self.movimento
                         mudou_movimento = False
                         # subiu, mas o que houve?
-                        if variacao_movimento == 1:
+                        if variacao_movimento == self.VariacoesMovimento.PARA_CIMA:
                             # pulou
                             if self.movimento == Movimentos.EM_PE:
                                 self.movimento = Movimentos.SUBINDO
@@ -205,12 +213,13 @@ class DetectorMovimento(object):
                                 mudou_movimento = True
                             # levantou
                             elif self.movimento == Movimentos.AGACHADO:
-                                # and y > y_momento_agachar - self.MARGEM_TOLERANCIA
+                                # and y > y_momento_agachar -
+                                # self.MARGEM_TOLERANCIA
                                 if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
                                     self.movimento = Movimentos.EM_PE
                                     mudou_movimento = True
                         # desceu, mas o que houve?
-                        elif variacao_movimento == -1:
+                        elif variacao_movimento == self.VariacoesMovimento.PARA_BAIXO:
                             # agachou
                             if self.movimento == Movimentos.EM_PE:
                                 y_momento_agachar = y
@@ -223,7 +232,6 @@ class DetectorMovimento(object):
 
                         if self.movimento == Movimentos.DESCENDO:
                             # voltou ao chao
-                            print y, y_momento_pulo
                             # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
                             if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA:
                                 self.movimento = Movimentos.EM_PE
@@ -250,7 +258,7 @@ class DetectorMovimento(object):
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento)
                         # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
-                        if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
+                        if y_momento_agachar != None and y < y_momento_agachar: # não considera a margem de tolerancia, pois ao agachar ele pode ja levantar. O ideia seria uma outra margem, mas menor
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
