@@ -99,7 +99,10 @@ BasicGame.GameOver.prototype = {
     enviar_recorde: function(recorde) {
 	if (window.WebSocket) {
 	    var cidade = localStorage.getItem('jump_cidade');
-	    recorde['localizacao'] = cidade;
+	    if (cidade == null)
+	        cidade = "NÃO DEFINIDO";
+            console.log(cidade);
+            recorde['localizacao'] = cidade;
 	    var conexao = new WebSocket('ws://108.59.6.230:14527');
 	    conexao.onopen = function(){
 		conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
