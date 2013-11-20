@@ -58,13 +58,12 @@ class DetectorMovimento(object):
     # Constantes
     ALTURA_QUADRADO_CENTRO = 150
     LARGURA_QUADRADO_CENTRO = 150
-    # tem que receber false e so quando calibrar receber True
-    MARGEM_ERRO = 20
+    MARGEM_ERRO_CALIBRACAO = 20
     # evita que um simples aumento na altura da pessoa seja considerado um pulo
     MARGEM_TOLERANCIA = 70
-    NUM_PONTOS_ANALIZADOS = 5
+    NUM_Y_ANALIZADOS = 5
 
-    Y_GUARDADOS = 5
+    NUM_Y_GUARDADOS = 5
 
     def __init__(self, id_camera=0):
         '''
@@ -79,6 +78,8 @@ class DetectorMovimento(object):
         self.camera = cv2.VideoCapture(self.id_camera)
         if not self.camera.isOpened():
             raise IOError('Não foi possivel ter acesso a camera')
+        if self.NUM_Y_ANALIZADOS > self.NUM_Y_GUARDADOS:
+            raise ValueError("Número de pontos analisados deve ser igual ou menor que o numero de Y guardados")
         self.width, self.height = self.camera.get(3), self.camera.get(4)
         print 'Resolução da camera {0} x {1}'.format(self.width, self.height)
 
@@ -106,9 +107,9 @@ class DetectorMovimento(object):
         :returns: 0 se não houve movimento, 1 se houve movimento para cima e -1 se houve movimento para baixo
         '''
         ultimos_valores_y = [0]
-        if len(self.ys) >= self.NUM_PONTOS_ANALIZADOS:
+        if len(self.ys) >= self.NUM_Y_ANALIZADOS:
             ultimos_valores_y = self.ys[
-                len(self.ys) - self.NUM_PONTOS_ANALIZADOS:len(self.ys)]
+                len(self.ys) - self.NUM_Y_ANALIZADOS:len(self.ys)]
         # houve diferenca maior que a margem entre dois pontos Y dentro do
         # numero de pontos analizados
         if max(ultimos_valores_y) - min(ultimos_valores_y) > self.MARGEM_TOLERANCIA:
@@ -127,6 +128,7 @@ class DetectorMovimento(object):
         '''
         y_momento_pulo = None
         y_momento_agachar = None
+        centro_x, centro_y = (int)(self.width / 2), (int)(self.height / 2)
         while(self.camera.isOpened()):
             _, frame = self.camera.read()
             frame = cv2.flip(frame, 1)
@@ -141,7 +143,6 @@ class DetectorMovimento(object):
                 dilate, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
             # desenha o quadrado no centro, para calibrar
-            centro_x, centro_y = (int)(self.width / 2), (int)(self.height / 2)
             cv2.rectangle(
                 frame, (centro_x - (self.LARGURA_QUADRADO_CENTRO / 2),
                         centro_y - (self.ALTURA_QUADRADO_CENTRO / 2)),
@@ -166,10 +167,10 @@ class DetectorMovimento(object):
                 cx, cy = x + w / 2, y + h / 2
 
                 # verifica se ta no centro
-                if y > centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO and \
-                    y < centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO and \
-                    y + h > centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO and \
-                        y + h < centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO:
+                if y > centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO_CALIBRACAO and \
+                    y < centro_y - (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO_CALIBRACAO and \
+                    y + h > centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) - self.MARGEM_ERRO_CALIBRACAO and \
+                        y + h < centro_y + (self.ALTURA_QUADRADO_CENTRO / 2) + self.MARGEM_ERRO_CALIBRACAO:
                     if not self.calibrado:
                         print 'Calibrou'
                         self.calibrado = True
@@ -183,10 +184,10 @@ class DetectorMovimento(object):
                 # if 100 < hsv.item(cy, cx, 0) < 120:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), [255, 0, 0], 2)
 
-                if len(self.ys) >= self.Y_GUARDADOS:
-                    self.ys = self.ys[1:self.Y_GUARDADOS]
+                if len(self.ys) >= self.NUM_Y_GUARDADOS:
+                    self.ys = self.ys[1:self.NUM_Y_GUARDADOS]
                 self.ys.append(y)
-                # ta guardando ate Y_GUARDADOS Y
+                # ta guardando ate NUM_Y_GUARDADOS Y
                 if self.calibrado:
                     # verifica o tipo do movimento, 1 para subiu e -1 para
                     # desceu e 0 para nao movimentou
@@ -270,10 +271,9 @@ class DetectorMovimento(object):
                 cv2.line(frame, (0, int(self.height - 150)),
                          (int(self.width), int(self.height - 150)), (0, 0, 255), 2)
 
-            cv2.imshow('JUMP Detecção', frame)
+            cv2.imshow('JUMP! Detecção', frame)
 
             key = cv2.waitKey(25)
-            # print 'key: ', key
             if key == 27:  # esc
                 break
 
