@@ -40,11 +40,11 @@ class GerenciadorEstadoJogador(object):
         '''
         novo_estado = 0
         if movimento == Movimentos.EM_PE:
-            novo_estado = EstadosJogador.EM_PE
+            novo_estado = self.EstadosJogador.EM_PE
         elif movimento == Movimentos.SUBINDO:
-            novo_estado = EstadosJogador.PULANDO
+            novo_estado = self.EstadosJogador.PULANDO
         elif movimento == Movimentos.AGACHADO:
-            novo_estado = EstadosJogador.AGACHADO
+            novo_estado = self.EstadosJogador.AGACHADO
         # Recria o arquivo e insere o novo estado do jogador
         with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
             arq.write(str(novo_estado))
@@ -190,7 +190,7 @@ class DetectorMovimento(object):
                 if self.calibrado:
                     # verifica o tipo do movimento, 1 para subiu e -1 para
                     # desceu e 0 para nao movimentou
-                    variacao_movimento = verificar_movimento()
+                    variacao_movimento = self.verificar_movimento()
                     if variacao_movimento:
                         # guarda o movimento antigo, mas pra nada
                         movimento_antigo = self.movimento
@@ -238,14 +238,14 @@ class DetectorMovimento(object):
                                 self.movimento)
                     # nao houve variacao grande entre os pontos
                     else:
-                        if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
+                        if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA: # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.DESCENDO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento)
-                        if y_momento_agachar != None and y > y_momento_agachar - self.MARGEM_TOLERANCIA and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
+                        if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA: # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
