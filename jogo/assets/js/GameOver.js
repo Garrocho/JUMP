@@ -71,7 +71,7 @@ BasicGame.GameOver.prototype = {
                     }
                     else if (i == 13 || i == 27) {
                         if (this.nome.length == 0) {
-                            this.nome = "NAO DEFINIDO";
+                            this.nome = "Não Definido";
                             this.enviar_recorde(this.recorde);
                         }
                         else if (this.nome.length > 3) {
@@ -100,8 +100,7 @@ BasicGame.GameOver.prototype = {
 	if (window.WebSocket) {
 	    var cidade = localStorage.getItem('jump_cidade');
 	    if (cidade == null)
-	        cidade = "NÃO DEFINIDO";
-            console.log(cidade);
+	        cidade = "Não Definido";
             recorde['localizacao'] = cidade;
 	    var conexao = new WebSocket('ws://108.59.6.230:14527');
 	    conexao.onopen = function(){
