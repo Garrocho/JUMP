@@ -7,22 +7,11 @@ Jogo Unificado para Movimentação Projetada
   1. Instale o Git:
 
     <code>
-        apt-get install python-pygame git
-    </code>
-   
-
-  2. Baixe o Jogo:
-
-    <code>
-        git clone https://github.com/CharlesGarrocho/jump.git
-    </code>
-
-    <code>
-        cd jump
+        apt-get install git
     </code>
 
 
-  3. Instalando e Configurando o Node.js:
+  2. Instalando e Configurando o Node.js:
 
     <code>
         sudo apt-get install g++ curl libssl-dev apache2-utils
@@ -70,8 +59,15 @@ Jogo Unificado para Movimentação Projetada
     <code>
         npm install
     </code>
+  
+  4. Baixe o Jogo:
 
-  4. Instalando Módulos do Node.js:
+    <code>
+        git clone https://github.com/CharlesGarrocho/jump.git
+    </code>
+
+
+  5. Instalando Módulos do Node.js:
 
     <code>
         cd jump
@@ -90,7 +86,7 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
 
-  5. Inicializando o Serviço do Cliente e do Servidor:
+  6. Inicializando o Serviço do Cliente e do Servidor:
 
     <code>
         cd jump
