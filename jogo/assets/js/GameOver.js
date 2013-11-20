@@ -1,9 +1,4 @@
-// link: https://developers.google.com/maps/documentation/javascript/geocoding?hl=pt-br
-
 BasicGame.GameOver = function (game) {
-    this.musica = null;
-    this.input;
-    this.time;
     this.ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     this.nome = "";
     this.tempo = 0;

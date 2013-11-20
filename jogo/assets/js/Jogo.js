@@ -1,19 +1,4 @@
 BasicGame.Jogo = function (game) {
-    this.game;
-    this.add;
-    this.camera;
-    this.cache;
-    this.input;
-    this.load;
-    this.math;
-    this.sound;
-    this.stage;
-    this.time;
-    this.tweens;
-    this.world;
-    this.particles;
-    this.physics;
-    this.rnd;
 };
 
 BasicGame.Jogo.prototype = {
