@@ -2,6 +2,7 @@ BasicGame.GameOver = function (game) {
     this.ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     this.nome = "";
     this.tempo = 0;
+    this.tempo_teclado = 0;
     this.localizacao = "não identificado";
 };
 
@@ -13,13 +14,19 @@ BasicGame.GameOver.prototype = {
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
-        this.estilo3 = { font: "bold 25pt Arial", fill: "#ffffff", align: "left", stroke: "#10661343", strokeThickness: 3 };
+        this.estilo3 = { font: "bold 25pt Arial", fill: "#ffffff", align: "left", stroke: "#106343", strokeThickness: 3 };
         this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
         this.titulo = this.add.text(20, 0, "Fim de Jogo!", this.estilo1);
         this.titulo1 = this.add.text(30, 150, "Você Morreu!\nEntre Com Seu Nome Para Registrar Seu Recorde no Ranking!", this.estilo3);
         this.titulo2 = this.add.text(10, 710, "", this.estilo2);
-        this.recorde = JSON.parse(localStorage['recorde']);
-        this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h";
+        this.jump_rec = localStorage['recorde'];
+        if ((typeof(this.jump_rec)!=="undefined")) {
+            this.recorde= JSON.parse(this.jump_rec);
+            this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h";
+        }
+        else {
+            this.informacao = "\nMoedas: " + 0 + "\nVelocidade: " + 0 + " Km/h";
+        }
         this.texto = this.add.text(215, 450, this.informacao, this.estilo);
         this.texto.anchor.setTo(0.5, 0.5);
         this.botao_sair = this.add.button(760, 700, 'botao_sair', this.menu, this, 2, 1, 0);
@@ -37,7 +44,12 @@ BasicGame.GameOver.prototype = {
         this.fundo1.tilePosition.x -= 0.5;
         this.fundo2.tilePosition.x -= 1;
         this.processa_letras();
-        this.texto.setText("NOME: " + this.nome + this.informacao);
+         if (this.time.now > this.tempo_teclado && this.nome.length < 7) {
+            this.texto.setText("NOME: " + this.nome + "_" + this.informacao);
+            this.tempo_teclado = this.time.now + 200;
+        }
+        else
+            this.texto.setText("NOME: " + this.nome + this.informacao);
         if (this.nome.length > 3)
             this.titulo2.setText("Pressione Enter Para Continuar!")
         else
@@ -74,7 +86,7 @@ BasicGame.GameOver.prototype = {
                     else if (i >= 65 && i <= 90){
                         var chave = i-65;
                         if (chave < this.ALFABETO.length && chave >= 0) {
-                            if (this.nome.length < 8) {
+                            if (this.nome.length < 7) {
                                 this.nome += this.ALFABETO[chave];
                             }
                         }
