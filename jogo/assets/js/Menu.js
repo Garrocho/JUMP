@@ -28,15 +28,19 @@ BasicGame.Menu.prototype = {
         
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://108.59.6.230:14527');
+            
+            this.conexao.onopen = function() {
+                this.send(JSON.stringify({"TIPO": "OBTER"}));
+            }
             this.conexao.onmessage = function(message) {
                 var json = JSON.parse(message.data);
                 this.rank = "RANK";
                 this.nome = "NOME";
-                this.distancia = "DISTANCIA";
+                this.kmh = "KM/H";
                 this.moedas = "MOEDAS";
                 this.localizacao = "LOCALIZAÇÃO";
                 json.sort(function(a, b) {
-                    return (b["distancia"] - a["distancia"]);
+                    return (b["kmh"] - a["kmh"]);
                 });
                 if(json != null){
                     for (i=0; i < json.length; i++){
@@ -44,7 +48,7 @@ BasicGame.Menu.prototype = {
                             break;
                         this.rank += "\n" + (i+1);
                         this.nome += "\n" + json[i]["nome"];
-                        this.distancia += "\n" + json[i]["distancia"];
+                        this.kmh += "\n" + json[i]["kmh"];
                         this.moedas += "\n" + json[i]["moedas"];
                         this.localizacao += "\n" + json[i]["localizacao"];
                     }
@@ -59,8 +63,8 @@ BasicGame.Menu.prototype = {
         this.rank.anchor.setTo(0.5, 0.5);
         this.nome = this.add.text(200, 610, "", this.estilo2);
         this.nome.anchor.setTo(0.5, 0.5);
-        this.distancia = this.add.text(400, 610, "", this.estilo2);
-        this.distancia.anchor.setTo(0.5, 0.5);
+        this.kmh = this.add.text(400, 610, "", this.estilo2);
+        this.kmh.anchor.setTo(0.5, 0.5);
         this.moedas = this.add.text(650, 610, "", this.estilo2);
         this.moedas.anchor.setTo(0.5, 0.5);        
         this.localizacao = this.add.text(900, 610, "", this.estilo2);
@@ -82,7 +86,7 @@ BasicGame.Menu.prototype = {
         if (this.conexao.nome != undefined && this.eRanking) {
             this.rank.setText(this.conexao.rank);
             this.nome.setText(this.conexao.nome);
-            this.distancia.setText(this.conexao.distancia);
+            this.kmh.setText(this.conexao.kmh);
             this.moedas.setText(this.conexao.moedas);
             this.localizacao.setText(this.conexao.localizacao);
             this.descricao.setText("");
@@ -91,7 +95,7 @@ BasicGame.Menu.prototype = {
         else {
             this.rank.setText("");
             this.nome.setText("");
-            this.distancia.setText("");
+            this.kmh.setText("");
             this.localizacao.setText("");
             this.moedas.setText("");
             this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado\nao desenvolvimento de um jogo interativo\ndirecionado à prática de exercícios físicos.");
