@@ -1,9 +1,5 @@
 BasicGame.GameOver = function (game) {
     this.ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-    this.nome = "";
-    this.tempo = 0;
-    this.tempo_teclado = 0;
-    this.localizacao = "não identificado";
 };
 
 BasicGame.GameOver.prototype = {
@@ -11,6 +7,10 @@ BasicGame.GameOver.prototype = {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
         this.som_musica = this.add.audio('game_over');
+	this.nome = "";
+	this.tempo = 0;
+	this.tempo_teclado = 0;
+	this.localizacao = "não identificado";
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
@@ -38,6 +38,7 @@ BasicGame.GameOver.prototype = {
         this.som_musica.play();
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         this.valida_config();
+	this.setar_cidade();
     },
 
     update: function () {
@@ -72,12 +73,10 @@ BasicGame.GameOver.prototype = {
                         if (this.nome.length == 0) {
                             this.nome = "NAO DEFINIDO";
                             this.enviar_recorde(this.recorde);
-                            this.menu();
                         }
                         else if (this.nome.length > 3) {
                             this.recorde['nome'] = this.nome;
                              this.enviar_recorde(this.recorde);
-                             this.menu();
                         }
                     }
                     else if (i == 32) {
@@ -95,6 +94,18 @@ BasicGame.GameOver.prototype = {
                 }
             }
         }
+    },
+
+    enviar_recorde: function(recorde) {
+	if (window.WebSocket) {
+	    var cidade = localStorage.getItem('jump_cidade');
+	    recorde['localizacao'] = cidade;
+	    var conexao = new WebSocket('ws://108.59.6.230:14527');
+	    conexao.onopen = function(){
+		conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
+	    };
+	} 
+	this.menu();
     },
 
     mudar_tela: function() {
@@ -138,7 +149,7 @@ BasicGame.GameOver.prototype = {
         this.som_musica.volume = this.som;
     },
     
-    enviar_recorde: function(recorde) {
+    setar_cidade: function(recorde) {
         if(navigator.geolocation){
             navigator.geolocation.getCurrentPosition(function(position) {
                 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -147,15 +158,9 @@ BasicGame.GameOver.prototype = {
                     if(status == google.maps.GeocoderStatus.OK){
                         if (results[1]){
                             lista_dados = results[0].formatted_address.split(", ");
-                            cidade = lista_dados[2];
-                            if (window.WebSocket) {
-                                    recorde['localizacao'] = cidade;
-                                    var conexao = new WebSocket('ws://108.59.6.230:14527');
-                                    conexao.onopen = function(){
-                                        conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
-                                    };
-                                } 
-                            }
+                            cidade = lista_dados[2].split('-');
+			    localStorage.setItem('jump_cidade', cidade[0]);
+                        }
                      }else{
                         alert("Erro no serviço de geolocalização: " + status);
                      }
