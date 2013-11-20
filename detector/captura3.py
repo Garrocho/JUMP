@@ -133,8 +133,8 @@ class DetectorMovimento(object):
             blur = cv2.medianBlur(frame, 5)
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-            both = self.getThresholdedImage(hsv)
-            erode = cv2.erode(both, None, iterations=3)
+            faixa_cor = self.getThresholdedImage(hsv)
+            erode = cv2.erode(faixa_cor, None, iterations=3)
             dilate = cv2.dilate(erode, None, iterations=10)
 
             contours, hierarchy = cv2.findContours(
@@ -204,7 +204,8 @@ class DetectorMovimento(object):
                                 mudou_movimento = True
                             # levantou
                             elif self.movimento == Movimentos.AGACHADO:
-                                if y_momento_agachar != None and y > y_momento_agachar - self.MARGEM_TOLERANCIA and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
+                                # and y > y_momento_agachar - self.MARGEM_TOLERANCIA
+                                if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
                                     self.movimento = Movimentos.EM_PE
                                     mudou_movimento = True
                         # desceu, mas o que houve?
@@ -222,7 +223,8 @@ class DetectorMovimento(object):
                         if self.movimento == Movimentos.DESCENDO:
                             # voltou ao chao
                             print y, y_momento_pulo
-                            if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
+                            # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
+                            if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA:
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
                                 mudou_movimento = True
@@ -238,14 +240,16 @@ class DetectorMovimento(object):
                                 self.movimento)
                     # nao houve variacao grande entre os pontos
                     else:
-                        if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA: # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
+                        # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
+                        if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.DESCENDO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento)
-                        if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA: # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
+                        # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
+                        if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
