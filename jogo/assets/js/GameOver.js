@@ -150,7 +150,7 @@ BasicGame.GameOver.prototype = {
                             cidade = lista_dados[2];
                             if (window.WebSocket) {
                                     recorde['localizacao'] = cidade;
-                                    var conexao = new WebSocket('ws://108.59.6.230:1337');
+                                    var conexao = new WebSocket('ws://108.59.6.230:14527');
                                     conexao.onopen = function(){
                                         conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
                                     };
