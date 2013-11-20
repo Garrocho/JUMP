@@ -18,7 +18,7 @@ BasicGame.Jogo = function (game) {
 
 BasicGame.Jogo.prototype = {
 
-	create: function () {
+    create: function () {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 220, 1024, 512, 'montanha');
         this.fundo3 = this.add.tileSprite(0, 520, 1024, 256, 'caminho');
@@ -64,32 +64,32 @@ BasicGame.Jogo.prototype = {
             }
         }
         if (this.stage.scale.isFullScreen == null)
-	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
-	    else
-	        this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
-	    
+            this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
+        else
+            this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+        
         this.moedas = new Array();
         this.inimigos = new Array();
         this.velocidade = new Array();
         this.velocidade[0] = 0.5;
-	    this.velocidade[1] = 1;
-	    this.velocidade[2] = 2;
+        this.velocidade[1] = 1;
+        this.velocidade[2] = 2;
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         this.som_musica.play('',0,1,true);
         this.valida_config();
-	},
+    },
 
-	update: function () {
-	    this.ver_level++;
-	    if (this.ver_level == 100) {
-	        this.velocidade[0] += 0.05;
-	        this.velocidade[1] += 0.10;
-	        this.velocidade[2] += 0.20;
-	        this.ver_level = 0;
-	        this.kmh++;
-	        this.texto1.setText(this.kmh + " Km/h");
-	    }
-	     
+    update: function () {
+        this.ver_level++;
+        if (this.ver_level == 100) {
+            this.velocidade[0] += 0.05;
+            this.velocidade[1] += 0.10;
+            this.velocidade[2] += 0.20;
+            this.ver_level = 0;
+            this.kmh++;
+            this.texto1.setText(this.kmh + " Km/h");
+        }
+         
         this.fundo1.tilePosition.x -= this.velocidade[0];
         this.fundo2.tilePosition.x -= this.velocidade[1];
         this.fundo3.tilePosition.x -= this.velocidade[2];
@@ -160,10 +160,10 @@ BasicGame.Jogo.prototype = {
         this.administrar_grupo(this.moedas, 'moeda', 50, 5, 10, 300);
         this.administrar_grupo(this.inimigos, 'inimigo', 100, 5, 10, 550);
         this.physics.collide(this.jogador, this.fabrica, this.tratador_colisao, null, this);
-	},
-	
-	tratador_colisao: function (obj1, obj2) {
-	    if (obj2.name === 'moeda'){
+    },
+    
+    tratador_colisao: function (obj1, obj2) {
+        if (obj2.name === 'moeda'){
             this.som_moeda.play();
             obj2.kill();
             this.contador++;
@@ -181,10 +181,10 @@ BasicGame.Jogo.prototype = {
                 'localizacao': "NÃO DEFINIDO"
             }
             localStorage['recorde'] = JSON.stringify(recorde);
-		    this.game.state.start('GameOver');
+            this.game.state.start('GameOver');
         }
-	},
-	
+    },
+    
     administrar_grupo: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
         if (grupo.length <= 1) {
             if (eixo_y < 400) {
@@ -219,17 +219,17 @@ BasicGame.Jogo.prototype = {
             }
         }
     },
-	
-	mudar_tela: function() {
-	    if (this.stage.scale.isFullScreen == null) {
-	        this.stage.scale.startFullScreen();
-	        this.botao_tela.loadTexture('botao_tela_normal');
-	    }
-	    else {
-	        this.stage.scale.stopFullScreen();
-	        this.botao_tela.loadTexture('botao_tela_cheia');
-	    }
-	},
+    
+    mudar_tela: function() {
+        if (this.stage.scale.isFullScreen == null) {
+            this.stage.scale.startFullScreen();
+            this.botao_tela.loadTexture('botao_tela_normal');
+        }
+        else {
+            this.stage.scale.stopFullScreen();
+            this.botao_tela.loadTexture('botao_tela_cheia');
+        }
+    },
 
     mudar_som: function () {
         if (this.som == 0) {
@@ -237,7 +237,8 @@ BasicGame.Jogo.prototype = {
             this.som_musica.volume = 1;
             this.som_moeda.volume = 1;
             this.som_pulo.volume = 1;
-            localStorage.setItem('jump_som', 1);
+            if(typeof(Storage)!=="undefined")
+                localStorage.setItem('jump_som', 1);
             this.som = 1;
         }
         else {
@@ -245,13 +246,17 @@ BasicGame.Jogo.prototype = {
             this.som_musica.volume = 0;
             this.som_moeda.volume = 0;
             this.som_pulo.volume = 0;
-            localStorage.setItem('jump_som', 0);
+            if(typeof(Storage)!=="undefined")
+                localStorage.setItem('jump_som', 0);
             this.som = 0;
         }
     },
     
-	valida_config: function() {
-	    this.som = localStorage.getItem('jump_som');
+    valida_config: function() {
+        if(typeof(Storage)!=="undefined")
+            this.som = localStorage.getItem('jump_som');
+        else
+            this.som = 1
         if (this.som == null)
             this.som = 1;
         else
@@ -263,5 +268,5 @@ BasicGame.Jogo.prototype = {
         this.som_musica.volume = this.som;
         this.som_moeda.volume = this.som;
         this.som_pulo.volume = this.som;
-	},
+    },
 };

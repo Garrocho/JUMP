@@ -1,37 +1,37 @@
 html, body
 {
-	margin: 0px;
-	padding: 0px;
-	background: #24272B;
+    margin: 0px;
+    padding: 0px;
+    background: #24272B;
 }
 
 canvas
 {
-	margin: auto;
+    margin: auto;
 }
 
 a
 {
-	position: absolute;
-	left: 10px;
-	top: 10px;
-	text-decoration: none;
-	color: #7BCAE3;
-	font-family: 'Helvetica Neue', Helvetica;
-	display: block;
-	background: #7BCAE3;
-	text-decoration: none;
-	color: #FFF;
-	padding: 15px;
-	margin-top: 20px;
-	text-align: center;
-	border-radius: 10px;
-	font-size: 24px;
-	font-weight: bold;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    text-decoration: none;
+    color: #7BCAE3;
+    font-family: 'Helvetica Neue', Helvetica;
+    display: block;
+    background: #7BCAE3;
+    text-decoration: none;
+    color: #FFF;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 a:hover
 {
-	color: #FFFFFF;
-	background: #21C3FC;
+    color: #FFFFFF;
+    background: #21C3FC;
 }

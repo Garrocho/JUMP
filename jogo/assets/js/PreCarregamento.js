@@ -1,22 +1,22 @@
 
 BasicGame.PreCarregamento = function (game) {
-	this.background = null;
-	this.preloadBar = null;
-	this.ready = false;
+    this.background = null;
+    this.preloadBar = null;
+    this.ready = false;
 };
 
 BasicGame.PreCarregamento.prototype = {
 
-	preload: function () {
-		this.background = this.add.sprite(0, 0, 'background');
-		this.preloadBar = this.add.sprite(15, this.world.centerY+170, 'barra');
-		this.estilo = { font: "bold 50pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 8 };
+    preload: function () {
+        this.background = this.add.sprite(0, 0, 'background');
+        this.preloadBar = this.add.sprite(15, this.world.centerY+170, 'barra');
+        this.estilo = { font: "bold 50pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 8 };
         this.titulo = this.add.text(this.world.centerX, this.world.centerY+120, "Carregando...", this.estilo);
         this.titulo.anchor.setTo(0.5, 0.5);
         
-		this.load.setPreloadSprite(this.preloadBar);
-		this.load.image('ifet', 'assets/img/ifet.png');
-		this.load.image('nuvem', 'assets/img/nuvem.png');
+        this.load.setPreloadSprite(this.preloadBar);
+        this.load.image('ifet', 'assets/img/ifet.png');
+        this.load.image('nuvem', 'assets/img/nuvem.png');
         this.load.image('montanha', 'assets/img/montanha.png');
         this.load.image('caminho', 'assets/img/caminho.png');
         this.load.image('agachado', 'assets/img/agachado.png');
@@ -37,18 +37,18 @@ BasicGame.PreCarregamento.prototype = {
         this.load.audio('som_moeda', ['assets/sons/moeda.ogg']);
         this.load.audio('som_menu', ['assets/sons/menu.ogg']);
         this.load.audio('som_pulo', ['assets/sons/pulo.ogg']);
-	},
+    },
 
-	create: function () {
-		this.preloadBar.cropEnabled = true;
-	},
+    create: function () {
+        this.preloadBar.cropEnabled = true;
+    },
 
-	update: function () {
-		
-		if (this.cache.isSoundDecoded('som_musica') && this.ready == false)
-		{
-			this.ready = false;
-			this.game.state.start('Menu');
-		}
-	}
+    update: function () {
+        
+        if (this.cache.isSoundDecoded('som_musica') && this.ready == false)
+        {
+            this.ready = false;
+            this.game.state.start('Menu');
+        }
+    }
 };

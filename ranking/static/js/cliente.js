@@ -10,9 +10,9 @@ window.onload = function(){
 }
  
 var setConexao = function () {
-	// Se o objeto window.WebSocket não existe, imprimimos uma mensagem no console
-	// e retornamos null
-	
+    // Se o objeto window.WebSocket não existe, imprimimos uma mensagem no console
+    // e retornamos null
+    
     if (!window.WebSocket) {
         return null;
     }

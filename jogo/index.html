@@ -1,38 +1,39 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="assets/css/estilo.css">
-        <link rel="shortcut icon" href="./assets/img/jump.png">
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <title>JUMP!</title>
-	    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
-        <script src="assets/js/Inicio.js"></script>
-        <script src="assets/js/PreCarregamento.js"></script>
-        <script src="assets/js/Menu.js"></script>
-        <script src="assets/js/Ranking.js"></script>
-        <script src="assets/js/GameOver.js"></script>
-        <script src="assets/js/Jogo.js"></script>
-</head>
-<body>
+    <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+            <meta name="description" content="Processamento digital de imagens aplicado ao desenvolvimento de um jogo interativo direcionado à prática de exercícios físicos." />
+            <link rel="stylesheet" type="text/css" href="assets/css/estilo.css">
+            <link rel="shortcut icon" href="./assets/img/jump.png">
+            <title>JUMP!</title>
+            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+            <script src="assets/js/Inicio.js"></script>
+            <script src="assets/js/PreCarregamento.js"></script>
+            <script src="assets/js/Menu.js"></script>
+            <script src="assets/js/Ranking.js"></script>
+            <script src="assets/js/GameOver.js"></script>
+            <script src="assets/js/Jogo.js"></script>
+    </head>
+    <body>
 
-<div id="jump"></div>
-<script src="assets/js/lib/phaser.min.js"></script>
+        <div id="jump"></div>
+        <script src="assets/js/lib/phaser.min.js"></script>
 
-<script type="text/javascript">
+        <script type="text/javascript">
 
-    window.onload = function() {
-        var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'JUMP!');
-        game.state.add('Inicio', BasicGame.Inicio);
-        game.state.add('PreCarregamento', BasicGame.PreCarregamento);
-        game.state.add('Menu', BasicGame.Menu);
-        game.state.add('Ranking', BasicGame.Ranking);
-        game.state.add('GameOver', BasicGame.GameOver);
-        game.state.add('Jogo', BasicGame.Jogo);
-        game.state.start('Inicio');
-    };
+            window.onload = function() {
+                var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'JUMP!');
+                game.state.add('Inicio', BasicGame.Inicio);
+                game.state.add('PreCarregamento', BasicGame.PreCarregamento);
+                game.state.add('Menu', BasicGame.Menu);
+                game.state.add('Ranking', BasicGame.Ranking);
+                game.state.add('GameOver', BasicGame.GameOver);
+                game.state.add('Jogo', BasicGame.Jogo);
+                game.state.start('Inicio');
+            };
 
-</script>
+        </script>
 
-</body>
+    </body>
 </html>
