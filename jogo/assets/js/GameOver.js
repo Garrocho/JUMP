@@ -9,8 +9,7 @@ BasicGame.GameOver.prototype = {
     create: function () {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
-        this.musica = this.add.audio('som_musica');
-        this.musica.play('',0,1,true);
+        this.som_musica = this.add.audio('game_over');
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
@@ -21,7 +20,15 @@ BasicGame.GameOver.prototype = {
         this.texto.anchor.setTo(0.5, 0.5);
         this.recorde = JSON.parse(localStorage['recorde']);
         this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
-        this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);        
+        this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);
+        if (this.stage.scale.isFullScreen == null)
+            this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
+        else
+            this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
+
+        this.som_musica.play();
+        this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
+        this.valida_config();
     },
 
     update: function () {
@@ -74,6 +81,47 @@ BasicGame.GameOver.prototype = {
                 }
             }
         }
+    },
+
+    mudar_tela: function() {
+        if (this.stage.scale.isFullScreen == null) {
+            this.stage.scale.startFullScreen();
+            this.botao_tela.loadTexture('botao_tela_normal');
+        }
+        else {
+            this.stage.scale.stopFullScreen();
+            this.botao_tela.loadTexture('botao_tela_cheia');
+        }
+    },
+
+    mudar_som: function () {
+        if (this.som == 0) {
+            this.botao_som.loadTexture('botao_som_on');
+            this.som = 1;
+        }
+        else {
+            this.botao_som.loadTexture('botao_som_off');
+            this.som = 0;
+        }
+        this.som_musica.volume = this.som;
+        if(typeof(Storage)!=="undefined")
+            localStorage.setItem('jump_som', this.som);
+    },
+    
+    valida_config: function() {
+        if(typeof(Storage)!=="undefined")
+            this.som = localStorage.getItem('jump_som');
+        else
+            this.som = 1
+        if (this.som == null)
+            this.som = 1;
+        else
+            this.som = parseInt(this.som);
+        if (this.som == 0)
+            this.botao_som.loadTexture('botao_som_off');
+        else
+            this.botao_som.loadTexture('botao_som_on');
+        this.som_musica.volume = this.som;
     },
     
     enviar_recorde: function(recorde) {

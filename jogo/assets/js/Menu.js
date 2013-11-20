@@ -7,7 +7,7 @@ BasicGame.Menu.prototype = {
         this.eRanking = false;
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
-        this.musica = this.add.audio('som_menu');
+        this.som_musica = this.add.audio('som_menu');
         this.estilo = { font: "bold 150pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 22pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 5 };
         this.estilo4 = { font: "bold 15pt Arial", fill: "#ffffff", align: "left", stroke: "#000000", strokeThickness: 5 };
@@ -71,7 +71,7 @@ BasicGame.Menu.prototype = {
 
         this.equipe = this.add.text(800, 610, "", this.estilo4);
         this.equipe.anchor.setTo(0.5, 0.5);
-        this.musica.play('',0,1,true);
+        this.som_musica.play('',0,1,true);
         this.valida_config();
         this.ifet = this.add.sprite(38, 600, 'ifet');
     },
@@ -100,7 +100,7 @@ BasicGame.Menu.prototype = {
     },
 
     novo_jogo: function (pointer) {
-        this.musica.stop();
+        this.som_musica.stop();
         this.game.state.start('Jogo');
     },
     
@@ -116,21 +116,18 @@ BasicGame.Menu.prototype = {
         }
     },
 
-    mudar_som: function (pointer) {
+    mudar_som: function () {
         if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
-            this.musica.volume = 1;
-            if(typeof(Storage)!=="undefined")
-                localStorage.setItem('jump_som', 1);
             this.som = 1;
         }
         else {
             this.botao_som.loadTexture('botao_som_off');
-            this.musica.volume = 0;
-            if(typeof(Storage)!=="undefined")
-                localStorage.setItem('jump_som', 0);
             this.som = 0;
         }
+        this.som_musica.volume = this.som;
+        if(typeof(Storage)!=="undefined")
+            localStorage.setItem('jump_som', this.som);
     },
 
     mudar_tela: function() {
@@ -157,7 +154,7 @@ BasicGame.Menu.prototype = {
             this.botao_som.loadTexture('botao_som_off');
         else
             this.botao_som.loadTexture('botao_som_on');
-        this.musica.volume = this.som;
+        this.som_musica.volume = this.som;
     },
     
     sair: function() {

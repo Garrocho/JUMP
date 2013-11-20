@@ -219,22 +219,17 @@ BasicGame.Jogo.prototype = {
     mudar_som: function () {
         if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
-            this.som_musica.volume = 1;
-            this.som_moeda.volume = 1;
-            this.som_pulo.volume = 1;
-            if(typeof(Storage)!=="undefined")
-                localStorage.setItem('jump_som', 1);
             this.som = 1;
         }
         else {
             this.botao_som.loadTexture('botao_som_off');
-            this.som_musica.volume = 0;
-            this.som_moeda.volume = 0;
-            this.som_pulo.volume = 0;
-            if(typeof(Storage)!=="undefined")
-                localStorage.setItem('jump_som', 0);
             this.som = 0;
         }
+        this.som_musica.volume = this.som;
+        this.som_moeda.volume = this.som;
+        this.som_pulo.volume = this.som;
+        if(typeof(Storage)!=="undefined")
+            localStorage.setItem('jump_som', this.som);
     },
     
     valida_config: function() {
