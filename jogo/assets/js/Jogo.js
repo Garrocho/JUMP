@@ -39,7 +39,7 @@ BasicGame.Jogo.prototype = {
         this.som_moeda = this.add.audio('som_moeda',1,true);
         this.som_pulo = this.add.audio('som_pulo',1,true);
         this.ver_level = 0;
-        this.ultimo_eixo_x = 1024;
+        this.ultimo_eixo_x = 500;
 
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://127.0.0.1:1338');
@@ -62,6 +62,7 @@ BasicGame.Jogo.prototype = {
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         this.som_musica.play('',0,1,true);
         this.valida_config();
+        this.tempo = 0;
     },
 
     update: function () {
@@ -142,8 +143,14 @@ BasicGame.Jogo.prototype = {
             else
                 this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         }
-        this.administrar_grupo(this.moedas, 'moeda', 50, 5, 10, 300);
-        this.administrar_grupo(this.inimigos, 'inimigo', 100, 5, 10, 550);
+	var tipo_ator = this.rnd.integerInRange(0, 2);
+	var eixo_y = this.rnd.integerInRange(0, 550);
+	if (tipo_ator == 0)
+       	    this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
+	else
+	    this.criar_atores(this.inimigos, 'inimigo', 100, 1, 1, eixo_y);
+        this.administrar_grupo(this.inimigos);
+        this.administrar_grupo(this.moedas);
         this.physics.collide(this.jogador, this.fabrica, this.tratador_colisao, null, this);
     },
     
@@ -162,27 +169,25 @@ BasicGame.Jogo.prototype = {
             var recorde = {
                 'moedas': this.contador,
                 'kmh': this.kmh,
-                'nome': "NÃO DEFINIDO",
-                'localizacao': "NÃO DEFINIDO"
+                'nome': "Não Definido",
+                'localizacao': "Não Definido"
             }
             localStorage['recorde'] = JSON.stringify(recorde);
             this.game.state.start('GameOver');
         }
     },
-    
-    administrar_grupo: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
-        if (grupo.length <= 1) {
+
+    criar_atores: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
+        if (this.time.now > this.tempo) {
             if (eixo_y < 400) {
                 qtde_y = this.rnd.integerInRange(3, 6);
-                aux_eixo_x = this.ultimo_eixo_x;
             }
             else {
-                aux_eixo_x = this.ultimo_eixo_x;
                 qtde_y = 1;
             }
             qtde_x = this.rnd.integerInRange(qtde_min, qtde_max);
             for (k=0; k < qtde_y; k++) {
-                eixo_x = aux_eixo_x;
+                eixo_x = 1024;
                 for (i=0; i < qtde_x; i++) {
                     ator = this.fabrica.create(eixo_x, eixo_y, nome_ator);
                     ator.name = nome_ator;
@@ -194,8 +199,11 @@ BasicGame.Jogo.prototype = {
                 }
                 eixo_y+=distancia;
             }
+            this.tempo = this.time.now + 3000;
         }
-        this.ultimo_eixo_x = eixo_x;
+    },
+
+    administrar_grupo: function (grupo) {
         for (i=0; i < grupo.length-1; i++) {
             grupo[i].body.velocity.x = -(this.velocidade[2]*60);
             if (grupo[i].body.x < -150 || !grupo[i].exists) {
