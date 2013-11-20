@@ -13,14 +13,16 @@ BasicGame.GameOver.prototype = {
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
+        this.estilo3 = { font: "bold 25pt Arial", fill: "#ffffff", align: "left", stroke: "#10661343", strokeThickness: 3 };
         this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
-        this.titulo = this.add.text(0, 0, "Game Over!", this.estilo1);
-        this.titulo2 = this.add.text(0, 720, "Descreva Melhor Seu Nome e Pressione Enter", this.estilo2);
-        this.texto = this.add.text(300, 400, this.informacao, this.estilo);
-        this.texto.anchor.setTo(0.5, 0.5);
+        this.titulo = this.add.text(20, 0, "Fim de Jogo!", this.estilo1);
+        this.titulo1 = this.add.text(30, 150, "Você Morreu!\nEntre Com Seu Nome Para Registrar Seu Recorde no Ranking!", this.estilo3);
+        this.titulo2 = this.add.text(10, 710, "", this.estilo2);
         this.recorde = JSON.parse(localStorage['recorde']);
-        this.informacao = "Moedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h\n\nNOME: ";
-        this.botao_sair = this.add.button(750, 25, 'botao_sair', this.menu, this, 2, 1, 0);
+        this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h";
+        this.texto = this.add.text(215, 450, this.informacao, this.estilo);
+        this.texto.anchor.setTo(0.5, 0.5);
+        this.botao_sair = this.add.button(760, 700, 'botao_sair', this.menu, this, 2, 1, 0);
         if (this.stage.scale.isFullScreen == null)
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
         else
@@ -35,15 +37,15 @@ BasicGame.GameOver.prototype = {
         this.fundo1.tilePosition.x -= 0.5;
         this.fundo2.tilePosition.x -= 1;
         this.processa_letras();
-        this.texto.setText(this.informacao + this.nome);
+        this.texto.setText("NOME: " + this.nome + this.informacao);
         if (this.nome.length > 3)
-            this.titulo2.setText("Seu Nome Está OK! Pressione Enter Para Continuar!")
+            this.titulo2.setText("Pressione Enter Para Continuar!")
         else
-            this.titulo2.setText("Descreva Melhor Seu Nome!");
+            this.titulo2.setText("");
     },
 
     menu: function (pointer) {
-        this.musica.stop();
+        this.som_musica.stop();
         this.game.state.start('Menu');
     },
     
@@ -77,7 +79,7 @@ BasicGame.GameOver.prototype = {
                             }
                         }
                     }
-                    this.tempo = this.time.now + 180;
+                    this.tempo = this.time.now + 165;
                 }
             }
         }

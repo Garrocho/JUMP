@@ -45,7 +45,7 @@ BasicGame.PreCarregamento.prototype = {
         
         if (this.cache.isSoundDecoded('som_musica'))
         {
-            this.game.state.start('Menu');
+            this.game.state.start('GameOver');
         }
     }
 };
