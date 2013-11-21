@@ -44,8 +44,10 @@ BasicGame.Jogo.prototype = {
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://127.0.0.1:1338');
             this.conexao.onmessage = function(message) {
-                this.movimento = parseInt(message.data);
-                console.log("Movimento: ", this.movimento);
+                this.estado_jogador = JSON.parse(message.data);
+                this.movimento = this.estado_jogador['movimento'];
+
+                console.log("Estado Jogador: ", this.estado_jogador);
             }
         }
         if (this.stage.scale.isFullScreen == null)
