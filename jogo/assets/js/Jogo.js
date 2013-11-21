@@ -144,7 +144,7 @@ BasicGame.Jogo.prototype = {
                 this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         }
 	var tipo_ator = this.rnd.integerInRange(0, 2);
-	var eixo_y = this.rnd.integerInRange(0, 550);
+	var eixo_y = this.rnd.integerInRange(100, 650);
 	if (tipo_ator == 0)
        	    this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
 	else
@@ -179,8 +179,8 @@ BasicGame.Jogo.prototype = {
 
     criar_atores: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
         if (this.time.now > this.tempo) {
-            if (eixo_y < 400) {
-                qtde_y = this.rnd.integerInRange(3, 6);
+            if (eixo_y < 400 && nome_ator != 'inimigo') {
+                qtde_y = this.rnd.integerInRange(2, 3);
             }
             else {
                 qtde_y = 1;
@@ -206,6 +206,8 @@ BasicGame.Jogo.prototype = {
     administrar_grupo: function (grupo) {
         for (i=0; i < grupo.length-1; i++) {
             grupo[i].body.velocity.x = -(this.velocidade[2]*60);
+            if (grupo[i].name == 'inimigo')
+                grupo[i].body.velocity.y = this.jogador.body.y-500;
             if (grupo[i].body.x < -150 || !grupo[i].exists) {
                 grupo[i].kill();
                 grupo.splice(i, 1);

@@ -17,7 +17,7 @@ BasicGame.GameOver.prototype = {
         this.estilo3 = { font: "bold 25pt Arial", fill: "#ffffff", align: "left", stroke: "#106343", strokeThickness: 3 };
         this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
         this.titulo = this.add.text(20, 0, "Fim de Jogo!", this.estilo1);
-        this.titulo1 = this.add.text(30, 150, "Você Morreu!\nEntre Com Seu Nome Para Registrar Seu Recorde no Ranking!", this.estilo3);
+        this.titulo1 = this.add.text(30, 150, "Entre Com Seu Nome Para Registrar Seu Recorde no Ranking!", this.estilo3);
         this.titulo2 = this.add.text(10, 710, "", this.estilo2);
         this.jump_rec = localStorage['recorde'];
         if ((typeof(this.jump_rec)!=="undefined")) {
