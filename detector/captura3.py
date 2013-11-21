@@ -56,8 +56,8 @@ class DetectorMovimento(object):
     Classe para detectar o movimento
     '''
     # Constantes
-    ALTURA_QUADRADO_CENTRO = 150
-    LARGURA_QUADRADO_CENTRO = 150
+    ALTURA_QUADRADO_CENTRO = 100
+    LARGURA_QUADRADO_CENTRO = 200
     MARGEM_ERRO_CALIBRACAO = 20
     # evita que um simples aumento na altura da pessoa seja considerado um pulo
     MARGEM_TOLERANCIA = 70
@@ -87,7 +87,7 @@ class DetectorMovimento(object):
             raise IOError('Não foi possivel ter acesso a camera')
         if self.NUM_Y_ANALIZADOS > self.NUM_Y_GUARDADOS:
             raise ValueError(
-                "Número de pontos analisados deve ser igual ou menor que o número de Y guardados")
+                "Número de Y analisados deve ser igual ou menor que o número de Y guardados")
         self.width, self.height = self.camera.get(3), self.camera.get(4)
         print 'Resolução da camera {0} x {1}'.format(self.width, self.height)
 
@@ -200,10 +200,10 @@ class DetectorMovimento(object):
                     # verifica o tipo do movimento, 1 para subiu e -1 para
                     # desceu e 0 para nao movimentou
                     variacao_movimento = self.verificar_movimento()
+                    mudou_movimento = False
                     if variacao_movimento:
                         # guarda o movimento antigo, mas pra nada
                         movimento_antigo = self.movimento
-                        mudou_movimento = False
                         # subiu, mas o que houve?
                         if variacao_movimento == self.VariacoesMovimento.PARA_CIMA:
                             # pulou
@@ -237,7 +237,7 @@ class DetectorMovimento(object):
                                 self.movimento = Movimentos.EM_PE
                                 y_momento_pulo = None
                                 mudou_movimento = True
-                        print 'mov:{0} mov_ant: {1} mov_var: {2}'.format(self.movimento, movimento_antigo, variacao_movimento)
+                        # print 'mov:{0} mov_ant: {1} mov_var: {2}'.format(self.movimento, movimento_antigo, variacao_movimento)
                         if mudou_movimento:
                             if self.movimento == Movimentos.SUBINDO:
                                 print 'Pulou em px: {0}'.format(y_momento_pulo)
@@ -247,6 +247,7 @@ class DetectorMovimento(object):
                                 print 'De pé em px: {0}'.format(y)
                             self.gerenciador_estado_jogador.atualizar_estado(
                                 self.movimento)
+                            #print self.ys
                     # nao houve variacao grande entre os pontos
                     else:
                         # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
@@ -257,6 +258,7 @@ class DetectorMovimento(object):
                                 y_momento_pulo = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento)
+                                mudou_movimento = True
                         # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
                         if y_momento_agachar != None and y < y_momento_agachar: # não considera a margem de tolerancia, pois ao agachar ele pode ja levantar. O ideia seria uma outra margem, mas menor
                             if self.movimento == Movimentos.AGACHADO:
@@ -265,6 +267,9 @@ class DetectorMovimento(object):
                                 y_momento_agachar = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento)
+                                mudou_movimento = True
+                    if self.movimento == Movimentos.EM_PE and mudou_movimento:
+                        self.ys = []
 
             if self.desenhar_linhas:
                 # linha superior (640 x 50)
