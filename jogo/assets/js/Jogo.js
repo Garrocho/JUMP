@@ -144,7 +144,7 @@ BasicGame.Jogo.prototype = {
                 this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         }
 	var tipo_ator = this.rnd.integerInRange(0, 2);
-	var eixo_y = this.rnd.integerInRange(100, 650);
+	var eixo_y = this.rnd.integerInRange(200, 650);
 	if (tipo_ator == 0)
        	    this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
 	else
@@ -199,15 +199,18 @@ BasicGame.Jogo.prototype = {
                 }
                 eixo_y+=distancia;
             }
-            this.tempo = this.time.now + 3000;
+            this.tempo = (this.time.now + 3000) - (this.kmh * 30);
         }
     },
 
     administrar_grupo: function (grupo) {
         for (i=0; i < grupo.length-1; i++) {
             grupo[i].body.velocity.x = -(this.velocidade[2]*60);
-            if (grupo[i].name == 'inimigo')
-                grupo[i].body.velocity.y = this.jogador.body.y-500;
+            if (grupo[i].name == 'inimigo' && grupo[i].body.y < 650)
+                grupo[i].body.velocity.y = this.jogador.body.y-550;
+            else if (grupo[i].name == 'inimigo' && !this.pulando && grupo[i].body.y >= 650)
+                grupo[i].body.velocity.y = -1000;
+
             if (grupo[i].body.x < -150 || !grupo[i].exists) {
                 grupo[i].kill();
                 grupo.splice(i, 1);
