@@ -65,6 +65,7 @@ BasicGame.Jogo.prototype = {
         this.som_musica.play('',0,1,true);
         this.valida_config();
         this.tempo = 0;
+        this.tipo_ator = 0;
     },
 
     update: function () {
@@ -145,12 +146,7 @@ BasicGame.Jogo.prototype = {
             else
                 this.jogador.body.velocity.x = Math.abs(250-this.jogador.x);
         }
-	var tipo_ator = this.rnd.integerInRange(0, 2);
-	var eixo_y = this.rnd.integerInRange(200, 650);
-	if (tipo_ator == 0)
-       	    this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
-	else
-	    this.criar_atores(this.inimigos, 'inimigo', 100, 1, 1, eixo_y);
+        this.valida_criacao();
         this.administrar_grupo(this.inimigos);
         this.administrar_grupo(this.moedas);
         this.physics.collide(this.jogador, this.fabrica, this.tratador_colisao, null, this);
@@ -178,30 +174,42 @@ BasicGame.Jogo.prototype = {
             this.game.state.start('GameOver');
         }
     },
-
-    criar_atores: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
+    
+    valida_criacao: function() {
         if (this.time.now > this.tempo) {
-            if (eixo_y < 400 && nome_ator != 'inimigo') {
-                qtde_y = this.rnd.integerInRange(2, 3);
+            var eixo_y = this.rnd.integerInRange(200, 650);
+            if (this.tipo_ator == 0) {
+                this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
+                this.tipo_ator = 1;
             }
             else {
-                qtde_y = 1;
-            }
-            qtde_x = this.rnd.integerInRange(qtde_min, qtde_max);
-            for (k=0; k < qtde_y; k++) {
-                eixo_x = 1024;
-                for (i=0; i < qtde_x; i++) {
-                    ator = this.fabrica.create(eixo_x, eixo_y, nome_ator);
-                    ator.name = nome_ator;
-                    ator.animations.add('correr');
-                    ator.animations.play('correr', 10, true);
-                    ator.body.pixelPerfect = true;
-                    grupo[grupo.length] = ator;
-                    eixo_x+=distancia;
-                }
-                eixo_y+=distancia;
+                this.criar_atores(this.inimigos, 'inimigo', 100, 1, 1, eixo_y);
+                this.tipo_ator = 0;
             }
             this.tempo = (this.time.now + 3000) - (this.kmh * 30);
+        }
+    },
+
+    criar_atores: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
+        if (eixo_y < 400 && nome_ator != 'inimigo') {
+            qtde_y = this.rnd.integerInRange(2, 3);
+        }
+        else {
+            qtde_y = 1;
+        }
+        qtde_x = this.rnd.integerInRange(qtde_min, qtde_max);
+        for (k=0; k < qtde_y; k++) {
+            eixo_x = 1024;
+            for (i=0; i < qtde_x; i++) {
+                ator = this.fabrica.create(eixo_x, eixo_y, nome_ator);
+                ator.name = nome_ator;
+                ator.animations.add('correr');
+                ator.animations.play('correr', 10, true);
+                ator.body.pixelPerfect = true;
+                grupo[grupo.length] = ator;
+                eixo_x+=distancia;
+            }
+            eixo_y+=distancia;
         }
     },
 
