@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import sys
 import json
-from threading import Thread
 
 
 class Movimentos(object):
@@ -37,9 +36,6 @@ class GerenciadorEstadoJogador(object):
         AGACHADO = -1
 
     def atualizar_estado(self, movimento, calibrado):
-        #t = Thread(target=self.__atualizar_estado, args=(movimento, calibrado))
-        #t.start()
-        #t.join()
         self.__atualizar_estado(movimento, calibrado)
 
     def __atualizar_estado(self, movimento, calibrado):
@@ -57,8 +53,6 @@ class GerenciadorEstadoJogador(object):
         with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
             estado_jogador = {"movimento": novo_estado, "calibrado": calibrado}
             str_json = json.dumps(estado_jogador)
-            #import os
-            #os.system('echo \'{0}\' > {1}'.format(str_json, self.ARQUIVO_ESTADO_JOGADOR))
             arq.write(str_json)
 
 
@@ -115,8 +109,8 @@ class DetectorMovimento(object):
         :param hsv: imagem no formato de cor hsv
         :returns: a faixa de cor
         '''
-        min_cor = np.array((100, 100, 100), np.uint8)
-        max_cor = np.array((130, 255, 255), np.uint8)
+        min_cor = np.array((100, 140, 150), np.uint8)
+        max_cor = np.array((140, 200, 220), np.uint8)
 
         faixa_cor = cv2.inRange(hsv, min_cor, max_cor)
         return faixa_cor
@@ -146,9 +140,11 @@ class DetectorMovimento(object):
         '''
         Inicia a detecção
         '''
-        y_momento_pulo = None
-        y_momento_agachar = None
+        momento_pulo = {}
+        momento_agachar = {}
         centro_x, centro_y = (int)(self.width / 2), (int)(self.height / 2)
+
+        # print 'Numero de frames: {0}'.format(self.camera.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
         while(self.camera.isOpened()):
             _, frame = self.camera.read()
             frame = cv2.flip(frame, 1)
@@ -170,8 +166,8 @@ class DetectorMovimento(object):
 
             if not self.calibrado:
                 self.ys = []
-                y_momento_pulo = None
-                y_momento_agachar = None
+                momento_pulo['y'] = None
+                momento_agachar['y'] = None
 
             if contours:
                 maior_area = 0
@@ -221,20 +217,20 @@ class DetectorMovimento(object):
                             # pulou
                             if self.movimento == Movimentos.EM_PE:
                                 self.movimento = Movimentos.SUBINDO
-                                y_momento_pulo = y
+                                momento_pulo['y'] = y
                                 mudou_movimento = True
                             # levantou
                             elif self.movimento == Movimentos.AGACHADO:
-                                # and y > y_momento_agachar -
+                                # and y > momento_agachar['y'] -
                                 # self.MARGEM_TOLERANCIA
-                                if y_momento_agachar != None and y < y_momento_agachar + self.MARGEM_TOLERANCIA:
+                                if momento_agachar['y'] != None and y < momento_agachar['y'] + self.MARGEM_TOLERANCIA:
                                     self.movimento = Movimentos.EM_PE
                                     mudou_movimento = True
                         # desceu, mas o que houve?
                         elif variacao_movimento == self.VariacoesMovimento.PARA_BAIXO:
                             # agachou
                             if self.movimento == Movimentos.EM_PE:
-                                y_momento_agachar = y
+                                momento_agachar['y'] = y
                                 self.movimento = Movimentos.AGACHADO
                                 mudou_movimento = True
                             # ta descendo do pulo
@@ -244,19 +240,20 @@ class DetectorMovimento(object):
 
                         if self.movimento == Movimentos.DESCENDO:
                             # voltou ao chao
-                            # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
-                            if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA:
+                            # and y < momento_pulo['y'] +
+                            # self.MARGEM_TOLERANCIA:
+                            if momento_pulo['y'] != None and y > momento_pulo['y'] - self.MARGEM_TOLERANCIA:
                                 self.movimento = Movimentos.EM_PE
-                                y_momento_pulo = None
+                                momento_pulo['y'] = None
                                 mudou_movimento = True
                         # print 'mov:{0} mov_ant: {1} mov_var:
                         # {2}'.format(self.movimento, movimento_antigo,
                         # variacao_movimento)
                         if mudou_movimento:
                             if self.movimento == Movimentos.SUBINDO:
-                                print 'Pulou em px: {0}'.format(y_momento_pulo)
+                                print 'Pulou em px: {0}'.format(momento_pulo['y'])
                             elif self.movimento == Movimentos.AGACHADO:
-                                print 'Agachou em px: {0}'.format(y_momento_agachar)
+                                print 'Agachou em px: {0}'.format(momento_agachar['y'])
                             elif self.movimento == Movimentos.EM_PE:
                                 print 'De pé em px: {0}'.format(y)
                             self.gerenciador_estado_jogador.atualizar_estado(
@@ -264,28 +261,33 @@ class DetectorMovimento(object):
                             # print self.ys
                     # nao houve variacao grande entre os pontos
                     else:
-                        # and y < y_momento_pulo + self.MARGEM_TOLERANCIA:
-                        if y_momento_pulo != None and y > y_momento_pulo - self.MARGEM_TOLERANCIA:
+                        # and y < momento_pulo['y'] + self.MARGEM_TOLERANCIA:
+                        if momento_pulo['y'] != None and y > momento_pulo['y'] - self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.DESCENDO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
-                                y_momento_pulo = None
+                                momento_pulo['y'] = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento, self.calibrado)
                                 mudou_movimento = True
-                        # and y > y_momento_agachar - self.MARGEM_TOLERANCIA:
+                        # and y > momento_agachar['y'] - self.MARGEM_TOLERANCIA:
                         # não considera a margem de tolerancia, pois ao agachar
                         # ele pode ja levantar. O ideal seria uma outra margem,
                         # mas menor
-                        if y_momento_agachar != None and y < y_momento_agachar:
+                        if momento_agachar['y'] != None and y < momento_agachar['y']:
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
-                                y_momento_agachar = None
+                                momento_agachar['y'] = None
                                 self.gerenciador_estado_jogador.atualizar_estado(
                                     self.movimento, self.calibrado)
                                 mudou_movimento = True
                     if self.movimento == Movimentos.EM_PE and mudou_movimento:
+                        #if momento_agachar['y']:
+                        #    for i in self.ys:
+                        #        if i < momento_agachar['y']:
+                        #            self.ys.remove(i)
+                        #else:
                         self.ys = []
 
             if self.desenhar_linhas:
