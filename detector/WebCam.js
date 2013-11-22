@@ -2,7 +2,7 @@
 "use strict";
  
 // título do processo
-process.title = 'server';
+process.title = 'server_estado_jogador';
  
 // endereco e porta que o servidor ouvirá
 var endereco = '127.0.0.1'
@@ -22,11 +22,16 @@ var fs = require('fs');
 // vai monitorar o arquivo ranking.json e
 var chokidar = require('chokidar');
 
-var monitorador_estado_jogador = chokidar.watch('./file/estado_jogador.json', {persistence:true});
+var monitorador_estado_jogador = chokidar.watch('./file/estado_jogador.json', {persistence: true, interval: 50, binaryInterval: 150}); //interval: 100, binaryInterval: 300
 
 monitorador_estado_jogador.on('change', function(path) {
     fs.readFile(path, 'utf8', function(error, data) {
-        cliente.sendUTF(data);
+        if(cliente != null){
+            cliente.sendUTF(data);
+        }
+        else{
+            console.log("cliente null: não foi possivel enviar a mensagem");
+        }
     });
 });
 
