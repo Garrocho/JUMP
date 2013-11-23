@@ -79,3 +79,10 @@ wsServer.on('request', function(request) {
     // a conexão passando o protocolo e a origem (deixemos isso para depois)
     cliente = request.accept(null, request.origin); 
 });
+
+console.log("Nao ta recebendo do cliente :(");
+wsServer.on('connection', function(ws) {
+    ws.on('message', function(message) {
+        console.log('recebido: %s', message);
+    });
+});

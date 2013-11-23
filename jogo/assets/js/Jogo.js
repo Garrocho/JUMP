@@ -43,11 +43,19 @@ BasicGame.Jogo.prototype = {
 
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://127.0.0.1:1338');
+            console.log("Conectou ao websocket: ws://127.0.0.1:1338");
             this.conexao.onmessage = function(message) {
                 this.estado_jogador = JSON.parse(message.data);
                 this.movimento = this.estado_jogador['movimento'];
 
                 console.log("Estado Jogador: ", this.estado_jogador);
+            }
+            this.conexao.jogador_morreu = function(){
+                var estado_jogador = {'jogador_morreu': true};
+                var str_estado_jogador = JSON.stringify(estado_jogador);
+                this.send(str_estado_jogador);
+                
+                console.log("Enviou: ", str_estado_jogador);
             }
         }
         if (this.stage.scale.isFullScreen == null)
@@ -162,6 +170,7 @@ BasicGame.Jogo.prototype = {
         else
         {
             obj1.kill();
+            this.conexao.jogador_morreu();
             this.conexao.close();
             this.som_musica.stop();
             var recorde = {
