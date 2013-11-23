@@ -54,6 +54,16 @@ BasicGame.Menu.prototype = {
                     }
                 }
             }
+
+            this.conexao_webcam = new WebSocket('ws://127.0.0.1:1338');
+            this.conexao_webcam.menu = this;
+            this.conexao_webcam.onmessage = function(message) {
+                this.estado_jogador = JSON.parse(message.data);
+                this.calibrado = this.estado_jogador['calibrado'];
+
+                console.log("Calibrado: ", this.calibrado);
+                this.menu.novo_jogo(null);
+            }
         }
 
         //this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        
@@ -105,6 +115,7 @@ BasicGame.Menu.prototype = {
 
     novo_jogo: function (pointer) {
         this.som_musica.stop();
+        this.conexao_webcam.close();
         this.game.state.start('Jogo');
     },
     

@@ -190,6 +190,7 @@ class DetectorMovimento(object):
                     if not self.calibrado:
                         print 'Calibrou'
                         self.calibrado = True
+                        self.gerenciador_estado_jogador.atualizar_estado(self.movimento, self.calibrado)
                     # dentro do quadrado
                     cv2.rectangle(
                         frame, (centro_x - (self.LARGURA_QUADRADO_CENTRO / 2),
@@ -315,6 +316,9 @@ class DetectorMovimento(object):
         '''
         cv2.destroyAllWindows()
         self.camera.release()
+        self.calibrado = False
+        self.movimento = self.Movimentos.EM_PE
+        self.gerenciador_estado_jogador.atualizar_estado(self.movimento, self.calibrado)
 
 if __name__ == "__main__":
     try:
