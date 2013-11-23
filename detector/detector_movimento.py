@@ -25,6 +25,7 @@ class GerenciadorEstadoJogador(object):
     '''
     # Constantes
     ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
+    ARQUIVO_ESTADO_VIDA_JOGADOR = './file/estado_jogador_cliente.json'
 
     class EstadosJogador(object):
 
@@ -35,12 +36,15 @@ class GerenciadorEstadoJogador(object):
         PULANDO = 1
         AGACHADO = -1
 
-    def atualizar_estado(self, movimento, calibrado):
-        self.__atualizar_estado(movimento, calibrado)
+    def __init__(self):
+        self.atualizar_estado(Movimentos.EM_PE, False)
+        self._setVivo(True)
 
-    def __atualizar_estado(self, movimento, calibrado):
+    def atualizar_estado(self, movimento, calibrado):
         '''
         Atualiza o estado do jogador no arquivo
+        :param movimento: movimento do jogador
+        :param calibrado: se a camera foi calibrada com o jogador
         '''
         novo_estado = 0
         if movimento == Movimentos.EM_PE:
@@ -54,6 +58,32 @@ class GerenciadorEstadoJogador(object):
             estado_jogador = {"movimento": novo_estado, "calibrado": calibrado}
             str_json = json.dumps(estado_jogador)
             arq.write(str_json)
+
+    def _setVivo(self, vivo):
+        '''
+        Seta o estado vivo do jogador
+        :param vivo: se o jogador está vivo
+        '''
+        jogador = {'vivo': vivo}
+        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'w') as arq:
+            arq.write(json.dumps(jogador))
+
+    def isVivo(self):
+        '''
+        verifica se o jogador está vivo ou não
+        :returns: True se o jogador está vivo e False se não
+        '''
+        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR) as arq:
+            vivo_str = arq.read()
+        vivo = json.loads(vivo_str)
+        return vivo['vivo']
+
+    def finish(self):
+        '''
+        finaliza o estado do gerenciador
+        '''
+        self.atualizar_estado(Movimentos.EM_PE, False)
+        self._setVivo(True)
 
 
 class DetectorMovimento(object):
@@ -144,8 +174,16 @@ class DetectorMovimento(object):
         momento_agachar = {}
         centro_x, centro_y = (int)(self.width / 2), (int)(self.height / 2)
 
-        # print 'Numero de frames: {0}'.format(self.camera.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+        # print 'Numero de frames:
+        # {0}'.format(self.camera.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+        contador = 0
         while(self.camera.isOpened()):
+            contador = contador + 1
+            # a cada N loops ele verifica se o jogador ta vivo
+            if contador % 200 == 0:
+                if not self.gerenciador_estado_jogador.isVivo():
+                    print 'Jogador perdeu'
+                    break
             _, frame = self.camera.read()
             frame = cv2.flip(frame, 1)
             blur = cv2.medianBlur(frame, 5)
@@ -190,7 +228,8 @@ class DetectorMovimento(object):
                     if not self.calibrado:
                         print 'Calibrou'
                         self.calibrado = True
-                        self.gerenciador_estado_jogador.atualizar_estado(self.movimento, self.calibrado)
+                        self.gerenciador_estado_jogador.atualizar_estado(
+                            self.movimento, self.calibrado)
                     # dentro do quadrado
                     cv2.rectangle(
                         frame, (centro_x - (self.LARGURA_QUADRADO_CENTRO / 2),
@@ -284,11 +323,11 @@ class DetectorMovimento(object):
                                     self.movimento, self.calibrado)
                                 mudou_movimento = True
                     if self.movimento == Movimentos.EM_PE and mudou_movimento:
-                        #if momento_agachar['y']:
+                        # if momento_agachar['y']:
                         #    for i in self.ys:
                         #        if i < momento_agachar['y']:
                         #            self.ys.remove(i)
-                        #else:
+                        # else:
                         self.ys = []
 
             if self.desenhar_linhas:
@@ -309,6 +348,18 @@ class DetectorMovimento(object):
             key = cv2.waitKey(25)
             if key == 27:  # esc
                 break
+        self.restart()
+
+    def restart(self):
+        '''
+        reinicia a detecção e os recursos
+        '''
+        print 'reiniciando captura...'
+        self.ys = []
+        self.desenhar_linhas = False
+        self.calibrado = False
+        self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
+        self.start()
 
     def finish(self):
         '''
@@ -317,8 +368,8 @@ class DetectorMovimento(object):
         cv2.destroyAllWindows()
         self.camera.release()
         self.calibrado = False
-        self.movimento = self.Movimentos.EM_PE
-        self.gerenciador_estado_jogador.atualizar_estado(self.movimento, self.calibrado)
+        self.movimento = Movimentos.EM_PE
+        self.gerenciador_estado_jogador.finish()
 
 if __name__ == "__main__":
     try:

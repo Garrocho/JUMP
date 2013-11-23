@@ -62,7 +62,9 @@ BasicGame.Menu.prototype = {
                 this.calibrado = this.estado_jogador['calibrado'];
 
                 console.log("Calibrado: ", this.calibrado);
-                this.menu.novo_jogo(null);
+                if(this.calibrado){
+                    this.menu.novo_jogo(null);
+                }
             }
         }
 

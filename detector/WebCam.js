@@ -77,12 +77,14 @@ wsServer.on('request', function(request) {
  
     // o objeto request tem um método chamado 'accept' onde aceitamos
     // a conexão passando o protocolo e a origem (deixemos isso para depois)
-    cliente = request.accept(null, request.origin); 
-});
+    cliente = request.accept(null, request.origin);
 
-console.log("Nao ta recebendo do cliente :(");
-wsServer.on('connection', function(ws) {
-    ws.on('message', function(message) {
-        console.log('recebido: %s', message);
+    cliente.on('message', function(message) {
+        var jogador = JSON.parse(message.utf8Data);
+        var stream = fs.createWriteStream("./file/estado_jogador_cliente.json");
+        stream.once('open', function(fd) {
+            stream.write(message.utf8Data);
+            stream.end();
+        });
     });
 });
