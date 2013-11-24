@@ -399,8 +399,6 @@ if __name__ == "__main__":
     parser.add_option("-a", "--desagachar", dest="agachar_desabilitado",
                       action="store_true", help="Desabilitar agachar")
     parser.add_option(
-        "-v", "--verbose", action="store_true", dest="verbose", default=False)
-    parser.add_option(
         "-q", "--quiet", action="store_false", dest="verbose", default=True)
     (options, args) = parser.parse_args()
 
