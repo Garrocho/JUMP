@@ -6,6 +6,7 @@ import numpy as np
 import sys
 import json
 import time
+from optparse import OptionParser
 
 
 class Movimentos(object):
@@ -124,13 +125,14 @@ class DetectorMovimento(object):
         PARA_BAIXO = -1
         SEM_MOVIMENTO = 0
 
-    def __init__(self, id_camera=0):
+    def __init__(self, id_camera=0, agachar_desabilitado=False):
         '''
         Construtor da Classe
         :param id_camera: identificador da camera que será utilizada, o padrão é 0
         '''
         self.movimento = Movimentos.EM_PE
         self.id_camera = id_camera
+        self.agachar_desabilitado = agachar_desabilitado
 
         self.camera = cv2.VideoCapture(self.id_camera)
         if not self.camera.isOpened():
@@ -153,8 +155,8 @@ class DetectorMovimento(object):
         :param hsv: imagem no formato de cor hsv
         :returns: a faixa de cor
         '''
-        min_cor = np.array((100, 140, 150), np.uint8)
-        max_cor = np.array((140, 200, 220), np.uint8)
+        min_cor = np.array((100, 140, 130), np.uint8)
+        max_cor = np.array((140, 210, 220), np.uint8)
 
         faixa_cor = cv2.inRange(hsv, min_cor, max_cor)
         return faixa_cor
@@ -199,7 +201,7 @@ class DetectorMovimento(object):
         while(self.camera.isOpened()):
             contador = contador + 1
             # a cada N loops ele verifica se o jogador ta vivo
-            if contador % 200 == 0:
+            if contador % 100 == 0:
                 if not self.gerenciador_estado_jogador.is_vivo():
                     print 'Jogador perdeu'
                     break
@@ -288,7 +290,7 @@ class DetectorMovimento(object):
                         # desceu, mas o que houve?
                         elif variacao_movimento == self.VariacoesMovimento.PARA_BAIXO:
                             # agachou
-                            if self.movimento == Movimentos.EM_PE:
+                            if self.movimento == Movimentos.EM_PE and not self.agachar_desabilitado:
                                 momento_agachar['y'] = y
                                 self.movimento = Movimentos.AGACHADO
                                 mudou_movimento = True
@@ -391,10 +393,13 @@ class DetectorMovimento(object):
         self.gerenciador_estado_jogador.finish()
 
 if __name__ == "__main__":
-    try:
-        id_camera = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-    except ValueError as e:
-        id_camera = 0
-    detector_movimento = DetectorMovimento(id_camera)
+    parser = OptionParser()
+    parser.add_option("-c", "--camera", dest="id_camera", help="id da camera", type="int", default=0)
+    parser.add_option("-a", "--desagachar", dest="agachar_desabilitado", action="store_true", help="Desabilitar agachar")
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False)
+    parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True)
+    (options, args) = parser.parse_args()
+
+    detector_movimento = DetectorMovimento(options.id_camera, options.agachar_desabilitado)
     detector_movimento.start()
     detector_movimento.finish()

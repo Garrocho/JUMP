@@ -28,12 +28,15 @@ monitorador_estado_jogador.on('change', function(path) {
     fs.readFile(path, 'utf8', function(error, data) {
         if(cliente != null){
             cliente.sendUTF(data);
+            console.log("enviou: ", data);
         }
         else{
             console.log("cliente null: não foi possivel enviar a mensagem");
         }
     });
 });
+
+monitorador_estado_jogador.close();
 
 // criamos um servidor de arquivos...
 var fileServer = new st.Server();
