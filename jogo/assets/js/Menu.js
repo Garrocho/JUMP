@@ -66,6 +66,13 @@ BasicGame.Menu.prototype = {
                     this.menu.novo_jogo(null);
                 }
             }
+            this.conexao_webcam.onopen = function(){
+                var estado_jogo = {'jogador_vivo': true, 'tela': 'menu'};
+                var str_estado_jogo = JSON.stringify(estado_jogo);
+                this.send(str_estado_jogo);
+
+                console.log("Enviou: ", str_estado_jogo);
+            }
         }
 
         //this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        

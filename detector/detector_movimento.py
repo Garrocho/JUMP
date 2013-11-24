@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import sys
 import json
+import time
 
 
 class Movimentos(object):
@@ -25,7 +26,7 @@ class GerenciadorEstadoJogador(object):
     '''
     # Constantes
     ARQUIVO_ESTADO_JOGADOR = './file/estado_jogador.json'
-    ARQUIVO_ESTADO_VIDA_JOGADOR = './file/estado_jogador_cliente.json'
+    ARQUIVO_ESTADO_VIDA_JOGADOR = './file/estado_jogo_cliente.json'
 
     class EstadosJogador(object):
 
@@ -38,7 +39,7 @@ class GerenciadorEstadoJogador(object):
 
     def __init__(self):
         self.atualizar_estado(Movimentos.EM_PE, False)
-        self._setVivo(True)
+        self._set_vivo(True)
 
     def atualizar_estado(self, movimento, calibrado):
         '''
@@ -59,16 +60,18 @@ class GerenciadorEstadoJogador(object):
             str_json = json.dumps(estado_jogador)
             arq.write(str_json)
 
-    def _setVivo(self, vivo):
+    def _set_vivo(self, vivo):
         '''
         Seta o estado vivo do jogador
         :param vivo: se o jogador está vivo
         '''
-        jogador = {'vivo': vivo}
+        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'r') as arq:
+            estado_jogo = json.loads(arq.read())
+            estado_jogo['jogador_vivo'] = vivo
         with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'w') as arq:
-            arq.write(json.dumps(jogador))
+            arq.write(json.dumps(estado_jogo))
 
-    def isVivo(self):
+    def is_vivo(self):
         '''
         verifica se o jogador está vivo ou não
         :returns: True se o jogador está vivo e False se não
@@ -76,14 +79,25 @@ class GerenciadorEstadoJogador(object):
         with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR) as arq:
             vivo_str = arq.read()
         vivo = json.loads(vivo_str)
-        return vivo['vivo']
+        return vivo['jogador_vivo']
+
+    def tela_atual(self):
+        '''
+        retorna a tela atual do jogo
+        :returns: a tela atual do jogo
+        '''
+        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR) as arq:
+            str_estado_jogo = arq.read()
+        estado_jogo = json.loads(str_estado_jogo)
+        tela = estado_jogo['tela']
+        return tela
 
     def finish(self):
         '''
         finaliza o estado do gerenciador
         '''
         self.atualizar_estado(Movimentos.EM_PE, False)
-        self._setVivo(True)
+        self._set_vivo(True)
 
 
 class DetectorMovimento(object):
@@ -133,7 +147,7 @@ class DetectorMovimento(object):
 
         self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
 
-    def getThresholdedImage(self, hsv):
+    def get_thresholded_image(self, hsv):
         '''
         Gera uma faixa de cor
         :param hsv: imagem no formato de cor hsv
@@ -170,6 +184,11 @@ class DetectorMovimento(object):
         '''
         Inicia a detecção
         '''
+        # so inica a deteccao caso o jogo esteja no menu
+        while self.gerenciador_estado_jogador.tela_atual() != 'menu':
+            print 'Jogo não está na tela de menu'
+            time.sleep(0.5)
+
         momento_pulo = {}
         momento_agachar = {}
         centro_x, centro_y = (int)(self.width / 2), (int)(self.height / 2)
@@ -181,7 +200,7 @@ class DetectorMovimento(object):
             contador = contador + 1
             # a cada N loops ele verifica se o jogador ta vivo
             if contador % 200 == 0:
-                if not self.gerenciador_estado_jogador.isVivo():
+                if not self.gerenciador_estado_jogador.is_vivo():
                     print 'Jogador perdeu'
                     break
             _, frame = self.camera.read()
@@ -189,7 +208,7 @@ class DetectorMovimento(object):
             blur = cv2.medianBlur(frame, 5)
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-            faixa_cor = self.getThresholdedImage(hsv)
+            faixa_cor = self.get_thresholded_image(hsv)
             erode = cv2.erode(faixa_cor, None, iterations=3)
             dilate = cv2.dilate(erode, None, iterations=10)
 

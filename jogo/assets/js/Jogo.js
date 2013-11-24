@@ -51,11 +51,11 @@ BasicGame.Jogo.prototype = {
                 console.log("Estado Jogador: ", this.estado_jogador);
             }
             this.conexao.jogador_morreu = function(){
-                var estado_jogador = {'vivo': false};
-                var str_estado_jogador = JSON.stringify(estado_jogador);
-                this.send(str_estado_jogador);
+                var estado_jogo = {'jogador_vivo': false, 'tela': 'gameover'};
+                var str_estado_jogo = JSON.stringify(estado_jogo);
+                this.send(str_estado_jogo);
 
-                console.log("Enviou: ", str_estado_jogador);
+                console.log("Enviou: ", str_estado_jogo);
             }
         }
         if (this.stage.scale.isFullScreen == null)

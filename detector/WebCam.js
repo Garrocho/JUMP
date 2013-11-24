@@ -81,7 +81,7 @@ wsServer.on('request', function(request) {
 
     cliente.on('message', function(message) {
         var jogador = JSON.parse(message.utf8Data);
-        var stream = fs.createWriteStream("./file/estado_jogador_cliente.json");
+        var stream = fs.createWriteStream("./file/estado_jogo_cliente.json");
         stream.once('open', function(fd) {
             stream.write(message.utf8Data);
             stream.end();
