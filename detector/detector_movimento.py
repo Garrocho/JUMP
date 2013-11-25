@@ -10,6 +10,7 @@ from optparse import OptionParser
 from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
 from multiprocessing import Process
 
+processo = None
 
 class Movimentos(object):
 
@@ -147,7 +148,10 @@ class DetectorMovimento(Process):
         self.id_camera = id_camera
         self.agachar_desabilitado = agachar_desabilitado
 
-        self.camera = cv2.VideoCapture(self.id_camera)
+        if conexao is None:
+            self.camera = cv2.VideoCapture(self.id_camera)
+        else:
+            self.camera = conexao.camera
         if not self.camera.isOpened():
             raise IOError('Não foi possivel ter acesso a camera')
         if self.NUM_Y_ANALIZADOS > self.NUM_Y_GUARDADOS:
@@ -396,10 +400,11 @@ class DetectorMovimento(Process):
             key = cv2.waitKey(25)
             if key == 27:  # esc
                 break
-        if self.conexao is None:
+        self.reiniciar()
+        '''if self.conexao is None:
             self.reiniciar()
         else:
-            self.finalizar()
+            self.finalizar()'''
 
     def reiniciar(self):
         '''

@@ -22,7 +22,7 @@ var fs = require('fs');
 // vai monitorar o arquivo ranking.json e
 var chokidar = require('chokidar');
 
-var monitorador_estado_jogador = chokidar.watch('./file/estado_jogador.json', {persistence: true, interval: 50, binaryInterval: 150}); //interval: 100, binaryInterval: 300
+var monitorador_estado_jogador = chokidar.watch('./file/estado_jogador.json', {persistence: true, interval: 10, binaryInterval: 50}); //interval: 100, binaryInterval: 300
 
 monitorador_estado_jogador.on('change', function(path) {
     fs.readFile(path, 'utf8', function(error, data) {
