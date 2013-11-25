@@ -5,11 +5,8 @@ import detector_movimento
 class WebSocketWebCam(WebSocket):
 
     def handleMessage(self):
-        if self.data is None:
-            self.data = ''
-
-        # echo message back to client
-        self.sendMessage(str(self.data))
+        with open('./file/estado_jogo_cliente.json', 'w') as arq:
+            arq.write(self.data)
 
     def handleConnected(self):
         print self.address, 'connected'
@@ -18,7 +15,8 @@ class WebSocketWebCam(WebSocket):
 
     def handleClose(self):
         print self.address, 'closed'
-        gerenciador_estado_jogador = detector_movimento.GerenciadorEstadoJogador()
+        gerenciador_estado_jogador = detector_movimento.GerenciadorEstadoJogador(
+        )
         gerenciador_estado_jogador._set_vivo(False)
 
 

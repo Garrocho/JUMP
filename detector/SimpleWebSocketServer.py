@@ -179,7 +179,8 @@ class WebSocket(object):
 						
 						try:
 							self.handleConnected()
-						except:
+						except Exception as e:
+							print e
 							pass		
 					else:
 						raise Exception('Sec-WebSocket-Key does not exist')
