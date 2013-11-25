@@ -13,7 +13,7 @@ BasicGame.GameOver.prototype = {
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
-        this.estilo3 = { font: "bold 25pt Arial", fill: "#ffffff", align: "left", stroke: "#000000", strokeThickness: 7 };
+        this.estilo3 = { font: "bold 22pt Arial", fill: "#ffffff", align: "left", stroke: "#000000", strokeThickness: 6 };
         this.estilo = { font: "bold 30pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 7 };
         this.titulo = this.add.text(20, 0, "Fim de Jogo!", this.estilo1);
         this.titulo1 = this.add.text(30, 150, "Entre Com Seu Nome Para Registrar Seu Recorde no Ranking!", this.estilo3);
@@ -21,7 +21,7 @@ BasicGame.GameOver.prototype = {
         this.jump_rec = localStorage['recorde'];
         if ((typeof(this.jump_rec)!=="undefined")) {
             this.recorde= JSON.parse(this.jump_rec);
-            this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h";
+            this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h" + "\nCalorias: " + this.recorde['localizacao'];
         }
         else {
             this.informacao = "\nMoedas: " + 0 + "\nVelocidade: " + 0 + " Km/h";
@@ -100,7 +100,7 @@ BasicGame.GameOver.prototype = {
         this.som_item.play();
         if (window.WebSocket) {
             //var cidade = localStorage.getItem('jump_cidade');
-            recorde['localizacao'] = "Barbacena";
+            //recorde['localizacao'] = "Barbacena";
             var conexao = new WebSocket('ws://127.0.0.1:14527');
             conexao.onopen = function(){
                 conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));

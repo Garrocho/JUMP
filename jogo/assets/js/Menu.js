@@ -38,7 +38,7 @@ BasicGame.Menu.prototype = {
                 this.nome = "NOME";
                 this.kmh = "KM/H";
                 this.moedas = "MOEDAS";
-                this.localizacao = "LOCALIZAÇÃO";
+                this.localizacao = "CALORIAS";
                 json.sort(function(a, b) {
                     return (b["kmh"] - a["kmh"]);
                 });
