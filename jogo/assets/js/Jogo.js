@@ -1,5 +1,5 @@
 BasicGame.Jogo = function (game) {
-    this.AGACHAR = false;
+    this.AGACHAR = true;
 };
 
 BasicGame.Jogo.prototype = {

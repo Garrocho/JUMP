@@ -116,7 +116,7 @@ class DetectorMovimento(Process):
     Classe para detectar o movimento
     '''
     # Constantes
-    ALTURA_QUADRADO_CENTRO = 100
+    ALTURA_QUADRADO_CENTRO = 80
     LARGURA_QUADRADO_CENTRO = 200
     MARGEM_ERRO_CALIBRACAO = 20
     # evita que um simples aumento na altura da pessoa seja considerado um pulo
@@ -124,6 +124,8 @@ class DetectorMovimento(Process):
     NUM_Y_ANALIZADOS = 5
 
     NUM_Y_GUARDADOS = 5
+
+    ALTURA_AGACHAMENTO = 340
 
     class VariacoesMovimento(object):
 
@@ -158,7 +160,8 @@ class DetectorMovimento(Process):
         self.desenhar_linhas = False
         self.calibrado = False
 
-        self.gerenciador_estado_jogador = GerenciadorEstadoJogador(conexao=self.conexao)
+        self.gerenciador_estado_jogador = GerenciadorEstadoJogador(
+            conexao=self.conexao)
 
     def return_name(self):
         '''
@@ -179,8 +182,8 @@ class DetectorMovimento(Process):
         :param hsv: imagem no formato de cor hsv
         :returns: a faixa de cor
         '''
-        min_cor = np.array((100, 140, 130), np.uint8)
-        max_cor = np.array((140, 210, 220), np.uint8)
+        min_cor = np.array((110, 100, 80), np.uint8)
+        max_cor = np.array((140, 190, 190), np.uint8)
 
         faixa_cor = cv2.inRange(hsv, min_cor, max_cor)
         return faixa_cor
@@ -314,7 +317,7 @@ class DetectorMovimento(Process):
                         # desceu, mas o que houve?
                         elif variacao_movimento == self.VariacoesMovimento.PARA_BAIXO:
                             # agachou
-                            if self.movimento == Movimentos.EM_PE and not self.agachar_desabilitado:
+                            if self.movimento == Movimentos.EM_PE and not self.agachar_desabilitado and y > self.ALTURA_AGACHAMENTO:
                                 momento_agachar['y'] = y
                                 self.movimento = Movimentos.AGACHADO
                                 mudou_movimento = True
@@ -359,7 +362,7 @@ class DetectorMovimento(Process):
                         # não considera a margem de tolerancia, pois ao agachar
                         # ele pode ja levantar. O ideal seria uma outra margem,
                         # mas menor
-                        if momento_agachar['y'] != None and y < momento_agachar['y']:
+                        if momento_agachar['y'] != None and y < momento_agachar['y'] - self.MARGEM_TOLERANCIA:
                             if self.movimento == Movimentos.AGACHADO:
                                 print 'De pé em px: {0}'.format(y)
                                 self.movimento = Movimentos.EM_PE
