@@ -16,8 +16,8 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-        this.botao_ranking = this.add.button(this.world.centerX - 130, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
-        this.botao_jogar = this.add.button(this.world.centerX - 430, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX + 10, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
+        this.botao_jogar = this.add.button(this.world.centerX - 270, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
         if (this.stage.scale.isFullScreen == null)
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
         else
