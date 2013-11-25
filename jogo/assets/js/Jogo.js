@@ -17,6 +17,7 @@ BasicGame.Jogo.prototype = {
         this.pulando = false;
         this.agachado = false;
         this.contador = 0;
+	this.contador_pulo = 0
         this.kmh = 5;
         this.pulando = false;
         this.aux_pulo = 0;
@@ -30,10 +31,13 @@ BasicGame.Jogo.prototype = {
         this.corredor_cont.animations.play('correr', 10, true);
         
         this.estilo = { font: "bold 20pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 3 };
+	this.estilo4 = { font: "bold 20pt Arial", fill: "#00FF00", stroke: "#000000", strokeThickness: 5 };
         this.texto1 = this.add.text(220, 30, "5 Km/h", this.estilo);
         this.texto1.anchor.setTo(0.5, 0.5);
         this.texto2 = this.add.text(80, 30, "0", this.estilo);
         this.texto2.anchor.setTo(0.5, 0.5);
+	this.texto3 = this.add.text(this.world.centerX, 30, "0 Calorias", this.estilo4);
+        this.texto3.anchor.setTo(0.5, 0.5);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.som_musica = this.add.audio('som_musica',0.1,true);
@@ -120,6 +124,8 @@ BasicGame.Jogo.prototype = {
         if ((this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
         {
             this.som_pulo.play();
+	    this.contador_pulo+=0.15;
+	    this.texto3.setText(this.contador_pulo.toFixed(2) + " Calorias");
             this.pulando = true;
             this.jogador.loadTexture('pulando', 0);
             this.jogador.animations.add('pular');
@@ -203,7 +209,7 @@ BasicGame.Jogo.prototype = {
             'moedas': this.contador,
             'kmh': this.kmh,
             'nome': "Não Definido",
-            'localizacao': "Não Definido"
+            'localizacao': this.contador_pulo.toFixed(2)
         }
         localStorage['recorde'] = JSON.stringify(recorde);
         this.game.state.start('GameOver');
