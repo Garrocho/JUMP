@@ -21,7 +21,7 @@ BasicGame.GameOver.prototype = {
         this.jump_rec = localStorage['recorde'];
         if ((typeof(this.jump_rec)!=="undefined")) {
             this.recorde= JSON.parse(this.jump_rec);
-            this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h" + "\nCalorias: " + this.recorde['localizacao'];
+            this.informacao = "\nMoedas: " + this.recorde['moedas'] + "\nVelocidade: " + this.recorde['kmh'] + " Km/h" + "\nCalorias: " + this.recorde['localizacao'] + " Kcal";
         }
         else {
             this.informacao = "\nMoedas: " + 0 + "\nVelocidade: " + 0 + " Km/h";
