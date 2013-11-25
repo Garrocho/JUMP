@@ -7,10 +7,10 @@ BasicGame.GameOver.prototype = {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
         this.som_musica = this.add.audio('game_over');
-	this.nome = "";
-	this.tempo = 0;
-	this.tempo_teclado = 0;
-	this.localizacao = "não identificado";
+        this.nome = "";
+        this.tempo = 0;
+        this.tempo_teclado = 0;
+        this.localizacao = "não identificado";
         
         this.estilo1 = { font: "bold 80pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 30pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 10 };
@@ -38,7 +38,7 @@ BasicGame.GameOver.prototype = {
         this.som_musica.play();
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         this.valida_config();
-	this.setar_cidade();
+        this.setar_cidade();
     },
 
     update: function () {
@@ -96,16 +96,23 @@ BasicGame.GameOver.prototype = {
         }
     },
 
-    enviar_recorde: function(recorde) {
-	if (window.WebSocket) {
-	    //var cidade = localStorage.getItem('jump_cidade');
-        recorde['localizacao'] = "Barbacena";
-	    var conexao = new WebSocket('ws://127.0.0.1:14527');
-	    conexao.onopen = function(){
-		  conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
-	    };
-	} 
-	this.menu();
+    enviar_recorde: function (recorde) {
+        if (window.WebSocket) {
+            //var cidade = localStorage.getItem('jump_cidade');
+            recorde['localizacao'] = "Barbacena";
+            var conexao = new WebSocket('ws://127.0.0.1:14527');
+            conexao.onopen = function(){
+                conexao.send(JSON.stringify({"TIPO": "GRAVAR", "DADOS" :recorde}));
+            };
+        }
+        this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.titulo1).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.texto).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_sair).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a = this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a.onComplete.add(this.menu, this);
     },
 
     mudar_tela: function() {

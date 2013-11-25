@@ -123,6 +123,26 @@ BasicGame.Menu.prototype = {
     },
 
     novo_jogo: function (pointer) {
+        this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_ranking).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_jogar).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_sair).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.titulo3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.rank).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.nome).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.kmh).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.moedas).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.localizacao).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.descricao).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.equipe).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a = this.add.tween(this.ifet).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a.onComplete.add(this.iniciar, this);
+    },
+
+    iniciar: function() {
         this.som_musica.stop();
         this.conexao_webcam.close();
         this.game.state.start('Jogo');

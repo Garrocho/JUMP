@@ -176,15 +176,34 @@ BasicGame.Jogo.prototype = {
             this.conexao.jogador_morreu();
             this.conexao.close();
             this.som_musica.stop();
-            var recorde = {
-                'moedas': this.contador,
-                'kmh': this.kmh,
-                'nome': "Não Definido",
-                'localizacao': "Não Definido"
-            }
-            localStorage['recorde'] = JSON.stringify(recorde);
-            this.game.state.start('GameOver');
+            this.game_over();
         }
+    },
+
+    game_over: function () {
+        this.add.tween(this.fabrica).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.jogador).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.moeda_cont).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.corredor_cont).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.texto1).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.texto2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.fundo1).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.fundo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a = this.add.tween(this.fundo3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        a.onComplete.add(this.iniciar, this);
+    },
+
+    iniciar: function() {
+        var recorde = {
+            'moedas': this.contador,
+            'kmh': this.kmh,
+            'nome': "Não Definido",
+            'localizacao': "Não Definido"
+        }
+        localStorage['recorde'] = JSON.stringify(recorde);
+        this.game.state.start('GameOver');
     },
     
     valida_criacao: function() {
