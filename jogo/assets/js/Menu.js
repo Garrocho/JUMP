@@ -8,6 +8,7 @@ BasicGame.Menu.prototype = {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
         this.som_musica = this.add.audio('som_menu');
+        this.som_item = this.add.audio('som_menu_item');
         this.estilo = { font: "bold 150pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 15 };
         this.estilo2 = { font: "bold 22pt Arial", fill: "#ffffff", align: "center", stroke: "#000000", strokeThickness: 5 };
         this.estilo4 = { font: "bold 15pt Arial", fill: "#ffffff", align: "left", stroke: "#000000", strokeThickness: 5 };
@@ -26,7 +27,7 @@ BasicGame.Menu.prototype = {
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         
         if (window.WebSocket) {
-            this.conexao = new WebSocket('ws://108.59.6.230:14527');
+            this.conexao = new WebSocket('ws://127.0.0.1:14527');
             
             this.conexao.onopen = function() {
                 this.send(JSON.stringify({"TIPO": "OBTER"}));
@@ -122,6 +123,7 @@ BasicGame.Menu.prototype = {
     },
 
     novo_jogo: function (pointer) {
+        this.som_item.play();
         this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_ranking).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
@@ -147,6 +149,7 @@ BasicGame.Menu.prototype = {
     },
     
     ranking: function (pointer) {
+        this.som_item.play();
         this.eRanking = !this.eRanking;
         if (this.eRanking) {
             this.ifet.visible = false;
@@ -159,6 +162,7 @@ BasicGame.Menu.prototype = {
     },
 
     mudar_som: function () {
+        this.som_item.play();
         if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
             this.som = 1;
@@ -173,6 +177,7 @@ BasicGame.Menu.prototype = {
     },
 
     mudar_tela: function() {
+        this.som_item.play();
         if (this.stage.scale.isFullScreen == null) {
             this.stage.scale.startFullScreen();
             this.botao_tela.loadTexture('botao_tela_normal');

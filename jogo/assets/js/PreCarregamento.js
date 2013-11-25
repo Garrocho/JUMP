@@ -32,6 +32,7 @@ BasicGame.PreCarregamento.prototype = {
         this.load.spritesheet('inimigo', 'assets/img/passaro.png', 74.9, 72);
         this.load.audio('som_moeda', ['assets/sons/moeda.ogg']);
         this.load.audio('som_menu', ['assets/sons/menu.ogg']);
+        this.load.audio('som_menu_item', ['assets/sons/menu_item.ogg']);
         this.load.audio('som_pulo', ['assets/sons/pulo.ogg']);
         this.load.audio('game_over', ['assets/sons/game_over.ogg']);
         this.load.audio('som_musica', ['assets/sons/fase_1.ogg']);
