@@ -1,4 +1,5 @@
 BasicGame.Jogo = function (game) {
+    this.AGACHAR = false;
 };
 
 BasicGame.Jogo.prototype = {
@@ -93,23 +94,25 @@ BasicGame.Jogo.prototype = {
         this.jogador.body.velocity.x = 0;
         this.jogador.body.velocity.y = 0;
         
-        if ((this.cursors.down.isDown && !this.pulando) || (this.conexao.movimento === -1 && !this.pulando))
-        {
-            if (!this.agachado) {
-                this.som_pulo.play();
-                this.agachado = true;
+        if (this.AGACHAR) {
+            if ((this.cursors.down.isDown && !this.pulando) || (this.conexao.movimento === -1 && !this.pulando))
+            {
+                if (!this.agachado) {
+                    this.som_pulo.play();
+                    this.agachado = true;
+                }
+                this.jogador.loadTexture('agachado', 0);
+                this.jogador.body.y=650;
             }
-            this.jogador.loadTexture('agachado', 0);
-            this.jogador.body.y=650;
-        }
-        else if ((this.cursors.down.isUp && this.agachado) || (this.conexao.movimento === 0 && this.agachado))
-        {
-            this.som_pulo.play();
-            this.agachado = false;
-            this.jogador.loadTexture('correndo', 0);
-            this.jogador.animations.add('correr');
-            this.jogador.animations.pixelPerfect = true;
-            this.jogador.animations.play('correr', 10, true);
+            else if ((this.cursors.down.isUp && this.agachado) || (this.conexao.movimento === 0 && this.agachado))
+            {
+                this.som_pulo.play();
+                this.agachado = false;
+                this.jogador.loadTexture('correndo', 0);
+                this.jogador.animations.add('correr');
+                this.jogador.animations.pixelPerfect = true;
+                this.jogador.animations.play('correr', 10, true);
+            }
         }
 
         if ((this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
@@ -135,7 +138,7 @@ BasicGame.Jogo.prototype = {
             else {
                 if (this.aux_pulo <= 3600) {
                     this.jogador.body.velocity.y = -500;
-                    this.jogador.body.velocity.x = 50;
+                    this.jogador.body.velocity.x = 150;
                 }
                 else {
                     this.jogador.body.velocity.y = 400;
@@ -186,9 +189,12 @@ BasicGame.Jogo.prototype = {
     
     valida_criacao: function() {
         if (this.time.now > this.tempo) {
-            var eixo_y = this.rnd.integerInRange(200, 650);
+            if (this.AGACHAR)
+                var eixo_y = this.rnd.integerInRange(200, 650);
+            else 
+                var eixo_y = this.rnd.integerInRange(550, 650);
             if (this.tipo_ator == 0) {
-                this.criar_atores(this.moedas, 'moeda', 50, 5, 10, 300);
+                this.criar_atores(this.moedas, 'moeda', 50, 5, 10, this.rnd.integerInRange(300, 550));
                 this.tipo_ator = 1;
             }
             else {
@@ -200,8 +206,8 @@ BasicGame.Jogo.prototype = {
     },
 
     criar_atores: function (grupo, nome_ator, distancia, qtde_min, qtde_max, eixo_y) {
-        if (eixo_y < 400 && nome_ator != 'inimigo') {
-            qtde_y = this.rnd.integerInRange(2, 3);
+        if (nome_ator != 'inimigo') {
+            qtde_y = this.rnd.integerInRange(1, 3);
         }
         else {
             qtde_y = 1;
@@ -225,14 +231,16 @@ BasicGame.Jogo.prototype = {
     administrar_grupo: function (grupo) {
         for (i=0; i < grupo.length-1; i++) {
             grupo[i].body.velocity.x = -(this.velocidade[2]*60);
-            if (grupo[i].name == 'inimigo' && grupo[i].body.y < 650)
-                grupo[i].body.velocity.y = this.jogador.body.y-550;
-            else if (grupo[i].name == 'inimigo' && !this.pulando && grupo[i].body.y >= 650)
-                grupo[i].body.velocity.y = -1000;
+            if (this.AGACHAR) {
+                if (grupo[i].name == 'inimigo' && grupo[i].body.y < 650)
+                    grupo[i].body.velocity.y = this.jogador.body.y-550;
+                else if (grupo[i].name == 'inimigo' && !this.pulando && grupo[i].body.y >= 650)
+                    grupo[i].body.velocity.y = -1000;
 
-            if (grupo[i].body.x < -150 || !grupo[i].exists) {
-                grupo[i].kill();
-                grupo.splice(i, 1);
+                if (grupo[i].body.x < -150 || !grupo[i].exists) {
+                    grupo[i].kill();
+                    grupo.splice(i, 1);
+                }
             }
         }
     },
