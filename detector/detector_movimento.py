@@ -7,6 +7,8 @@ import sys
 import json
 import time
 from optparse import OptionParser
+from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
+from multiprocessing import Process
 
 
 class Movimentos(object):
@@ -38,7 +40,8 @@ class GerenciadorEstadoJogador(object):
         PULANDO = 1
         AGACHADO = -1
 
-    def __init__(self):
+    def __init__(self, conexao=None):
+        self.conexao = conexao
         self.atualizar_estado(Movimentos.EM_PE, False)
         self._set_vivo(True)
 
@@ -55,11 +58,17 @@ class GerenciadorEstadoJogador(object):
             novo_estado = self.EstadosJogador.PULANDO
         elif movimento == Movimentos.AGACHADO:
             novo_estado = self.EstadosJogador.AGACHADO
-        # Recria o arquivo e insere o novo estado do jogador
-        with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
-            estado_jogador = {"movimento": novo_estado, "calibrado": calibrado}
-            str_json = json.dumps(estado_jogador)
-            arq.write(str_json)
+        estado_jogador = {"movimento": novo_estado, "calibrado": calibrado}
+        str_json = json.dumps(estado_jogador)
+        if self.conexao is None:
+            # Recria o arquivo e insere o novo estado do jogador
+            with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
+                arq.write(str_json)
+        else:
+            try:
+                self.conexao.sendMessage(str_json)
+            except:
+                print 'Não foi possível enviar a mensagem ao cliente'
 
     def _set_vivo(self, vivo):
         '''
@@ -101,7 +110,7 @@ class GerenciadorEstadoJogador(object):
         self._set_vivo(True)
 
 
-class DetectorMovimento(object):
+class DetectorMovimento(Process):
 
     '''
     Classe para detectar o movimento
@@ -125,11 +134,13 @@ class DetectorMovimento(object):
         PARA_BAIXO = -1
         SEM_MOVIMENTO = 0
 
-    def __init__(self, id_camera=0, agachar_desabilitado=False):
+    def __init__(self, id_camera=0, agachar_desabilitado=False, conexao=None):
         '''
         Construtor da Classe
         :param id_camera: identificador da camera que será utilizada, o padrão é 0
         '''
+        Process.__init__(self)
+        self.conexao = conexao
         self.movimento = Movimentos.EM_PE
         self.id_camera = id_camera
         self.agachar_desabilitado = agachar_desabilitado
@@ -147,7 +158,20 @@ class DetectorMovimento(object):
         self.desenhar_linhas = False
         self.calibrado = False
 
-        self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
+        self.gerenciador_estado_jogador = GerenciadorEstadoJogador(conexao=self.conexao)
+
+    def return_name(self):
+        '''
+        Retorna o nome do processo
+        :returns: nome do processo
+        '''
+        return 'Processo de detecção de movimentos'
+
+    def run(self):
+        '''
+        Inicia a detecção
+        '''
+        return self.iniciar()
 
     def get_thresholded_image(self, hsv):
         '''
@@ -182,7 +206,7 @@ class DetectorMovimento(object):
         else:
             return self.VariacoesMovimento.SEM_MOVIMENTO
 
-    def start(self):
+    def iniciar(self):
         '''
         Inicia a detecção
         '''
@@ -369,9 +393,12 @@ class DetectorMovimento(object):
             key = cv2.waitKey(25)
             if key == 27:  # esc
                 break
-        self.restart()
+        if self.conexao is None:
+            self.reiniciar()
+        else:
+            self.finalizar()
 
-    def restart(self):
+    def reiniciar(self):
         '''
         reinicia a detecção e os recursos
         '''
@@ -380,29 +407,29 @@ class DetectorMovimento(object):
         self.desenhar_linhas = False
         self.calibrado = False
         self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
-        self.start()
+        self.iniciar()
 
-    def finish(self):
+    def finalizar(self):
         '''
         finaliza a detecção e os recursos
         '''
-        cv2.destroyAllWindows()
-        self.camera.release()
         self.calibrado = False
         self.movimento = Movimentos.EM_PE
         self.gerenciador_estado_jogador.finish()
+        self.camera.release()
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-c", "--camera", dest="id_camera",
                       help="id da camera", type="int", default=0)
     parser.add_option("-a", "--desagachar", dest="agachar_desabilitado",
-                      action="store_true", help="Desabilitar agachar")
+                      action="store_true", help="Desabilitar agachar", default=False)
     parser.add_option(
         "-q", "--quiet", action="store_false", dest="verbose", default=True)
     (options, args) = parser.parse_args()
 
     detector_movimento = DetectorMovimento(
         options.id_camera, options.agachar_desabilitado)
-    detector_movimento.start()
-    detector_movimento.finish()
+    detector_movimento.iniciar()
+    detector_movimento.finalizar()
