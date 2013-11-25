@@ -24,7 +24,6 @@ BasicGame.Menu.prototype = {
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
 
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
-        this.botao_sair = this.add.button(this.world.centerX + 170, 300, 'botao_sair', this.sair, this, 2, 1, 0);
         
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://108.59.6.230:14527');
@@ -129,7 +128,6 @@ BasicGame.Menu.prototype = {
         this.add.tween(this.botao_jogar).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
-        this.add.tween(this.botao_sair).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.rank).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.nome).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
@@ -199,9 +197,5 @@ BasicGame.Menu.prototype = {
         else
             this.botao_som.loadTexture('botao_som_on');
         this.som_musica.volume = this.som;
-    },
-    
-    sair: function() {
-        window.close();
     },
 };
