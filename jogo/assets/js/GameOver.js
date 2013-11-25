@@ -6,7 +6,6 @@ BasicGame.GameOver.prototype = {
     create: function () {
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
-        this.som_musica = this.add.audio('game_over');
         this.nome = "";
         this.tempo = 0;
         this.tempo_teclado = 0;
@@ -34,11 +33,12 @@ BasicGame.GameOver.prototype = {
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
         else
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_normal', this.mudar_tela, this, 2, 1, 0);
-
-        this.som_musica.play();
+        this.som_item = this.add.audio('som_menu_item');
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
+        this.som_musica = this.add.audio('som_musica',0.1,true);
+        this.som_musica.play('',0,1,true);
         this.valida_config();
-        this.setar_cidade();
+        //this.setar_cidade();
     },
 
     update: function () {
@@ -97,6 +97,7 @@ BasicGame.GameOver.prototype = {
     },
 
     enviar_recorde: function (recorde) {
+        this.som_item.play();
         if (window.WebSocket) {
             //var cidade = localStorage.getItem('jump_cidade');
             recorde['localizacao'] = "Barbacena";
@@ -116,6 +117,7 @@ BasicGame.GameOver.prototype = {
     },
 
     mudar_tela: function() {
+        this.som_item.play();
         if (this.stage.scale.isFullScreen == null) {
             this.stage.scale.startFullScreen();
             this.botao_tela.loadTexture('botao_tela_normal');
@@ -127,6 +129,7 @@ BasicGame.GameOver.prototype = {
     },
 
     mudar_som: function () {
+        this.som_item.play();
         if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
             this.som = 1;

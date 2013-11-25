@@ -72,6 +72,8 @@ BasicGame.Jogo.prototype = {
         this.velocidade[2] = 2;
         this.botao_som = this.add.button(this.world.centerX + 445, 0, 'botao_som_on', this.mudar_som, this, 2, 1, 0);
         this.som_musica.play('',0,1,true);
+        this.som_item = this.add.audio('som_menu_item');
+        this.som_game_over = this.add.audio('game_over');
         this.valida_config();
         this.tempo = 0;
         this.tipo_ator = 0;
@@ -181,6 +183,7 @@ BasicGame.Jogo.prototype = {
     },
 
     game_over: function () {
+        this.som_game_over.play();
         this.add.tween(this.fabrica).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.jogador).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.moeda_cont).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
@@ -265,6 +268,7 @@ BasicGame.Jogo.prototype = {
     },
     
     mudar_tela: function() {
+        this.som_item.play();
         if (this.stage.scale.isFullScreen == null) {
             this.stage.scale.startFullScreen();
             this.botao_tela.loadTexture('botao_tela_normal');
@@ -276,6 +280,7 @@ BasicGame.Jogo.prototype = {
     },
 
     mudar_som: function () {
+        this.som_item.play();
         if (this.som == 0) {
             this.botao_som.loadTexture('botao_som_on');
             this.som = 1;
