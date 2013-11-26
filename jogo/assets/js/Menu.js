@@ -17,8 +17,9 @@ BasicGame.Menu.prototype = {
         this.titulo.anchor.setTo(0.5, 0.5);
         this.titulo2 = this.add.text(this.world.centerX, this.world.centerY-160, "Jogo Unificado para Movimentação Projetada", this.estilo2);
         this.titulo2.anchor.setTo(0.5, 0.5);
-        this.botao_ranking = this.add.button(this.world.centerX + 10, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
-        this.botao_jogar = this.add.button(this.world.centerX - 270, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        //this.botao_jogar = this.add.button(this.world.centerX - 420, 300, 'botao_jogar', this.novo_jogo, this, 2, 1, 0);
+        this.botao_calibrar = this.add.button(this.world.centerX - 270, 300, 'botao_calibrar', this.calibrar, this, 2, 1, 0);
+        this.botao_ranking = this.add.button(this.world.centerX + 30, 300, 'botao_ranking', this.ranking, this, 2, 1, 0);
         if (this.stage.scale.isFullScreen == null)
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
         else
@@ -53,25 +54,6 @@ BasicGame.Menu.prototype = {
                         this.localizacao += "\n" + json[i]["localizacao"];
                     }
                 }
-            }
-
-            this.conexao_webcam = new WebSocket('ws://127.0.0.1:1338');
-            this.conexao_webcam.menu = this;
-            this.conexao_webcam.onmessage = function(message) {
-                this.estado_jogador = JSON.parse(message.data);
-                this.calibrado = this.estado_jogador['calibrado'];
-
-                console.log("Calibrado: ", this.calibrado);
-                if(this.calibrado){
-                    this.menu.novo_jogo(null);
-                }
-            }
-            this.conexao_webcam.onopen = function(){
-                var estado_jogo = {'jogador_vivo': true, 'tela': 'menu'};
-                var str_estado_jogo = JSON.stringify(estado_jogo);
-                this.send(str_estado_jogo);
-
-                console.log("Enviou: ", str_estado_jogo);
             }
         }
 
@@ -122,7 +104,7 @@ BasicGame.Menu.prototype = {
         }
     },
 
-    novo_jogo: function (pointer) {
+    novo_jogo: function () {
         this.som_item.play();
         this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
@@ -147,8 +129,29 @@ BasicGame.Menu.prototype = {
         this.conexao_webcam.close();
         this.game.state.start('Jogo');
     },
+
+    calibrar: function() {
+        this.conexao_webcam = new WebSocket('ws://127.0.0.1:1338');
+        this.conexao_webcam.menu = this;
+        this.conexao_webcam.onmessage = function(message) {
+            this.estado_jogador = JSON.parse(message.data);
+            this.calibrado = this.estado_jogador['calibrado'];
+
+            console.log("Calibrado: ", this.calibrado);
+            if(this.calibrado){
+                this.menu.novo_jogo();
+            }
+        }
+        this.conexao_webcam.onopen = function(){
+            var estado_jogo = {'jogador_vivo': true, 'tela': 'menu'};
+            var str_estado_jogo = JSON.stringify(estado_jogo);
+            this.send(str_estado_jogo);
+
+            console.log("Enviou: ", str_estado_jogo);
+        }
+    },
     
-    ranking: function (pointer) {
+    ranking: function () {
         this.som_item.play();
         this.eRanking = !this.eRanking;
         if (this.eRanking) {
