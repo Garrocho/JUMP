@@ -4,6 +4,7 @@ BasicGame.Menu = function (game) {
 BasicGame.Menu.prototype = {
 
     create: function () {
+        this.sair = false;
         this.eRanking = false;
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
@@ -94,29 +95,32 @@ BasicGame.Menu.prototype = {
     },
 
     update: function () {
-        this.fundo1.tilePosition.x -= 0.5;
-        this.fundo2.tilePosition.x -= 1;
-        if (this.conexao.nome != undefined && this.eRanking) {
-            this.rank.setText(this.conexao.rank);
-            this.nome.setText(this.conexao.nome);
-            this.kmh.setText(this.conexao.kmh);
-            this.moedas.setText(this.conexao.moedas);
-            this.localizacao.setText(this.conexao.localizacao);
-            this.descricao.setText("");
-            this.equipe.setText("");
-        }
-        else {
-            this.rank.setText("");
-            this.nome.setText("");
-            this.kmh.setText("");
-            this.localizacao.setText("");
-            this.moedas.setText("");
-            this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado\nao desenvolvimento de um jogo interativo\ndirecionado à prática de exercícios físicos.");
-            this.equipe.setText("Orientador:\nRafael José de Alencar Almeida\n\nEquipe:\nArthur Nascimento Assunção\nBruno Ferreira da Costa\nCharles Tim Batista Garrocho\nLucas Gabriel de Araújo Assis\nMariana Wamser Campos\nPaulo Vitor Francisco");
+        if (!this.sair) {
+            this.fundo1.tilePosition.x -= 0.5;
+            this.fundo2.tilePosition.x -= 1;
+            if (this.conexao.nome != undefined && this.eRanking) {
+                this.rank.setText(this.conexao.rank);
+                this.nome.setText(this.conexao.nome);
+                this.kmh.setText(this.conexao.kmh);
+                this.moedas.setText(this.conexao.moedas);
+                this.localizacao.setText(this.conexao.localizacao);
+                this.descricao.setText("");
+                this.equipe.setText("");
+            }
+            else {
+                this.rank.setText("");
+                this.nome.setText("");
+                this.kmh.setText("");
+                this.localizacao.setText("");
+                this.moedas.setText("");
+                this.descricao.setText("Descrição do Projeto:\nProcessamento digital de imagens aplicado\nao desenvolvimento de um jogo interativo\ndirecionado à prática de exercícios físicos.");
+                this.equipe.setText("Orientador:\nRafael José de Alencar Almeida\n\nEquipe:\nArthur Nascimento Assunção\nBruno Ferreira da Costa\nCharles Tim Batista Garrocho\nLucas Gabriel de Araújo Assis\nMariana Wamser Campos\nPaulo Vitor Francisco");
+            }
         }
     },
 
     novo_jogo: function () {
+        this.sair = true;
         this.som_item.play();
         this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
