@@ -29,7 +29,7 @@ BasicGame.GameOver.prototype = {
         }
         this.texto = this.add.text(215, 450, this.informacao, this.estilo);
         this.texto.anchor.setTo(0.5, 0.5);
-        this.botao_sair = this.add.button(760, 700, 'botao_sair', this.menu, this, 2, 1, 0);
+        this.botao_sair = this.add.button(760, 700, 'botao_sair', this.enviar_recorde, this, 2, 1, 0);
         if (this.stage.scale.isFullScreen == null)
             this.botao_tela = this.add.button(this.world.centerX + 370, 2, 'botao_tela_cheia', this.mudar_tela, this, 2, 1, 0);
         else
@@ -73,14 +73,9 @@ BasicGame.GameOver.prototype = {
                         this.nome = this.nome.substring(0, this.nome.length-1);
                     }
                     else if (i == 13 || i == 27) {
-                        if (this.nome.length == 0) {
-                            this.nome = "Não Definido";
-                            this.enviar_recorde(this.recorde);
-                        }
-                        else if (this.nome.length > 3) {
+                        if (this.nome.length > 3)
                             this.recorde['nome'] = this.nome;
-                             this.enviar_recorde(this.recorde);
-                        }
+                        this.enviar_recorde(this.recorde);
                     }
                     else if (i == 32) {
                         this.nome += " ";
@@ -100,6 +95,8 @@ BasicGame.GameOver.prototype = {
     },
 
     enviar_recorde: function (recorde) {
+        if (this.nome.length == 0)
+            this.nome = "Não Definido";
         this.sair = true;
         this.som_item.play();
         if (window.WebSocket) {
