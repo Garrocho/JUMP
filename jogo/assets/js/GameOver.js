@@ -4,6 +4,7 @@ BasicGame.GameOver = function (game) {
 
 BasicGame.GameOver.prototype = {
     create: function () {
+        this.sair = false;
         this.fundo1 = this.add.tileSprite(0, 0, 1024, 512, 'nuvem');
         this.fundo2 = this.add.tileSprite(0, 512, 1024, 512, 'nuvem');
         this.nome = "";
@@ -42,19 +43,21 @@ BasicGame.GameOver.prototype = {
     },
 
     update: function () {
-        this.fundo1.tilePosition.x -= 0.5;
-        this.fundo2.tilePosition.x -= 1;
-        this.processa_letras();
-         if (this.time.now > this.tempo_teclado && this.nome.length < 7) {
-            this.texto.setText("NOME: " + this.nome + "_" + this.informacao);
-            this.tempo_teclado = this.time.now + 200;
+        if (!this.sair) {
+            this.fundo1.tilePosition.x -= 0.5;
+            this.fundo2.tilePosition.x -= 1;
+            this.processa_letras();
+             if (this.time.now > this.tempo_teclado && this.nome.length < 7) {
+                this.texto.setText("NOME: " + this.nome + "_" + this.informacao);
+                this.tempo_teclado = this.time.now + 200;
+            }
+            else
+                this.texto.setText("NOME: " + this.nome + this.informacao);
+            if (this.nome.length > 3)
+                this.titulo2.setText("Pressione Enter Para Continuar!")
+            else
+                this.titulo2.setText("");
         }
-        else
-            this.texto.setText("NOME: " + this.nome + this.informacao);
-        if (this.nome.length > 3)
-            this.titulo2.setText("Pressione Enter Para Continuar!")
-        else
-            this.titulo2.setText("");
     },
 
     menu: function (pointer) {
@@ -97,6 +100,7 @@ BasicGame.GameOver.prototype = {
     },
 
     enviar_recorde: function (recorde) {
+        this.sair = true;
         this.som_item.play();
         if (window.WebSocket) {
             //var cidade = localStorage.getItem('jump_cidade');
