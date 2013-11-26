@@ -57,6 +57,18 @@ BasicGame.Menu.prototype = {
             }
         }
 
+        if (window.WebSocket) {
+            this.conexao = new WebSocket('ws://127.0.0.1:1338');
+            console.log("Conectou ao websocket: ws://127.0.0.1:1338");
+            this.conexao.onopen = function() {
+                var estado_jogo = {'jogador_vivo': false, 'tela': 'gameover'};
+                var str_estado_jogo = JSON.stringify(estado_jogo);
+                this.send(str_estado_jogo);
+                console.log("Enviou: ", str_estado_jogo);
+                this.close();
+            }
+        }
+
         //this.titulo3 = this.add.text(-10, this.world.centerY-120, "----------------------------------------------------------------------------------------", this.estilo3);        
         this.titulo3 = this.add.text(-10, this.world.centerY, "----------------------------------------------------------------------------------------", this.estilo3);
         
@@ -109,7 +121,7 @@ BasicGame.Menu.prototype = {
         this.add.tween(this.titulo).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_ranking).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
-        this.add.tween(this.botao_jogar).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.botao_calibrar).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.titulo3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
