@@ -10,6 +10,7 @@ class WebSocketWebCam(WebSocket):
     processo = None
 
     def handleMessage(self):
+        print 'Recebeu msg: ', self.data
         with open('./file/estado_jogo_cliente.json', 'w') as arq:
             arq.write(self.data)
 
@@ -21,18 +22,17 @@ class WebSocketWebCam(WebSocket):
                 detector_movimento.processo = self.processo
                 self.processo.start()
             else:
-                print 'teste1'
+                print 'processo ja iniciado, usando este processo iniciado'
                 self.processo = detector_movimento.processo
                 self.processo.conexao = self
+                self.processo.gerenciador_estado_jogador.conexao = self
+                self.processo.gerenciador_estado_jogador._set_vivo(True)
         else:
-            print 'teste'
             self.processo.conexao = self
 
     def handleClose(self):
         print self.address, 'closed'
-        gerenciador_estado_jogador = detector_movimento.GerenciadorEstadoJogador(
-        )
-        gerenciador_estado_jogador._set_vivo(False)
+        self.processo.gerenciador_estado_jogador._set_vivo(False)
 #        self.processo.calibrado = False
 
 

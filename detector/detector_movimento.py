@@ -9,6 +9,7 @@ import time
 from optparse import OptionParser
 from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer
 from multiprocessing import Process
+import threading
 
 processo = None
 
@@ -63,10 +64,13 @@ class GerenciadorEstadoJogador(object):
         str_json = json.dumps(estado_jogador)
         if self.conexao is None:
             # Recria o arquivo e insere o novo estado do jogador
+            print 'escreveu no arquivo: ', str_json
             with open(self.ARQUIVO_ESTADO_JOGADOR, 'w') as arq:
                 arq.write(str_json)
         else:
             try:
+                print self.conexao.address
+                print 'Enviou: ', str_json
                 self.conexao.sendMessage(str_json)
             except:
                 print 'Não foi possível enviar a mensagem ao cliente'
@@ -76,21 +80,29 @@ class GerenciadorEstadoJogador(object):
         Seta o estado vivo do jogador
         :param vivo: se o jogador está vivo
         '''
-        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'r') as arq:
-            estado_jogo = json.loads(arq.read())
-            estado_jogo['jogador_vivo'] = vivo
-        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'w') as arq:
-            arq.write(json.dumps(estado_jogo))
+        try:
+            with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'r') as arq:
+                estado_jogo = json.loads(arq.read())
+                estado_jogo['jogador_vivo'] = vivo
+            with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR, 'w') as arq:
+                arq.write(json.dumps(estado_jogo))
+        except ValueError as e:
+            print e
 
     def is_vivo(self):
         '''
         verifica se o jogador está vivo ou não
         :returns: True se o jogador está vivo e False se não
         '''
-        with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR) as arq:
-            vivo_str = arq.read()
-        vivo = json.loads(vivo_str)
-        return vivo['jogador_vivo']
+        try:
+            with open(self.ARQUIVO_ESTADO_VIDA_JOGADOR) as arq:
+                vivo_str = arq.read()
+                print vivo_str
+            vivo = json.loads(vivo_str)
+            return vivo['jogador_vivo']
+        except ValueError as e:
+            print e
+            return False
 
     def tela_atual(self):
         '''
@@ -111,7 +123,7 @@ class GerenciadorEstadoJogador(object):
         self._set_vivo(True)
 
 
-class DetectorMovimento(Process):
+class DetectorMovimento(threading.Thread):
 
     '''
     Classe para detectar o movimento
@@ -142,7 +154,7 @@ class DetectorMovimento(Process):
         Construtor da Classe
         :param id_camera: identificador da camera que será utilizada, o padrão é 0
         '''
-        Process.__init__(self)
+        threading.Thread.__init__(self)
         self.conexao = conexao
         self.movimento = Movimentos.EM_PE
         self.id_camera = id_camera
@@ -232,7 +244,7 @@ class DetectorMovimento(Process):
         while(self.camera.isOpened()):
             contador = contador + 1
             # a cada N loops ele verifica se o jogador ta vivo
-            if contador % 100 == 0:
+            if contador % 50 == 0:
                 if not self.gerenciador_estado_jogador.is_vivo():
                     print 'Jogador perdeu'
                     break
@@ -414,7 +426,11 @@ class DetectorMovimento(Process):
         self.ys = []
         self.desenhar_linhas = False
         self.calibrado = False
-        self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
+        self.gerenciador_estado_jogador.finish()
+        if self.conexao is None:
+            self.gerenciador_estado_jogador = GerenciadorEstadoJogador()
+        else:
+            self.gerenciador_estado_jogador = GerenciadorEstadoJogador(conexao=self.conexao)
         self.iniciar()
 
     def finalizar(self):
