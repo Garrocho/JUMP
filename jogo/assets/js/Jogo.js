@@ -196,6 +196,7 @@ BasicGame.Jogo.prototype = {
         this.add.tween(this.corredor_cont).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.texto1).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.texto2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
+        this.add.tween(this.texto3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.fundo1).to({  }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
