@@ -67,11 +67,7 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
 
-  5. Instalando Módulos do Node.js:
-
-    <code>
-        cd jump
-    </code>
+  5. Instalando Módulos do Node.js nas pasta que irá rodar os servidores (detector e ranking):
 
     <code>
         npm install node-static
@@ -86,14 +82,14 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
 
-  6. Inicializando o Serviço do Cliente e do Servidor:
+  6. Inicializando o Jogo e do Servidor do Ranking:
 
     <code>
-        cd jump
+        cd jump/jogo
     </code>
 
     <code>
-        node JogoServidor.js
+        python -m SimpleHTTPServer
     </code>
 
     <code>
@@ -101,11 +97,11 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
     <code>
-        cd jump
+        cd jump/ranking
     </code>
 
     <code>
-        node JogoCliente.js
+        node Ranking.js
     </code>
 
     <code>
