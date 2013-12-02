@@ -105,5 +105,5 @@ Jogo Unificado para Movimentação Projetada
     </code>
 
     <code>
-        Abra o navegador do Google Chrome e entre no endereço: http://0.0.0.0:29755
+        Abra o navegador do Google Chrome e entre no endereço: http://0.0.0.0:8000
     </code>
