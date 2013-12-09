@@ -40,7 +40,7 @@ BasicGame.Menu.prototype = {
                 this.nome = "NOME";
                 this.kmh = "KM/H";
                 this.moedas = "MOEDAS";
-                this.localizacao = "LOCALIZAÇÃO";
+                this.localizacao = "CALORIAS (Kcal)";
                 json.sort(function(a, b) {
                     return (b["kmh"] - a["kmh"]);
                 });
@@ -52,16 +52,16 @@ BasicGame.Menu.prototype = {
                         this.nome += "\n" + json[i]["nome"];
                         this.kmh += "\n" + json[i]["kmh"];
                         this.moedas += "\n" + json[i]["moedas"];
-                        this.localizacao += "\n" + json[i]["localizacao"];
+                        this.localizacao += "\n" + json[i]["kcal"];
                     }
                 }
             }
         }
 
         if (window.WebSocket) {
-            this.conexao = new WebSocket('ws://127.0.0.1:1338');
+            this.conexao_webcam = new WebSocket('ws://127.0.0.1:1338');
             console.log("Conectou ao websocket: ws://127.0.0.1:1338");
-            this.conexao.onopen = function() {
+            this.conexao_webcam.onopen = function() {
                 var estado_jogo = {'jogador_vivo': false, 'tela': 'gameover'};
                 var str_estado_jogo = JSON.stringify(estado_jogo);
                 this.send(str_estado_jogo);
@@ -98,7 +98,7 @@ BasicGame.Menu.prototype = {
         if (!this.sair) {
             this.fundo1.tilePosition.x -= 0.5;
             this.fundo2.tilePosition.x -= 1;
-            if (this.conexao.nome != undefined && this.eRanking) {
+            if (typeof(this.conexao.nome) !== "undefined" && this.eRanking) {
                 this.rank.setText(this.conexao.rank);
                 this.nome.setText(this.conexao.nome);
                 this.kmh.setText(this.conexao.kmh);
