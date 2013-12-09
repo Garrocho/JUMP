@@ -31,7 +31,7 @@ var wsServer = new webSocketServer({
 });
 
 wsServer.on('request', function(request) {
-    var conexao = request.accept(null, request.origin); 
+    var conexao = request.accept(null, request.origin);
 
     conexao.on('message', function(message) {
         var mensagem = JSON.parse(message.utf8Data);
@@ -40,7 +40,6 @@ wsServer.on('request', function(request) {
                 console.log(data);
                 var arq = JSON.parse(data);
                 arq.push(mensagem['DADOS']);
-                console.log(arq);
                 fs.writeFile(URL_RANKING, JSON.stringify(arq));
             });
         }
