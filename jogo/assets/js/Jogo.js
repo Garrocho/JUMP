@@ -17,7 +17,7 @@ BasicGame.Jogo.prototype = {
         this.pulando = false;
         this.agachado = false;
         this.contador = 0;
-	this.contador_pulo = 0
+        this.contador_pulo = 0
         this.kmh = 5;
         this.pulando = false;
         this.aux_pulo = 0;
@@ -31,12 +31,12 @@ BasicGame.Jogo.prototype = {
         this.corredor_cont.animations.play('correr', 10, true);
         
         this.estilo = { font: "bold 20pt Arial", fill: "#ffffff", stroke: "#000000", strokeThickness: 3 };
-	this.estilo4 = { font: "bold 20pt Arial", fill: "#00FF00", stroke: "#000000", strokeThickness: 5 };
+        this.estilo4 = { font: "bold 20pt Arial", fill: "#00FF00", stroke: "#000000", strokeThickness: 5 };
         this.texto1 = this.add.text(220, 30, "5 Km/h", this.estilo);
         this.texto1.anchor.setTo(0.5, 0.5);
         this.texto2 = this.add.text(80, 30, "0", this.estilo);
         this.texto2.anchor.setTo(0.5, 0.5);
-	this.texto3 = this.add.text(this.world.centerX, 30, "0 Calorias", this.estilo4);
+        this.texto3 = this.add.text(this.world.centerX, 30, "0 Calorias", this.estilo4);
         this.texto3.anchor.setTo(0.5, 0.5);
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -49,18 +49,21 @@ BasicGame.Jogo.prototype = {
         if (window.WebSocket) {
             this.conexao = new WebSocket('ws://127.0.0.1:1338');
             console.log("Conectou ao websocket: ws://127.0.0.1:1338");
+            this.conexao.onopen = function() {
+                 this.aberto = true;
+            }
             this.conexao.onmessage = function(message) {
                 this.estado_jogador = JSON.parse(message.data);
                 this.movimento = this.estado_jogador['movimento'];
-
                 console.log("Estado Jogador: ", this.estado_jogador);
             }
             this.conexao.jogador_morreu = function(){
-                var estado_jogo = {'jogador_vivo': false, 'tela': 'gameover'};
-                var str_estado_jogo = JSON.stringify(estado_jogo);
-                this.send(str_estado_jogo);
-
-                console.log("Enviou: ", str_estado_jogo);
+                if (this.aberto == true) {
+                    var estado_jogo = {'jogador_vivo': false, 'tela': 'gameover'};
+                    var str_estado_jogo = JSON.stringify(estado_jogo);
+                    this.send(str_estado_jogo);
+                    console.log("Enviou: ", str_estado_jogo);
+                }
             }
         }
         if (this.stage.scale.isFullScreen == null)
@@ -124,8 +127,8 @@ BasicGame.Jogo.prototype = {
         if ((this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
         {
             this.som_pulo.play();
-	    this.contador_pulo+=0.15;
-	    this.texto3.setText(this.contador_pulo.toFixed(2) + " Calorias");
+        this.contador_pulo+=0.15;
+        this.texto3.setText(this.contador_pulo.toFixed(2) + " Calorias");
             this.pulando = true;
             this.jogador.loadTexture('pulando', 0);
             this.jogador.animations.add('pular');
@@ -146,11 +149,11 @@ BasicGame.Jogo.prototype = {
             else {
                 if (this.aux_pulo <= 3600) {
                     this.jogador.body.velocity.y = -500;
-                    this.jogador.body.velocity.x = 150;
+                    this.jogador.body.velocity.x = 70;
                 }
                 else {
                     this.jogador.body.velocity.y = 400;
-                    this.jogador.body.velocity.x = 50;
+                    this.jogador.body.velocity.x = 35;
                 }
                 this.aux_pulo+= 100;
             }
@@ -196,7 +199,6 @@ BasicGame.Jogo.prototype = {
         this.add.tween(this.corredor_cont).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.texto1).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.texto2).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
-        this.add.tween(this.texto3).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_tela).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.botao_som).to({ alpha: 0 }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
         this.add.tween(this.fundo1).to({  }, 1000, Phaser.Easing.Quadratic.InOut, true, 500);
