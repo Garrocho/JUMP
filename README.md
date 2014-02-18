@@ -1,6 +1,9 @@
 JUMP!
 =====
-Jogo Unificado para Movimentação Projetada
+Jogo Unificado para Movimentação Projetada.
+
+# Descrição
+O _JUMP_ detecta a partir de uma webCam os movimentos de pulo e agachamento e envia esses sinais para o jogo.
 
 # Instalação
 
