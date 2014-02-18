@@ -102,7 +102,7 @@ BasicGame.Jogo.prototype = {
         this.fundo3.tilePosition.x -= this.velocidade[2];
         this.jogador.body.velocity.x = 0;
         this.jogador.body.velocity.y = 0;
-        
+
         if (this.AGACHAR) {
             if ((this.cursors.down.isDown && !this.pulando) || (this.conexao.movimento === -1 && !this.pulando))
             {
@@ -124,7 +124,7 @@ BasicGame.Jogo.prototype = {
             }
         }
 
-        if ((this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
+        if ((this.input.activePointer.isDown && !this.pulando) || (this.cursors.up.isDown && !this.pulando && !this.agachado) || (this.conexao.movimento === 1 && !this.pulando && !this.agachado))
         {
             this.som_pulo.play();
         this.contador_pulo+=0.15;
