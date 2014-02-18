@@ -5,6 +5,9 @@ Jogo Unificado para Movimentação Projetada.
 # Descrição
 O _JUMP_ detecta a partir de uma webCam os movimentos de pulo e agachamento e envia esses sinais para o jogo.
 
+# Características
+A detecção de movimentos é realizados através do _OpenCV_. Já o jogo foi desenvolvido em _HTML5_ utilizando o framework _Phaser_.
+
 # Instalação
 
   1. Instale o Git:
